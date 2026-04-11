@@ -154,7 +154,15 @@ select option{background:var(--b3)}
 
     <div class="fg" style="margin-top:10px">
       <label>رمز عبور</label>
-      <input type="password" id="loginPass" placeholder="پسورد را بنویس..." onkeydown="if(event.key==='Enter')doLogin()"/>
+      <div style="position:relative">
+        <input type="password" id="loginPass" placeholder="پسورد را بنویس..." onkeydown="if(event.key==='Enter')doLogin()" style="width:100%;padding-left:44px"/>
+        <button type="button" onclick="
+          var inp=document.getElementById('loginPass');
+          var btn=document.getElementById('showPassBtn');
+          if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+          else{inp.type='password';btn.textContent='👁';}
+        " id="showPassBtn" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:0;line-height:1">👁</button>
+      </div>
     </div>
     <button class="login-btn" onclick="doLogin()">ورود به سیستم 🚀</button>
     <p id="role-hint" style="text-align:center;color:var(--t3);font-size:10.5px;margin-top:10px">اول نقش را انتخاب کن</p>
@@ -479,6 +487,13 @@ select option{background:var(--b3)}
         <div class="fg"><label>باقی طلب</label><input id="s-rem" readonly/></div>
       </div>
       <div id="s-cogs" class="ib info"></div>
+      <div class="dv"></div>
+      <div class="ib warn" style="font-size:10.5px">👷 اجرت سرکاریگران — بعد از فروش به حساب آنها می‌رسد</div>
+      <div class="row2">
+        <div class="fg"><label>اجرت جمشید فی درجن (؋) — ماشینری</label><input type="number" id="s-wage-j" min="0" value="22" oninput="calcSaleWage()"/></div>
+        <div class="fg"><label>اجرت سمیع‌الله فی درجن (؋) — بسته‌بندی</label><input type="number" id="s-wage-s" min="0" value="25" oninput="calcSaleWage()"/></div>
+      </div>
+      <div id="s-wage-info" style="font-size:11px;color:var(--t2);padding:4px 0"></div>
     </div>
     <div class="modal-foot">
       <button class="btn bsec" onclick="closeModal('modalSale')">انصراف</button>
@@ -1662,6 +1677,9 @@ function initSaleModal(){
   document.getElementById("s-paid").value="";
   document.getElementById("s-tot").value="";
   document.getElementById("s-rem").value="";
+  document.getElementById("s-wage-j").value="22";
+  document.getElementById("s-wage-s").value="25";
+  document.getElementById("s-wage-info").innerHTML="";
   document.getElementById("cust-dd").style.display="none";
   document.getElementById("cust-sel").style.display="none";
   document.getElementById("sale-msg").innerHTML="";
@@ -1694,7 +1712,21 @@ function calcSale(){
   document.getElementById("s-tot").value=afn(tot);
   document.getElementById("s-rem").value=afn(rem);
   document.getElementById("s-cogs").textContent=`💡 COGS: ${afn(cg)} | سود: ${afn(gp)} | حاشیه: ${tot>0?Math.round(gp/tot*100):0}%`;
+  calcSaleWage();
 }
+function calcSaleWage(){
+  const doz=+(document.getElementById("s-doz").value)||0;
+  const wj=+(document.getElementById("s-wage-j").value)||0;
+  const ws=+(document.getElementById("s-wage-s").value)||0;
+  const tj=doz*wj, ts=doz*ws;
+  const info=document.getElementById("s-wage-info");
+  if(doz>0&&(wj>0||ws>0)){
+    info.innerHTML=`💰 جمشید: <strong style="color:var(--gd)">${afn(tj)}</strong> | سمیع‌الله: <strong style="color:var(--gd)">${afn(ts)}</strong>`;
+  } else {
+    info.innerHTML="";
+  }
+}
+
 async function submitSale(){
   const doz=+(document.getElementById("s-doz").value);
   const prc=+(document.getElementById("s-prc").value);
@@ -1702,19 +1734,56 @@ async function submitSale(){
   const tot=doz*prc,paid=+(document.getElementById("s-paid").value)||0,rem=tot-paid;
   const prod=document.getElementById("s-prod").value;
   const cg=calcCOGS(prod,doz),gp=tot-cg;
+  const wj=+(document.getElementById("s-wage-j").value)||0;
+  const ws=+(document.getElementById("s-wage-s").value)||0;
+  const totalWageJ=doz*wj, totalWageS=doz*ws;
   document.getElementById("sale-btn").disabled=true;
   document.getElementById("sale-btn").textContent="در حال ذخیره...";
+  const saleDate=document.getElementById("s-date").value;
   const res=await sbPost("sales",{
-    date:document.getElementById("s-date").value,
+    date:saleDate,
     cust_id:_selCust?.id||"new",cust_name:_selCust?.n||(document.getElementById("s-csrch").value||"مشتری جدید"),
     province:_selCust?.p||"نامشخص",bill:document.getElementById("s-bill").value,
     product:prod,dozen:doz,price_per_doz:prc,total:tot,paid,remaining:rem,
     cogs:cg,gross_profit:gp,margin:tot>0?gp/tot*100:0
   });
+  // ثبت اجرت سرکاریگران در employee_payments
+  if(res){
+    // پیدا کردن ID کارمندان از Supabase
+    const emps=await sbGet("employees","?select=id,name");
+    if(emps){
+      const jamshid=emps.find(e=>e.name.includes("جمشید"));
+      const samiullah=emps.find(e=>e.name.includes("سمیع"));
+      const wageNote=`اجرت فروش ${doz} درجن ${prod} | بل: ${document.getElementById("s-bill").value||"—"}`;
+      if(jamshid&&totalWageJ>0){
+        await sbPost("employee_payments",{
+          employee_id:jamshid.id,
+          employee_name:"جمشید",
+          date:saleDate,
+          amount_afn:totalWageJ,
+          type:"salary",
+          notes:wageNote
+        });
+      }
+      if(samiullah&&totalWageS>0){
+        await sbPost("employee_payments",{
+          employee_id:samiullah.id,
+          employee_name:"سمیع‌الله",
+          date:saleDate,
+          amount_afn:totalWageS,
+          type:"salary",
+          notes:wageNote
+        });
+      }
+    }
+    document.getElementById("sale-msg").innerHTML='<div class="ib ok">✅ فروش ثبت شد! اجرت سرکاریگران هم ثبت شد.</div>';
+    showSaved();
+    setTimeout(()=>{closeModal("modalSale");renderSales();},1300);
+  } else {
+    document.getElementById("sale-msg").innerHTML='<div class="ib err">خطا در اتصال! دوباره امتحان کن</div>';
+  }
   document.getElementById("sale-btn").disabled=false;
   document.getElementById("sale-btn").textContent="ثبت فروش ✓";
-  if(res){document.getElementById("sale-msg").innerHTML='<div class="ib ok">✅ فروش در Supabase ذخیره شد!</div>';showSaved();setTimeout(()=>{closeModal("modalSale");renderSales();},1300);}
-  else document.getElementById("sale-msg").innerHTML='<div class="ib err">خطا در اتصال! دوباره امتحان کن</div>';
 }
 
 // Buy modal
