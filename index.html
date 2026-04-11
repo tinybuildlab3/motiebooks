@@ -796,8 +796,8 @@ select option{background:#1a1820}
           <input class="search-bar" style="width:160px;margin:0" placeholder="جستجو..." oninput="filterSales(this.value)" id="sSearch"/>
         </div>
         <div class="tw"><table>
-          <thead><tr><th>#</th><th>تاریخ</th><th>ولایت</th><th>مشتری</th><th>مدل</th><th>درجن</th><th>مبلغ</th><th>وصول</th><th>باقی</th><th>سود</th><th>🖨️</th></tr></thead>
-          <tbody id="sales-tbody"><tr><td colspan="10" style="text-align:center;padding:20px;color:var(--t3)"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
+          <thead><tr><th>#</th><th>تاریخ</th><th>ولایت</th><th>مشتری</th><th>مدل</th><th>درجن</th><th>مبلغ</th><th>وصول</th><th>باقی</th><th>سود</th><th>🖨️</th><th>✏️</th></tr></thead>
+          <tbody id="sales-tbody"><tr><td colspan="12" style="text-align:center;padding:20px;color:var(--t3)"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
         </table></div>
       </div>
     </div>
@@ -826,8 +826,8 @@ select option{background:#1a1820}
       <div class="card">
         <div class="ct">📦 خرید مواد | <span id="buy-count" style="color:var(--gd)">—</span></div>
         <div class="tw"><table>
-          <thead><tr><th>#</th><th>تاریخ</th><th>تامین‌کننده</th><th>جنس</th><th>کیلو</th><th>مبلغ($)</th><th>مبلغ(؋)</th><th>باقی($)</th></tr></thead>
-          <tbody id="buy-tbody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--t3)"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
+          <thead><tr><th>#</th><th>تاریخ</th><th>تامین‌کننده</th><th>جنس</th><th>کیلو</th><th>مبلغ($)</th><th>مبلغ(؋)</th><th>باقی($)</th><th>✏️</th></tr></thead>
+          <tbody id="buy-tbody"><tr><td colspan="9" style="text-align:center;padding:20px;color:var(--t3)"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
         </table></div>
       </div>
     </div>
@@ -837,8 +837,8 @@ select option{background:#1a1820}
       <div class="card">
         <div class="ct">🏭 دفتر تولید | <span id="prod-count" style="color:var(--gd)">—</span></div>
         <div class="tw"><table>
-          <thead><tr><th>#</th><th>تاریخ</th><th>سرکاریگر</th><th>مدل</th><th>درجن</th><th>اجرت کل</th><th>پرداختی</th><th>باقی</th></tr></thead>
-          <tbody id="prod-tbody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--t3)"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
+          <thead><tr><th>#</th><th>تاریخ</th><th>سرکاریگر</th><th>مدل</th><th>درجن</th><th>اجرت کل</th><th>پرداختی</th><th>باقی</th><th>✏️</th></tr></thead>
+          <tbody id="prod-tbody"><tr><td colspan="9" style="text-align:center;padding:20px;color:var(--t3)"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
         </table></div>
       </div>
     </div>
@@ -900,7 +900,7 @@ select option{background:#1a1820}
       <div class="card">
         <div class="ct">💵 صندوق افغانی</div>
         <div class="tw"><table>
-          <thead><tr><th>#</th><th>تاریخ</th><th>نوع</th><th>شرح</th><th>ورودی</th><th>خروجی</th><th>مانده</th></tr></thead>
+          <thead><tr><th>#</th><th>تاریخ</th><th>نوع</th><th>شرح</th><th>ورودی</th><th>خروجی</th><th>مانده</th><th>✏️</th></tr></thead>
           <tbody id="cash-tbody"></tbody>
         </table></div>
       </div>
@@ -1560,6 +1560,30 @@ select option{background:#1a1820}
 @keyframes micPulse{0%,100%{box-shadow:0 8px 32px rgba(168,85,247,.4)}50%{box-shadow:0 8px 48px rgba(168,85,247,.8),0 0 0 12px rgba(168,85,247,.1)}}
 </style>
 
+<!-- ══ UNIVERSAL EDIT MODAL ══ -->
+<div class="modal-overlay" id="modalEditRecord">
+  <div class="modal">
+    <div class="modal-head" style="background:linear-gradient(135deg,rgba(91,138,245,.1),transparent)">
+      <div>
+        <h3 id="em-title">✏️ ویرایش رکورد</h3>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">تغییرات مستقیم در Supabase ذخیره می‌شود</div>
+      </div>
+      <button class="close-btn" onclick="closeModal('modalEditRecord')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="ef-msg"></div>
+      <div class="ib warn" style="font-size:10.5px;margin-bottom:12px">
+        ⚠️ مقادیر را با دقت تغییر بده — بعد از ذخیره محاسبات اتوماتیک آپدیت می‌شود
+      </div>
+      <div id="ef-fields"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bsec" onclick="closeModal('modalEditRecord')">انصراف</button>
+      <button class="btn bpri" onclick="saveEditRecord()" id="ef-save-btn">ذخیره تغییرات ✓</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══ ORDERS v2 — چند آیتم ══
 const PRD_NAMES={STD:"PCU استاندارد ۳۶-۴۲",VIP:"PCU ویژه ۴۳-۴۵",KID:"PCU کودکانه ۲۴-۳۵"};
@@ -2038,9 +2062,17 @@ async function refreshSuppMap(){
 
 function populateDropdowns(){
   const bs=document.getElementById("b-supp");
-  bs.innerHTML='<option value="">— تامین‌کننده —</option>'+
+  if(bs) bs.innerHTML='<option value="">— تامین‌کننده —</option>'+
     SUPPLIERS.map(s=>`<option value="${s.id}">${s.n} | ${usd(S.suppMap[s.id]?.bal||0)}</option>`).join("");
-  document.getElementById("b-mat").innerHTML=MATS.map(m=>`<option>${m}</option>`).join("");
+  if(document.getElementById("b-mat"))
+    document.getElementById("b-mat").innerHTML=MATS.map(m=>`<option>${m}</option>`).join("");
+  // Load workers from employees table
+  sbGet("employees","?is_active=eq.true&role=eq.worker&select=id,name,salary_amount").then(emps=>{
+    const sel=document.getElementById("p-worker");
+    if(sel&&emps&&emps.length){
+      sel.innerHTML=emps.map(e=>`<option value="${e.name}">${e.name} — ؋${e.salary_amount}/درجن</option>`).join("");
+    }
+  });
 }
 
 function calcCOGS(prod,doz){
@@ -2230,7 +2262,7 @@ function filterSales(q){
 }
 function renderSalesRows(list){
   const tb=document.getElementById("sales-tbody");
-  if(!list.length){tb.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--t3);padding:18px">هنوز فروشی ثبت نشده</td></tr>';return;}
+  if(!list.length){tb.innerHTML='<tr><td colspan="12" style="text-align:center;color:var(--t3);padding:18px">هنوز فروشی ثبت نشده</td></tr>';return;}
   tb.innerHTML=list.map((s,i)=>`<tr>
     <td style="color:var(--t3)">${i+1}</td><td>${s.date}</td>
     <td><span class="bb bbl">${s.province}</span></td>
@@ -2241,18 +2273,22 @@ function renderSalesRows(list){
     <td class="tdr" style="color:var(--gr)">${afn(s.paid)}</td>
     <td>${+s.remaining>0?`<span class="bb br2">${afn(s.remaining)}</span>`:'<span class="bb bg2">تسویه</span>'}</td>
     <td class="tdr" style="color:var(--gr)">${afn(s.gross_profit)}</td>
-    <td><button onclick="printInvoice(${s.id})" title="چاپ فاکتور" style="background:var(--g3);border:1px solid rgba(232,160,32,.3);color:var(--gd);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:11px;font-family:inherit">🖨️</button></td>
+    <td><button onclick="printInvoice(${s.id})" title="چاپ فاکتور" style="${_editBtnStyle('gd')}">🖨️</button></td>
+    <td style="display:flex;gap:3px">
+      <button onclick="openEditRecord('sales',${s.id})" style="${_editBtnStyle('bl')}" title="ویرایش">✏️</button>
+      <button onclick="deleteRecord('sales',${s.id},'renderSales')" style="${_editBtnStyle('rd')}" title="حذف">🗑️</button>
+    </td>
   </tr>`).join("");
 }
 
 // ── BUY ──
 let allBuys=[];
 async function renderBuy(){
-  document.getElementById("buy-tbody").innerHTML='<tr><td colspan="8" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr>';
+  document.getElementById("buy-tbody").innerHTML='<tr><td colspan="9" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr>';
   allBuys=await sbGet("purchases","?order=id.desc")||[];
   document.getElementById("buy-count").textContent=allBuys.length+" رکورد";
   const tb=document.getElementById("buy-tbody");
-  if(!allBuys.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--t3);padding:18px">هنوز خریدی ثبت نشده</td></tr>';return;}
+  if(!allBuys.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--t3);padding:18px">هنوز خریدی ثبت نشده</td></tr>';return;}
   tb.innerHTML=allBuys.map((b,i)=>`<tr>
     <td style="color:var(--t3)">${i+1}</td><td>${b.date}</td>
     <td style="font-weight:700">${b.supplier_name}</td>
@@ -2261,17 +2297,21 @@ async function renderBuy(){
     <td class="tdr" style="color:var(--bl);font-weight:700">${usd(b.amount_usd)}</td>
     <td class="tdr">${afn(b.amount_afn)}</td>
     <td>${+b.remaining_usd>0.01?`<span class="bb br2">${usd(b.remaining_usd)}</span>`:'<span class="bb bg2">تسویه</span>'}</td>
+    <td style="display:flex;gap:3px">
+      <button onclick="openEditRecord('purchases',${b.id})" style="${_editBtnStyle('bl')}" title="ویرایش">✏️</button>
+      <button onclick="deleteRecord('purchases',${b.id},'renderBuy')" style="${_editBtnStyle('rd')}" title="حذف">🗑️</button>
+    </td>
   </tr>`).join("");
 }
 
 // ── PROD ──
 let allProd=[];
 async function renderProd(){
-  document.getElementById("prod-tbody").innerHTML='<tr><td colspan="8" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr>';
+  document.getElementById("prod-tbody").innerHTML='<tr><td colspan="9" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr>';
   allProd=await sbGet("production","?order=id.desc")||[];
   document.getElementById("prod-count").textContent=allProd.length+" رکورد";
   const tb=document.getElementById("prod-tbody");
-  if(!allProd.length){tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--t3);padding:18px">هنوز تولیدی ثبت نشده</td></tr>';return;}
+  if(!allProd.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--t3);padding:18px">هنوز تولیدی ثبت نشده</td></tr>';return;}
   tb.innerHTML=allProd.map((r,i)=>`<tr>
     <td style="color:var(--t3)">${i+1}</td><td>${r.date}</td>
     <td style="font-weight:700;color:var(--gd)">${r.worker}</td>
@@ -2280,6 +2320,10 @@ async function renderProd(){
     <td class="tdr" style="font-weight:700">${afn(r.total_wage)}</td>
     <td class="tdr" style="color:var(--gr)">${afn(r.paid_wage)}</td>
     <td>${+r.remaining_wage>0?`<span class="bb br2">${afn(r.remaining_wage)}</span>`:'<span class="bb bg2">تسویه</span>'}</td>
+    <td style="display:flex;gap:3px">
+      <button onclick="openEditRecord('production',${r.id})" style="${_editBtnStyle('bl')}">✏️</button>
+      <button onclick="deleteRecord('production',${r.id},'renderProd')" style="${_editBtnStyle('rd')}">🗑️</button>
+    </td>
   </tr>`).join("");
 }
 
@@ -2318,6 +2362,10 @@ async function renderCash(){
       <td class="tdr" style="color:var(--gr)">${r.category==="in"?afn(r.amount_in):""}</td>
       <td class="tdr" style="color:var(--rd)">${r.category==="out"?afn(r.amount_out):""}</td>
       <td class="tdr" style="font-weight:700;color:${run>=0?"var(--gd)":"var(--rd)"}">${afn(run)}</td>
+      <td style="display:flex;gap:3px">
+        <button onclick="openEditRecord('cash_ledger',${r.id})" style="${_editBtnStyle('bl')}">✏️</button>
+        <button onclick="deleteRecord('cash_ledger',${r.id},'renderCash')" style="${_editBtnStyle('rd')}">🗑️</button>
+      </td>
     </tr>`;
   }).join("");
 }
@@ -3840,6 +3888,179 @@ async function confirmVoiceSale(){
     document.getElementById("voiceStatus").innerHTML='<span style="color:var(--rd)">❌ خطا در ثبت — دوباره امتحان کن</span>';
   }
 }
+
+// ══ ویرایش و حذف عمومی ══
+
+// Helper style for edit/delete buttons
+function _editBtnStyle(color){
+  const colors={bl:'rgba(91,138,245,.15)',1:'rgba(91,138,245,.3)',rd:'rgba(240,90,110,.15)',2:'rgba(240,90,110,.3)',gd:'rgba(212,168,67,.12)',3:'rgba(212,168,67,.3)'};
+  const txt={bl:'var(--bl)',rd:'var(--rd)',gd:'var(--gd)'};
+  return `background:${colors[color]};border:1px solid ${colors[color[0]+color.slice(1).replace(/./,'')]||'rgba(255,255,255,.1)'};color:${txt[color]||'var(--tx)'};border-radius:6px;padding:3px 8px;cursor:pointer;font-size:11px;font-family:inherit;transition:opacity .15s`;
+}
+
+// ── حذف رکورد ──
+async function deleteRecord(table,id,refreshFn){
+  const names={sales:"فاکتور فروش",purchases:"خرید مواد",production:"رکورد تولید",cash_ledger:"تراکنش صندوق",employee_payments:"پرداخت معاش"};
+  if(!confirm(`آیا مطمئنی؟\n${names[table]||"رکورد"} #${id} حذف شود؟`)) return;
+  const res=await fetch(`${SB_URL}/rest/v1/${table}?id=eq.${id}`,{
+    method:"DELETE",headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}
+  });
+  if(res.ok){showSaved();window[refreshFn]();}
+  else alert("خطا در حذف!");
+}
+
+// ── ویرایش رکورد — Modal عمومی ──
+let _editTable="",_editId=0,_editRefresh="";
+async function openEditRecord(table,id){
+  _editTable=table;_editId=id;
+  const tableNames={sales:"فاکتور فروش",purchases:"خرید مواد",production:"رکورد تولید",cash_ledger:"تراکنش صندوق",employee_payments:"پرداخت معاش"};
+  _editRefresh={sales:"renderSales",purchases:"renderBuy",production:"renderProd",cash_ledger:"renderCash",employee_payments:"renderEmp"}[table]||"";
+
+  // Fetch record
+  const rows=await sbGet(table,`?id=eq.${id}`);
+  if(!rows||!rows.length){alert("رکورد پیدا نشد!");return;}
+  const r=rows[0];
+
+  // Build form fields based on table
+  let fields="";
+  if(table==="sales"){
+    fields=`
+      <div class="row2">
+        <div class="fg"><label>تاریخ</label><input id="ef-date" value="${r.date||""}"/></div>
+        <div class="fg"><label>ولایت</label><input id="ef-province" value="${r.province||""}"/></div>
+      </div>
+      <div class="fg"><label>مشتری</label><input id="ef-cust_name" value="${r.cust_name||""}"/></div>
+      <div class="row2">
+        <div class="fg"><label>مدل</label>
+          <select id="ef-product">
+            <option ${r.product==="STD"?"selected":""}>STD</option>
+            <option ${r.product==="VIP"?"selected":""}>VIP</option>
+            <option ${r.product==="KID"?"selected":""}>KID</option>
+          </select>
+        </div>
+        <div class="fg"><label>درجن</label><input type="number" id="ef-dozen" value="${r.dozen||0}"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>قیمت فی درجن (؋)</label><input type="number" id="ef-price_per_doz" value="${r.price_per_doz||r.price_per_dozen||0}"/></div>
+        <div class="fg"><label>وصول شده (؋)</label><input type="number" id="ef-paid" value="${r.paid||0}"/></div>
+      </div>
+      <div class="fg"><label>یادداشت</label><input id="ef-note" value="${r.note||""}"/></div>`;
+  } else if(table==="purchases"){
+    fields=`
+      <div class="row2">
+        <div class="fg"><label>تاریخ</label><input id="ef-date" value="${r.date||""}"/></div>
+        <div class="fg"><label>تامین‌کننده</label><input id="ef-supplier_name" value="${r.supplier_name||""}"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>مقدار (کیلو)</label><input type="number" id="ef-kg" value="${r.kg||0}" step="0.01"/></div>
+        <div class="fg"><label>مبلغ ($)</label><input type="number" id="ef-amount_usd" value="${r.amount_usd||0}" step="0.01"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>پرداختی (؋)</label><input type="number" id="ef-paid_afn" value="${r.paid_afn||0}"/></div>
+        <div class="fg"><label>نرخ دالر</label><input type="number" id="ef-usd_rate" value="${r.usd_rate||S.usdRate}"/></div>
+      </div>
+      <div class="fg"><label>یادداشت</label><input id="ef-note" value="${r.note||""}"/></div>`;
+  } else if(table==="production"){
+    fields=`
+      <div class="row2">
+        <div class="fg"><label>تاریخ</label><input id="ef-date" value="${r.date||""}"/></div>
+        <div class="fg"><label>سرکاریگر</label><input id="ef-worker" value="${r.worker||""}"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>مدل</label>
+          <select id="ef-product">
+            <option ${r.product==="STD"?"selected":""}>STD</option>
+            <option ${r.product==="VIP"?"selected":""}>VIP</option>
+            <option ${r.product==="KID"?"selected":""}>KID</option>
+          </select>
+        </div>
+        <div class="fg"><label>درجن</label><input type="number" id="ef-dozen" value="${r.dozen||0}"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>اجرت کل (؋)</label><input type="number" id="ef-total_wage" value="${r.total_wage||0}"/></div>
+        <div class="fg"><label>پرداختی (؋)</label><input type="number" id="ef-paid_wage" value="${r.paid_wage||0}"/></div>
+      </div>`;
+  } else if(table==="cash_ledger"){
+    fields=`
+      <div class="row2">
+        <div class="fg"><label>تاریخ</label><input id="ef-date" value="${r.date||""}"/></div>
+        <div class="fg"><label>نوع</label>
+          <select id="ef-category">
+            <option value="in" ${r.category==="in"?"selected":""}>ورودی</option>
+            <option value="out" ${r.category==="out"?"selected":""}>خروجی</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>عنوان</label><input id="ef-type" value="${r.type||""}"/></div>
+      <div class="fg"><label>شرح</label><input id="ef-description" value="${r.description||""}"/></div>
+      <div class="row2">
+        <div class="fg"><label>مبلغ ورودی (؋)</label><input type="number" id="ef-amount_in" value="${r.amount_in||0}"/></div>
+        <div class="fg"><label>مبلغ خروجی (؋)</label><input type="number" id="ef-amount_out" value="${r.amount_out||0}"/></div>
+      </div>`;
+  } else if(table==="employee_payments"){
+    fields=`
+      <div class="row2">
+        <div class="fg"><label>تاریخ</label><input id="ef-date" value="${r.date||""}"/></div>
+        <div class="fg"><label>نوع</label>
+          <select id="ef-type">
+            <option ${r.type==="salary"?"selected":""} value="salary">معاش</option>
+            <option ${r.type==="advance"?"selected":""} value="advance">پیش‌پرداخت</option>
+            <option ${r.type==="bonus"?"selected":""} value="bonus">پاداش</option>
+            <option ${r.type==="deduction"?"selected":""} value="deduction">کسر</option>
+          </select>
+        </div>
+      </div>
+      <div class="fg"><label>مبلغ (؋)</label><input type="number" id="ef-amount_afn" value="${r.amount_afn||0}"/></div>
+      <div class="fg"><label>یادداشت</label><input id="ef-notes" value="${r.notes||""}"/></div>`;
+  }
+
+  // Show modal — از HTML موجود استفاده کن
+  document.getElementById("em-title").textContent=`✏️ ویرایش ${tableNames[table]||""} #${id}`;
+  document.getElementById("ef-fields").innerHTML=fields;
+  document.getElementById("ef-msg").innerHTML="";
+  openModal("modalEditRecord");
+}
+
+async function saveEditRecord(){
+  document.getElementById("ef-save-btn").disabled=true;
+  document.getElementById("ef-save-btn").textContent="در حال ذخیره...";
+
+  // Collect all input values
+  const body={};
+  document.getElementById("ef-fields").querySelectorAll("input,select").forEach(el=>{
+    const key=el.id.replace("ef-","");
+    body[key]=el.type==="number"?+(el.value)||0:el.value;
+  });
+
+  // Recalculate derived fields
+  if(_editTable==="sales"){
+    body.total=(body.dozen||0)*(body.price_per_doz||0);
+    body.remaining=body.total-(body.paid||0);
+    body.gross_profit=body.total-calcCOGS(body.product,body.dozen||0);
+    body.margin=body.total>0?body.gross_profit/body.total*100:0;
+  }
+  if(_editTable==="purchases"){
+    body.amount_afn=(body.amount_usd||0)*(body.usd_rate||S.usdRate);
+    body.remaining_usd=Math.max(0,(body.amount_usd||0)-(body.paid_afn||0)/(body.usd_rate||S.usdRate));
+    body.cost_per_kg=(body.kg||0)>0?body.amount_afn/body.kg:0;
+  }
+  if(_editTable==="production"){
+    body.remaining_wage=Math.max(0,(body.total_wage||0)-(body.paid_wage||0));
+  }
+
+  const res=await sbPatch(_editTable,body,`?id=eq.${_editId}`);
+  document.getElementById("ef-save-btn").disabled=false;
+  document.getElementById("ef-save-btn").textContent="ذخیره تغییرات ✓";
+
+  if(res!==null){
+    document.getElementById("ef-msg").innerHTML='<div class="ib ok">✅ ذخیره شد!</div>';
+    showSaved();
+    setTimeout(()=>{closeModal("modalEditRecord");window[_editRefresh]&&window[_editRefresh]();},800);
+  } else {
+    document.getElementById("ef-msg").innerHTML='<div class="ib err">❌ خطا در ذخیره!</div>';
+  }
+}
+
 
 // ── KEY LISTENER ──
 document.addEventListener("keydown",e=>{
