@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PCU ERP">
 <meta name="theme-color" content="#070d14">
-<title>PCU ERP v8 | فابریکه حیات‌زاده</title>
+<title>PCU ERP v9 | فابریکه حیات‌زاده</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -137,7 +137,7 @@ select option{background:var(--b3)}
     <div class="login-logo">
       <div class="login-icon">👟</div>
       <h1>فابریکه حیات‌زاده</h1>
-      <p>PCU ERP v8.0 | Supabase Cloud</p>
+      <p>PCU ERP v9.0 | Supabase Cloud</p>
     </div>
     <div id="loginErr" class="ib err" style="display:none"></div>
     <div id="loginLoading" class="ib info" style="display:none"><div class="spinner"></div>در حال اتصال به سرور...</div>
@@ -183,8 +183,8 @@ select option{background:var(--b3)}
   <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
   <div class="drawer" id="drawer">
     <div class="drawer-head">
-      <div class="drawer-logo">👟 فابریکه حیات‌زاده</div>
-      <div class="drawer-ver">PCU ERP v8.0 | ☁️ Supabase Cloud</div>
+      <div class="drawer-logo" id="drawerLogo">👟 فابریکه حیات‌زاده</div>
+      <div class="drawer-ver">PCU ERP v9.0 | ☁️ Supabase Cloud</div>
     </div>
     <div class="drawer-nav">
       <div class="nsec">اصلی</div>
@@ -197,12 +197,14 @@ select option{background:var(--b3)}
       <div class="nsec">حساب‌ها</div>
       <button class="ni" onclick="goPage('stock')" data-page="stock" data-roles="admin,staff"><span class="em">🏗️</span>انبار مواد</button>
       <button class="ni" onclick="goPage('cust')" data-page="cust" data-roles="admin,staff"><span class="em">👥</span>مشتریان</button>
+      <button class="ni" onclick="goPage('cheque')" data-page="cheque" data-roles="admin"><span class="em">🏦</span>چک و اقساط</button>
       <button class="ni" onclick="goPage('supp')" data-page="supp" data-roles="admin,staff"><span class="em">🏭</span>تامین‌کنندگان</button>
       <button class="ni" onclick="goPage('cash')" data-page="cash" data-roles="admin"><span class="em">💵</span>صندوق افغانی</button>
       <div class="nsec">منابع انسانی</div>
       <button class="ni" onclick="goPage('emp')" data-page="emp" data-roles="admin"><span class="em">👨‍💼</span>کارمندان و شاگردان</button>
-      <div class="nsec">مالی</div>
+      <div class="nsec">مالی و گزارش</div>
       <button class="ni" onclick="goPage('report')" data-page="report" data-roles="admin"><span class="em">📈</span>گزارشات & P&L</button>
+      <button class="ni" onclick="goPage('reports_more')" data-page="reports_more" data-roles="admin"><span class="em">📊</span>گزارش‌های تفصیلی</button>
       <button class="ni" onclick="goPage('tax')" data-page="tax" data-roles="admin"><span class="em">🧾</span>مالیات</button>
       <button class="ni" onclick="goPage('settings')" data-page="settings" data-roles="admin"><span class="em">⚙️</span>تنظیمات</button>
     </div>
@@ -234,7 +236,7 @@ select option{background:var(--b3)}
           <input class="search-bar" style="width:160px;margin:0" placeholder="جستجو..." oninput="filterSales(this.value)" id="sSearch"/>
         </div>
         <div class="tw"><table>
-          <thead><tr><th>#</th><th>تاریخ</th><th>ولایت</th><th>مشتری</th><th>مدل</th><th>درجن</th><th>مبلغ</th><th>وصول</th><th>باقی</th><th>سود</th></tr></thead>
+          <thead><tr><th>#</th><th>تاریخ</th><th>ولایت</th><th>مشتری</th><th>مدل</th><th>درجن</th><th>مبلغ</th><th>وصول</th><th>باقی</th><th>سود</th><th>🖨️</th></tr></thead>
           <tbody id="sales-tbody"><tr><td colspan="10" style="text-align:center;padding:20px;color:var(--t3)"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
         </table></div>
       </div>
@@ -405,6 +407,59 @@ select option{background:var(--b3)}
           <thead><tr><th>دوره</th><th>نوع</th><th>مبلغ مشمول</th><th>نرخ</th><th>مالیات</th><th>وضعیت</th></tr></thead>
           <tbody id="tax-tbody"><tr><td colspan="6" style="text-align:center;padding:20px;color:var(--t3)">هنوز سابقه‌ای ثبت نشده</td></tr></tbody>
         </table></div>
+      </div>
+    </div>
+
+    <!-- CHEQUE / چک و اقساط -->
+    <div id="page-cheque" class="page">
+      <div class="kg k3">
+        <div class="kc bl"><div class="kl">🏦 چک‌های دریافتی</div><div class="kv" id="chq-in-cnt">—</div><div class="ks" id="chq-in-amt">—</div></div>
+        <div class="kc rd"><div class="kl">💸 چک‌های پرداختی</div><div class="kv" id="chq-out-cnt">—</div><div class="ks" id="chq-out-amt">—</div></div>
+        <div class="kc og"><div class="kl">⏳ سررسید این هفته</div><div class="kv" id="chq-due">—</div></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+        <button class="btn bpri" onclick="openModal('modalAddCheque')">+ ثبت چک جدید</button>
+        <button class="btn bsec" onclick="filterCheque('all')" id="cf-all">همه</button>
+        <button class="btn bsec" onclick="filterCheque('receive')" id="cf-receive">دریافتی</button>
+        <button class="btn bsec" onclick="filterCheque('pay')" id="cf-pay">پرداختی</button>
+        <button class="btn bsec" onclick="filterCheque('pending')" id="cf-pending">⏳ در انتظار</button>
+        <button class="btn bsec" onclick="filterCheque('cleared')" id="cf-cleared">✅ وصول شده</button>
+        <button class="btn bsec" onclick="filterCheque('bounced')" id="cf-bounced">❌ برگشتی</button>
+      </div>
+      <div class="card">
+        <div class="ct">🏦 دفتر چک‌ها و اقساط</div>
+        <div class="tw"><table>
+          <thead><tr><th>#</th><th>تاریخ ثبت</th><th>سررسید</th><th>نوع</th><th>شخص</th><th>شرح</th><th>مبلغ (؋)</th><th>وضعیت</th><th>عملیات</th></tr></thead>
+          <tbody id="chq-tbody"><tr><td colspan="9" style="text-align:center;padding:20px;color:var(--t3)">هنوز چکی ثبت نشده</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- DETAILED REPORTS -->
+    <div id="page-reports_more" class="page">
+      <div class="kg k4" style="margin-bottom:16px">
+        <button class="btn bpri btn-full" onclick="runReport('sales_by_province')">🗺️ فروش به تفکیک ولایت</button>
+        <button class="btn bpri btn-full" onclick="runReport('sales_by_product')">👟 فروش به تفکیک مدل</button>
+        <button class="btn bpri btn-full" onclick="runReport('sales_by_customer')">👥 فروش به تفکیک مشتری</button>
+        <button class="btn bpri btn-full" onclick="runReport('monthly_sales')">📅 گزارش ماهانه فروش</button>
+      </div>
+      <div class="kg k4" style="margin-bottom:16px">
+        <button class="btn bsec btn-full" onclick="runReport('supplier_ledger')">🏭 لجر تامین‌کننده</button>
+        <button class="btn bsec btn-full" onclick="runReport('customer_ledger')">👥 لجر مشتری</button>
+        <button class="btn bsec btn-full" onclick="runReport('stock_value')">📦 ارزش موجودی انبار</button>
+        <button class="btn bsec btn-full" onclick="runReport('profit_margin')">💰 حاشیه سود هر مدل</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+        <div class="fg" style="margin:0"><label style="font-size:11px;color:var(--t2)">از تاریخ</label><input class="fg input" id="rpt-from" style="padding:7px 10px;background:var(--b3);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:inherit;font-size:12px;margin-top:3px" placeholder="۱۴۰۴/۰۱/۰۱"/></div>
+        <div class="fg" style="margin:0"><label style="font-size:11px;color:var(--t2)">تا تاریخ</label><input class="fg input" id="rpt-to" style="padding:7px 10px;background:var(--b3);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-family:inherit;font-size:12px;margin-top:3px" placeholder="۱۴۰۴/۱۲/۲۹"/></div>
+        <button class="btn bpri" style="margin-top:18px" onclick="exportReportExcel()">📥 Export Excel</button>
+        <button class="btn bsec" style="margin-top:18px" onclick="exportReportPDF()">🖨️ چاپ / PDF</button>
+      </div>
+      <div class="card" id="rpt-output">
+        <div style="text-align:center;padding:30px;color:var(--t3)">
+          <div style="font-size:32px;margin-bottom:8px">📊</div>
+          <div>یکی از گزارش‌های بالا را انتخاب کن</div>
+        </div>
       </div>
     </div>
 
@@ -815,6 +870,41 @@ select option{background:var(--b3)}
     <div class="modal-foot">
       <button class="btn bsec" onclick="closeModal('modalAddTax')">انصراف</button>
       <button class="btn bpri" onclick="saveTax()" id="tx-btn">ثبت مالیات ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHEQUE MODAL ══ -->
+<div class="modal-overlay" id="modalAddCheque">
+  <div class="modal">
+    <div class="modal-head"><h3>🏦 ثبت چک جدید</h3><button class="close-btn" onclick="closeModal('modalAddCheque')">✕</button></div>
+    <div class="modal-body">
+      <div id="chq-msg"></div>
+      <div class="row2">
+        <div class="fg"><label>نوع چک</label>
+          <select id="chq-type">
+            <option value="receive">دریافتی از مشتری</option>
+            <option value="pay">پرداختی به تامین‌کننده</option>
+          </select>
+        </div>
+        <div class="fg"><label>شخص (مشتری/تامین‌کننده)</label>
+          <input id="chq-person" placeholder="نام شخص..."/>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>تاریخ ثبت</label><input id="chq-date"/></div>
+        <div class="fg"><label>تاریخ سررسید</label><input id="chq-due-date" placeholder="۱۴۰۴/۰۱/۳۰"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>شماره چک</label><input id="chq-no" placeholder="شماره چک..."/></div>
+        <div class="fg"><label>نام بانک</label><input id="chq-bank" placeholder="بانک ملی / کابل بانک..."/></div>
+      </div>
+      <div class="fg"><label>مبلغ (؋)</label><input type="number" id="chq-amt" min="0"/></div>
+      <div class="fg"><label>شرح</label><input id="chq-desc" placeholder="بابت چه..."/></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bsec" onclick="closeModal('modalAddCheque')">انصراف</button>
+      <button class="btn bpri" onclick="saveCheque()" id="chq-btn">ثبت چک ✓</button>
     </div>
   </div>
 </div>
@@ -1293,7 +1383,7 @@ const PAGE_TITLES={dash:"داشبورد",sales:"فروش",orders:"فرمایشا
   report:"گزارشات & P&L",settings:"تنظیمات"};
 
 function goPage(id){
-  const adminOnlyPages=["cash","report","settings","emp","tax"];
+  const adminOnlyPages=["cash","report","reports_more","settings","emp","tax","cheque"];
   if(adminOnlyPages.includes(id)&&currentUser?.role!=="admin"){goPage("dash");return;}
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const pg=document.getElementById("page-"+id);
@@ -1305,7 +1395,8 @@ function goPage(id){
   document.querySelector(`.tab-item[data-tab="${id}"]`)?.classList.add("on");
   const allTitles={dash:"داشبورد",sales:"فروش",orders:"فرمایشات",buy:"خرید مواد",prod:"تولید",
     stock:"انبار مواد",cust:"مشتریان",supp:"تامین‌کنندگان",cash:"صندوق افغانی",
-    report:"گزارشات & P&L",emp:"کارمندان و شاگردان",tax:"مالیات",settings:"تنظیمات"};
+    report:"گزارشات & P&L",reports_more:"گزارش‌های تفصیلی",
+    emp:"کارمندان و شاگردان",tax:"مالیات",cheque:"چک و اقساط",settings:"تنظیمات"};
   document.getElementById("pageTitle").textContent=allTitles[id]||id;
   toggleDrawer(false);
   renderPage(id);
@@ -1321,8 +1412,10 @@ function renderPage(id){
   else if(id==="supp") renderSupp();
   else if(id==="cash") renderCash();
   else if(id==="report") renderReport();
+  else if(id==="reports_more") renderReportsMore();
   else if(id==="emp") renderEmp();
   else if(id==="tax") renderTax();
+  else if(id==="cheque") renderCheque();
   else if(id==="settings") renderSettings();
 }
 
@@ -1464,7 +1557,7 @@ function filterSales(q){
 }
 function renderSalesRows(list){
   const tb=document.getElementById("sales-tbody");
-  if(!list.length){tb.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--t3);padding:18px">هنوز فروشی ثبت نشده</td></tr>';return;}
+  if(!list.length){tb.innerHTML='<tr><td colspan="11" style="text-align:center;color:var(--t3);padding:18px">هنوز فروشی ثبت نشده</td></tr>';return;}
   tb.innerHTML=list.map((s,i)=>`<tr>
     <td style="color:var(--t3)">${i+1}</td><td>${s.date}</td>
     <td><span class="bb bbl">${s.province}</span></td>
@@ -1475,6 +1568,7 @@ function renderSalesRows(list){
     <td class="tdr" style="color:var(--gr)">${afn(s.paid)}</td>
     <td>${+s.remaining>0?`<span class="bb br2">${afn(s.remaining)}</span>`:'<span class="bb bg2">تسویه</span>'}</td>
     <td class="tdr" style="color:var(--gr)">${afn(s.gross_profit)}</td>
+    <td><button onclick="printInvoice(${s.id})" title="چاپ فاکتور" style="background:var(--g3);border:1px solid rgba(232,160,32,.3);color:var(--gd);border-radius:5px;padding:3px 8px;cursor:pointer;font-size:11px;font-family:inherit">🖨️</button></td>
   </tr>`).join("");
 }
 
@@ -1954,7 +2048,8 @@ function renderCustTable(salesMap){
       <td class="tdr" style="color:var(--bl)">${afn(sm.tot)}</td>
       <td class="tdr" style="color:var(--gr)">${afn(sm.paid)}</td>
       <td>${tot>0?`<span class="bb br2">${afn(tot)}</span>`:'<span class="bb bg2">تسویه</span>'}</td>
-      <td>${isAdmin?`<button onclick="openEditCust('${c.id}')" style="background:var(--g3);border:1px solid rgba(232,160,32,.3);color:var(--gd);border-radius:6px;padding:3px 9px;cursor:pointer;font-size:10px;font-family:inherit">✏️</button>`:"—"}</td>
+      <td style="display:flex;gap:4px">${isAdmin?`<button onclick="openEditCust('${c.id}')" style="background:var(--g3);border:1px solid rgba(232,160,32,.3);color:var(--gd);border-radius:6px;padding:3px 9px;cursor:pointer;font-size:10px;font-family:inherit">✏️</button>
+        <button onclick="openCustCRM('${c.id}','${c.n.replace(/'/g,'')}')" style="background:var(--bl2);border:1px solid rgba(59,158,255,.3);color:var(--bl);border-radius:6px;padding:3px 9px;cursor:pointer;font-size:10px;font-family:inherit">📝</button>`:"—"}</td>
     </tr>`;
   }).join("");
 }
@@ -2273,7 +2368,7 @@ async function saveCompanyInfo(){
   await Promise.all(tasks);
   // نمایش در UI
   document.querySelector(".drawer-logo").textContent="👟 "+fn;
-  document.querySelector(".drawer-ver").textContent="PCU ERP v8.0 | ☁️ Supabase Cloud";
+  document.querySelector(".drawer-ver").textContent="PCU ERP v9.0 | ☁️ Supabase Cloud";
   document.getElementById("company-msg").innerHTML='<div class="ib ok">✅ اطلاعات شرکت ذخیره شد!</div>';
   showSaved();
 }
@@ -2328,6 +2423,451 @@ async function initApp(){
   populateDropdowns();
   setSyncOn();
   goPage("dash");
+}
+
+// ══ v9 — قابلیت‌های جدید ══
+
+// ── چک و اقساط ──
+let _chequeFilter="all";
+async function renderCheque(){
+  const rows=await sbGet("cheques","?order=due_date.asc")||[];
+  const inRows=rows.filter(r=>r.type==="receive");
+  const outRows=rows.filter(r=>r.type==="pay");
+  const inAmt=inRows.reduce((a,r)=>a+(+r.amount||0),0);
+  const outAmt=outRows.reduce((a,r)=>a+(+r.amount||0),0);
+  const today7=new Date();today7.setDate(today7.getDate()+7);
+  const dueRows=rows.filter(r=>r.status==="pending"&&r.due_date);
+  document.getElementById("chq-in-cnt").textContent=inRows.length+" چک";
+  document.getElementById("chq-in-amt").textContent=afn(inAmt);
+  document.getElementById("chq-out-cnt").textContent=outRows.length+" چک";
+  document.getElementById("chq-out-amt").textContent=afn(outAmt);
+  document.getElementById("chq-due").textContent=dueRows.length+" چک";
+  let list=rows;
+  if(_chequeFilter!=="all") list=rows.filter(r=>_chequeFilter==="receive"||_chequeFilter==="pay"?r.type===_chequeFilter:r.status===_chequeFilter);
+  document.querySelectorAll("[id^='cf-']").forEach(b=>b.className="btn bsec");
+  const btn=document.getElementById("cf-"+_chequeFilter);
+  if(btn) btn.className="btn bpri";
+  const STATUS={pending:'<span class="bb bog">⏳ در انتظار</span>',cleared:'<span class="bb bg2">✅ وصول شده</span>',bounced:'<span class="bb br2">❌ برگشتی</span>'};
+  document.getElementById("chq-tbody").innerHTML=list.length?list.map((r,i)=>`<tr>
+    <td style="color:var(--t3)">${i+1}</td>
+    <td>${r.date||"—"}</td>
+    <td style="color:${r.status==="pending"?"var(--og)":"var(--t2)"};font-weight:${r.status==="pending"?700:400}">${r.due_date||"—"}</td>
+    <td><span class="bb ${r.type==="receive"?"bg2":"br2"}">${r.type==="receive"?"دریافتی":"پرداختی"}</span></td>
+    <td style="font-weight:700">${r.person||"—"}</td>
+    <td style="color:var(--t2);font-size:11px">${r.description||"—"}</td>
+    <td class="tdr" style="font-weight:800;color:var(--gd)">${afn(r.amount)}</td>
+    <td>${STATUS[r.status]||r.status}</td>
+    <td style="display:flex;gap:4px">
+      ${r.status==="pending"?`<button onclick="updateCheque(${r.id},'cleared')" style="background:var(--gr2);border:1px solid rgba(34,197,94,.3);color:var(--gr);border-radius:5px;padding:3px 7px;cursor:pointer;font-size:10px;font-family:inherit">✅ وصول</button>
+      <button onclick="updateCheque(${r.id},'bounced')" style="background:var(--r2);border:1px solid rgba(240,82,82,.3);color:var(--rd);border-radius:5px;padding:3px 7px;cursor:pointer;font-size:10px;font-family:inherit">❌ برگشت</button>`:"—"}
+    </td>
+  </tr>`).join(""):'<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--t3)">هنوز چکی ثبت نشده</td></tr>';
+}
+function filterCheque(f){_chequeFilter=f;renderCheque();}
+async function saveCheque(){
+  const amt=+(document.getElementById("chq-amt").value)||0;
+  if(!amt){document.getElementById("chq-msg").innerHTML='<div class="ib err">مبلغ الزامی</div>';return;}
+  document.getElementById("chq-btn").disabled=true;document.getElementById("chq-btn").textContent="در حال ذخیره...";
+  const res=await sbPost("cheques",{
+    type:document.getElementById("chq-type").value,
+    person:document.getElementById("chq-person").value,
+    date:document.getElementById("chq-date").value||today(),
+    due_date:document.getElementById("chq-due-date").value,
+    cheque_no:document.getElementById("chq-no").value,
+    bank:document.getElementById("chq-bank").value,
+    amount:amt,
+    description:document.getElementById("chq-desc").value,
+    status:"pending"
+  });
+  document.getElementById("chq-btn").disabled=false;document.getElementById("chq-btn").textContent="ثبت چک ✓";
+  if(res){document.getElementById("chq-msg").innerHTML='<div class="ib ok">✅ چک ثبت شد!</div>';showSaved();setTimeout(()=>{closeModal("modalAddCheque");renderCheque();},1000);}
+  else document.getElementById("chq-msg").innerHTML='<div class="ib err">خطا — دوباره امتحان کن</div>';
+}
+async function updateCheque(id,status){
+  await sbPatch("cheques",{status,updated_at:new Date().toISOString()},`?id=eq.${id}`);
+  showSaved();renderCheque();
+}
+
+// ── گزارش‌های تفصیلی ──
+let _lastRptData=[];
+let _lastRptTitle="";
+async function renderReportsMore(){}
+
+async function runReport(type){
+  const out=document.getElementById("rpt-output");
+  const from=document.getElementById("rpt-from").value||"";
+  const to=document.getElementById("rpt-to").value||"";
+  out.innerHTML='<div class="loading"><div class="spinner"></div>در حال بارگذاری...</div>';
+  _lastRptTitle=type;
+
+  if(type==="sales_by_province"){
+    _lastRptTitle="فروش به تفکیک ولایت";
+    const rows=await sbGet("sales","?select=province,total,dozen,remaining")||[];
+    const pm={};
+    rows.forEach(r=>{
+      if(!pm[r.province]) pm[r.province]={prov:r.province,total:0,doz:0,recv:0,rem:0};
+      pm[r.province].total+=+r.total||0;
+      pm[r.province].doz+=+r.dozen||0;
+      pm[r.province].rem+=+r.remaining||0;
+    });
+    const arr=Object.values(pm).sort((a,b)=>b.total-a.total);
+    _lastRptData=arr;
+    const total=arr.reduce((a,r)=>a+r.total,0);
+    out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="ct" style="margin:0">🗺️ فروش به تفکیک ولایت</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn bsec" onclick="exportReportExcel()" style="font-size:11px">📥 Excel</button>
+        <button class="btn bsec" onclick="printReport()" style="font-size:11px">🖨️ چاپ</button>
+      </div>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>ولایت</th><th>درجن</th><th>کل فروش</th><th>باقی طلب</th><th>سهم %</th></tr></thead>
+      <tbody>${arr.map((r,i)=>`<tr>
+        <td style="color:var(--t3)">${i+1}</td>
+        <td style="font-weight:700">${r.prov}</td>
+        <td style="color:var(--gd)">${r.doz}</td>
+        <td class="tdr" style="font-weight:700">${afn(r.total)}</td>
+        <td class="tdr" style="color:${r.rem>0?"var(--rd)":"var(--gr)"}">${afn(r.rem)}</td>
+        <td style="color:var(--bl)">${total>0?Math.round(r.total/total*100):0}٪</td>
+      </tr>`).join("")}</tbody>
+      <tfoot><tr style="background:var(--b3)">
+        <td colspan="2" style="font-weight:800">جمع کل</td>
+        <td style="font-weight:800;color:var(--gd)">${arr.reduce((a,r)=>a+r.doz,0)}</td>
+        <td class="tdr" style="font-weight:800;color:var(--gd)">${afn(total)}</td>
+        <td class="tdr" style="font-weight:800;color:var(--rd)">${afn(arr.reduce((a,r)=>a+r.rem,0))}</td>
+        <td>100٪</td>
+      </tr></tfoot>
+    </table></div>`;
+  }
+
+  else if(type==="sales_by_product"){
+    _lastRptTitle="فروش به تفکیک مدل";
+    const rows=await sbGet("sales","?select=product,total,dozen,cogs,gross_profit")||[];
+    const pm={};
+    rows.forEach(r=>{
+      if(!pm[r.product]) pm[r.product]={prod:r.product,total:0,doz:0,cogs:0,gp:0};
+      pm[r.product].total+=+r.total||0;
+      pm[r.product].doz+=+r.dozen||0;
+      pm[r.product].cogs+=+r.cogs||0;
+      pm[r.product].gp+=+r.gross_profit||0;
+    });
+    const arr=Object.values(pm);
+    _lastRptData=arr;
+    out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="ct" style="margin:0">👟 فروش به تفکیک مدل</div>
+      <button class="btn bsec" onclick="printReport()" style="font-size:11px">🖨️ چاپ</button>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>مدل</th><th>درجن فروش</th><th>کل فروش</th><th>COGS</th><th>سود ناخالص</th><th>حاشیه سود</th></tr></thead>
+      <tbody>${arr.map(r=>`<tr>
+        <td><span class="bb bpp">${r.prod}</span></td>
+        <td style="color:var(--gd);font-weight:700">${r.doz}</td>
+        <td class="tdr" style="font-weight:700">${afn(r.total)}</td>
+        <td class="tdr" style="color:var(--rd)">${afn(r.cogs)}</td>
+        <td class="tdr" style="color:var(--gr);font-weight:700">${afn(r.gp)}</td>
+        <td style="color:var(--bl)">${r.total>0?Math.round(r.gp/r.total*100):0}٪</td>
+      </tr>`).join("")}</tbody>
+    </table></div>`;
+  }
+
+  else if(type==="sales_by_customer"){
+    _lastRptTitle="فروش به تفکیک مشتری";
+    const rows=await sbGet("sales","?select=cust_name,province,total,dozen,remaining&order=total.desc&limit=50")||[];
+    _lastRptData=rows;
+    out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="ct" style="margin:0">👥 برترین مشتریان (۵۰ نفر اول)</div>
+      <button class="btn bsec" onclick="printReport()" style="font-size:11px">🖨️ چاپ</button>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>مشتری</th><th>ولایت</th><th>درجن</th><th>کل فروش</th><th>باقی طلب</th></tr></thead>
+      <tbody>${rows.map((r,i)=>`<tr>
+        <td style="color:var(--t3)">${i+1}</td>
+        <td style="font-weight:700">${r.cust_name}</td>
+        <td><span class="bb bbl">${r.province}</span></td>
+        <td style="color:var(--gd)">${r.dozen}</td>
+        <td class="tdr" style="font-weight:700">${afn(r.total)}</td>
+        <td class="tdr" style="color:${+r.remaining>0?"var(--rd)":"var(--gr)"}">${afn(r.remaining)}</td>
+      </tr>`).join("")}</tbody>
+    </table></div>`;
+  }
+
+  else if(type==="monthly_sales"){
+    _lastRptTitle="گزارش ماهانه فروش";
+    const rows=await sbGet("sales","?select=date,total,dozen,gross_profit")||[];
+    const mm={};
+    rows.forEach(r=>{
+      const m=(r.date||"").slice(0,7);
+      if(!m)return;
+      if(!mm[m]) mm[m]={month:m,total:0,doz:0,gp:0,cnt:0};
+      mm[m].total+=+r.total||0;mm[m].doz+=+r.dozen||0;mm[m].gp+=+r.gross_profit||0;mm[m].cnt++;
+    });
+    const arr=Object.values(mm).sort((a,b)=>a.month>b.month?-1:1);
+    _lastRptData=arr;
+    out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="ct" style="margin:0">📅 گزارش ماهانه فروش</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn bsec" onclick="exportReportExcel()" style="font-size:11px">📥 Excel</button>
+        <button class="btn bsec" onclick="printReport()" style="font-size:11px">🖨️ چاپ</button>
+      </div>
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>ماه</th><th>تعداد فاکتور</th><th>درجن</th><th>کل فروش</th><th>سود ناخالص</th></tr></thead>
+      <tbody>${arr.map(r=>`<tr>
+        <td style="font-weight:700;color:var(--gd)">${r.month}</td>
+        <td style="color:var(--bl)">${r.cnt}</td>
+        <td style="color:var(--t2)">${r.doz}</td>
+        <td class="tdr" style="font-weight:700">${afn(r.total)}</td>
+        <td class="tdr" style="color:var(--gr);font-weight:700">${afn(r.gp)}</td>
+      </tr>`).join("")}</tbody>
+    </table></div>`;
+  }
+
+  else if(type==="stock_value"){
+    _lastRptTitle="ارزش موجودی انبار";
+    await refreshStockMap();
+    const arr=Object.entries(S.stockMap).map(([m,v])=>({mat:m,kg:v.kg,avg:v.avgCost,val:v.kg*v.avgCost})).sort((a,b)=>b.val-a.val);
+    _lastRptData=arr;
+    const total=arr.reduce((a,r)=>a+r.val,0);
+    out.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="ct" style="margin:0">📦 ارزش موجودی انبار (Moving Avg)</div>
+      <button class="btn bsec" onclick="printReport()" style="font-size:11px">🖨️ چاپ</button>
+    </div>
+    <div class="ib info" style="margin-bottom:10px">جمع ارزش موجودی: <strong style="color:var(--gd)">${afn(total)}</strong></div>
+    <div class="tw"><table>
+      <thead><tr><th>#</th><th>ماده خام</th><th>موجودی (کیلو)</th><th>Avg Cost (؋/کیلو)</th><th>ارزش کل</th><th>وضعیت</th></tr></thead>
+      <tbody>${arr.map((r,i)=>`<tr>
+        <td style="color:var(--t3)">${i+1}</td>
+        <td style="font-weight:700">${r.mat}</td>
+        <td style="color:${r.kg<=0?"var(--rd)":r.kg<5?"var(--og)":"var(--gr)"};font-weight:700">${r.kg.toFixed(2)}</td>
+        <td class="tdr" style="color:var(--tl)">${afn(r.avg)}</td>
+        <td class="tdr" style="font-weight:700">${afn(r.val)}</td>
+        <td>${r.kg<=0?'<span class="bb br2">🔴 ندارد</span>':r.kg<5?'<span class="bb bog">🟡 کم</span>':'<span class="bb bg2">🟢 کافی</span>'}</td>
+      </tr>`).join("")}</tbody>
+    </table></div>`;
+  }
+
+  else if(type==="profit_margin"){
+    _lastRptTitle="حاشیه سود هر مدل";
+    const rows=await sbGet("sales","?select=product,total,cogs,gross_profit,dozen")||[];
+    const pm={STD:{prod:"PCU استاندارد",total:0,cogs:0,gp:0,doz:0},VIP:{prod:"PCU ویژه",total:0,cogs:0,gp:0,doz:0},KID:{prod:"PCU کودکانه",total:0,cogs:0,gp:0,doz:0}};
+    rows.forEach(r=>{if(pm[r.product]){pm[r.product].total+=+r.total||0;pm[r.product].cogs+=+r.cogs||0;pm[r.product].gp+=+r.gross_profit||0;pm[r.product].doz+=+r.dozen||0;}});
+    _lastRptData=Object.values(pm);
+    out.innerHTML=`<div class="ct" style="margin-bottom:10px">💰 حاشیه سود هر مدل</div>
+    <div class="tw"><table>
+      <thead><tr><th>مدل</th><th>درجن فروش</th><th>فروش فی درجن (Avg)</th><th>COGS فی درجن</th><th>سود فی درجن</th><th>حاشیه سود</th></tr></thead>
+      <tbody>${Object.values(pm).map(r=>{
+        const fpd=r.doz>0?r.total/r.doz:0;
+        const cpd=r.doz>0?r.cogs/r.doz:0;
+        const gpd=fpd-cpd;
+        return`<tr>
+          <td><span class="bb bpp">${r.prod}</span></td>
+          <td style="color:var(--gd)">${r.doz}</td>
+          <td class="tdr">${afn(fpd)}</td>
+          <td class="tdr" style="color:var(--rd)">${afn(cpd)}</td>
+          <td class="tdr" style="color:var(--gr);font-weight:800">${afn(gpd)}</td>
+          <td style="color:var(--bl);font-weight:700">${fpd>0?Math.round(gpd/fpd*100):0}٪</td>
+        </tr>`;
+      }).join("")}</tbody>
+    </table></div>`;
+  }
+
+  else if(type==="customer_ledger"){
+    _lastRptTitle="لجر مشتریان";
+    const rows=await sbGet("sales","?select=date,cust_name,province,total,paid,remaining,product,dozen&order=cust_name.asc")||[];
+    _lastRptData=rows;
+    out.innerHTML=`<div class="ct" style="margin-bottom:10px">👥 لجر کامل مشتریان</div>
+    <div class="tw"><table>
+      <thead><tr><th>تاریخ</th><th>مشتری</th><th>ولایت</th><th>مدل</th><th>درجن</th><th>مبلغ</th><th>وصول</th><th>باقی</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr>
+        <td>${r.date||"—"}</td>
+        <td style="font-weight:700">${r.cust_name}</td>
+        <td><span class="bb bbl">${r.province}</span></td>
+        <td><span class="bb bpp">${r.product}</span></td>
+        <td style="color:var(--gd)">${r.dozen}</td>
+        <td class="tdr" style="font-weight:700">${afn(r.total)}</td>
+        <td class="tdr" style="color:var(--gr)">${afn(r.paid)}</td>
+        <td class="tdr" style="color:${+r.remaining>0?"var(--rd)":"var(--gr)"}">${afn(r.remaining)}</td>
+      </tr>`).join("")}</tbody>
+    </table></div>`;
+  }
+
+  else if(type==="supplier_ledger"){
+    _lastRptTitle="لجر تامین‌کنندگان";
+    const rows=await sbGet("purchases","?select=date,supplier_name,material,kg,amount_usd,amount_afn,paid_afn,remaining_usd&order=supplier_name.asc")||[];
+    _lastRptData=rows;
+    out.innerHTML=`<div class="ct" style="margin-bottom:10px">🏭 لجر کامل تامین‌کنندگان</div>
+    <div class="tw"><table>
+      <thead><tr><th>تاریخ</th><th>تامین‌کننده</th><th>ماده</th><th>کیلو</th><th>مبلغ ($)</th><th>مبلغ (؋)</th><th>پرداختی</th><th>باقی ($)</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr>
+        <td>${r.date||"—"}</td>
+        <td style="font-weight:700">${r.supplier_name}</td>
+        <td><span class="bb btl">${r.material}</span></td>
+        <td style="color:var(--gd)">${r.kg}</td>
+        <td class="tdr" style="color:var(--bl)">${usd(r.amount_usd)}</td>
+        <td class="tdr">${afn(r.amount_afn)}</td>
+        <td class="tdr" style="color:var(--gr)">${afn(r.paid_afn)}</td>
+        <td class="tdr" style="color:${+r.remaining_usd>0.01?"var(--rd)":"var(--gr)"}">${usd(r.remaining_usd)}</td>
+      </tr>`).join("")}</tbody>
+    </table></div>`;
+  }
+}
+
+// ── Export Excel ──
+function exportReportExcel(){
+  if(!_lastRptData.length){alert("اول یک گزارش را اجرا کن");return;}
+  const rows=_lastRptData;
+  let csv="\uFEFF"; // BOM for UTF-8
+  const keys=Object.keys(rows[0]);
+  csv+=keys.join(",")+"\n";
+  rows.forEach(r=>{
+    csv+=keys.map(k=>{
+      const v=String(r[k]||"").replace(/,/g,"،");
+      return `"${v}"`;
+    }).join(",")+"\n";
+  });
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`PCU_${_lastRptTitle||"report"}_${today()}.csv`;
+  a.click();
+  showSaved();
+}
+
+// ── چاپ / Print ──
+function printReport(){
+  const content=document.getElementById("rpt-output").innerHTML;
+  const w=window.open("","_blank");
+  w.document.write(`<!DOCTYPE html><html dir="rtl"><head>
+    <meta charset="UTF-8">
+    <title>گزارش PCU ERP | فابریکه حیات‌زاده</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Vazirmatn',sans-serif;background:#fff;color:#000;padding:20px;font-size:12px}
+      h1{font-size:16px;margin-bottom:5px}
+      .header{border-bottom:2px solid #000;margin-bottom:15px;padding-bottom:10px;display:flex;justify-content:space-between}
+      table{width:100%;border-collapse:collapse;margin-top:10px;font-size:11px}
+      th{background:#f0f0f0;border:1px solid #ccc;padding:6px 8px;text-align:right;font-weight:700}
+      td{border:1px solid #ddd;padding:5px 8px;text-align:right}
+      tr:nth-child(even) td{background:#fafafa}
+      .bb{border:1px solid #999;border-radius:10px;padding:1px 6px;font-size:10px}
+      tfoot td{background:#e8e8e8;font-weight:800}
+      @media print{body{padding:10px}}
+    </style></head><body>
+    <div class="header">
+      <div><h1>کمپنی نورآغامنصور | فابریکه حیات‌زاده</h1><div>PCU ERP v9 | گزارش: ${_lastRptTitle}</div></div>
+      <div style="text-align:left"><div>تاریخ چاپ: ${today()}</div><div>کابل، افغانستان 🇦🇫</div></div>
+    </div>
+    ${content}
+    <div style="margin-top:20px;font-size:10px;color:#666;border-top:1px solid #ccc;padding-top:8px">
+      این گزارش توسط سیستم PCU ERP فابریکه حیات‌زاده تولید شده است
+    </div>
+    </body></html>`);
+  w.document.close();
+  w.focus();
+  setTimeout(()=>w.print(),800);
+}
+
+// ── Print فاکتور فروش ──
+function printInvoice(saleId){
+  // Find from rendered data or fetch fresh
+  sbGet("sales",`?id=eq.${saleId}`).then(rows=>{
+    if(!rows||!rows.length) return;
+    const s=rows[0];
+    const w=window.open("","_blank");
+    w.document.write(`<!DOCTYPE html><html dir="rtl"><head>
+      <meta charset="UTF-8">
+      <title>فاکتور فروش #${s.bill||s.id}</title>
+      <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
+      <style>
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Vazirmatn',sans-serif;background:#fff;color:#000;padding:30px;font-size:13px}
+        .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;border-bottom:3px solid #c8922a;padding-bottom:15px}
+        .logo{font-size:20px;font-weight:900;color:#c8922a}
+        .logo-sub{font-size:11px;color:#666;margin-top:3px}
+        .invoice-no{text-align:left;font-size:14px;font-weight:700}
+        .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;background:#f9f9f9;padding:12px;border-radius:8px}
+        .info-item label{font-size:10px;color:#888;display:block}
+        .info-item span{font-size:13px;font-weight:700}
+        table{width:100%;border-collapse:collapse;margin-bottom:20px}
+        th{background:#c8922a;color:#fff;padding:8px 10px;text-align:right;font-size:12px}
+        td{padding:8px 10px;border-bottom:1px solid #eee;font-size:12px}
+        .total-section{text-align:left;margin-bottom:20px}
+        .total-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px}
+        .total-final{font-size:16px;font-weight:900;color:#c8922a;border-top:2px solid #c8922a;padding-top:8px}
+        .footer{font-size:10px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:10px;margin-top:20px}
+        @media print{body{padding:15px}}
+      </style></head><body>
+      <div class="header">
+        <div><div class="logo">👟 فابریکه حیات‌زاده</div><div class="logo-sub">کمپنی نورآغامنصور | کابل، افغانستان</div><div class="logo-sub">📞 078 550 3450</div></div>
+        <div class="invoice-no"><div style="font-size:11px;color:#888">شماره فاکتور</div><div style="font-size:18px;font-weight:900;color:#c8922a">#${s.bill||s.id}</div><div style="font-size:11px;color:#888;margin-top:4px">${s.date}</div></div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><label>مشتری</label><span>${s.cust_name}</span></div>
+        <div class="info-item"><label>ولایت</label><span>${s.province}</span></div>
+        <div class="info-item"><label>تاریخ فروش</label><span>${s.date}</span></div>
+        <div class="info-item"><label>وضعیت</label><span style="color:${+s.remaining>0?"#e53e3e":"#38a169"}">${+s.remaining>0?"باقی طلب: "+Math.round(s.remaining).toLocaleString()+" ؋":"تسویه کامل ✅"}</span></div>
+      </div>
+      <table>
+        <thead><tr><th>#</th><th>محصول</th><th>تعداد (درجن)</th><th>قیمت فی درجن (؋)</th><th>مجموع (؋)</th></tr></thead>
+        <tbody>
+          <tr><td>۱</td><td>${s.product==="STD"?"PCU استاندارد ۳۶-۴۲":s.product==="VIP"?"PCU ویژه ۴۳-۴۵":"PCU کودکانه ۲۴-۳۵"}</td>
+          <td style="text-align:center;font-weight:700">${s.dozen}</td>
+          <td style="text-align:left">${Math.round(s.price_per_doz||s.total/s.dozen).toLocaleString()}</td>
+          <td style="text-align:left;font-weight:800">${Math.round(s.total).toLocaleString()}</td></tr>
+        </tbody>
+      </table>
+      <div class="total-section">
+        <div class="total-row"><span>مجموع کل:</span><span style="font-weight:700">${Math.round(s.total).toLocaleString()} ؋</span></div>
+        <div class="total-row"><span>پول دریافتی:</span><span style="color:#38a169;font-weight:700">${Math.round(s.paid||0).toLocaleString()} ؋</span></div>
+        <div class="total-row total-final"><span>باقی طلب:</span><span style="color:${+s.remaining>0?"#e53e3e":"#38a169"}">${Math.round(s.remaining||0).toLocaleString()} ؋</span></div>
+      </div>
+      <div class="footer">
+        تشکر از اعتماد شما | فابریکه حیات‌زاده | کمپنی نورآغامنصور | کابل، افغانستان 🇦🇫
+      </div>
+      </body></html>`);
+    w.document.close();
+    w.focus();
+    setTimeout(()=>w.print(),800);
+  });
+}
+
+// ── CRM — یادداشت مشتری ──
+async function openCustCRM(custId,custName){
+  const notes=await sbGet("customer_notes",`?cust_id=eq.${custId}&order=id.desc`)||[];
+  const modal=document.createElement("div");
+  modal.className="modal-overlay open";
+  modal.id="modalCRM_tmp";
+  modal.innerHTML=`<div class="modal">
+    <div class="modal-head"><h3>📝 یادداشت‌های ${custName}</h3><button class="close-btn" onclick="document.getElementById('modalCRM_tmp').remove()">✕</button></div>
+    <div class="modal-body">
+      <div style="margin-bottom:10px">
+        ${notes.length?notes.map(n=>`<div style="background:var(--b3);border-radius:8px;padding:9px 11px;margin-bottom:7px">
+          <div style="font-size:10px;color:var(--t3);margin-bottom:4px">${n.date} — ${n.type}</div>
+          <div style="font-size:12px">${n.note}</div>
+        </div>`).join(""):'<div style="color:var(--t3);font-size:12px;text-align:center;padding:12px">هنوز یادداشتی ندارد</div>'}
+      </div>
+      <div class="dv"></div>
+      <div class="fg"><label>یادداشت جدید</label><input id="crm-note-inp" placeholder="مثلاً: زنگ زد، فردا می‌آید..."/></div>
+      <div class="fg"><label>نوع</label>
+        <select id="crm-note-type">
+          <option>تماس تلفنی</option><option>ملاقات</option><option>پرداخت</option><option>شکایت</option><option>سایر</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bsec" onclick="document.getElementById('modalCRM_tmp').remove()">بستن</button>
+      <button class="btn bpri" onclick="saveCustNote('${custId}')">ذخیره یادداشت ✓</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
+async function saveCustNote(custId){
+  const note=document.getElementById("crm-note-inp")?.value?.trim();
+  if(!note) return;
+  await sbPost("customer_notes",{cust_id:custId,note,type:document.getElementById("crm-note-type")?.value,date:today()});
+  document.getElementById("modalCRM_tmp")?.remove();
+  showSaved();
 }
 
 // ── KEY LISTENER ──
