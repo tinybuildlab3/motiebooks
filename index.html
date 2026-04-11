@@ -762,6 +762,7 @@ select option{background:#1a1820}
       <button class="ni" onclick="goPage('cash')" data-page="cash" data-roles="admin"><span class="em">💵</span>صندوق افغانی</button>
       <div class="nsec">منابع انسانی</div>
       <button class="ni" onclick="goPage('emp')" data-page="emp" data-roles="admin"><span class="em">👨‍💼</span>کارمندان و شاگردان</button>
+      <button class="ni" onclick="goPage('partners')" data-page="partners" data-roles="admin"><span class="em">🤝</span>شریکان / سهام‌داران</button>
       <div class="nsec">مالی و گزارش</div>
       <button class="ni" onclick="goPage('report')" data-page="report" data-roles="admin"><span class="em">📈</span>گزارشات & P&L</button>
       <button class="ni" onclick="goPage('reports_more')" data-page="reports_more" data-roles="admin"><span class="em">📊</span>گزارش‌های تفصیلی</button>
@@ -942,6 +943,36 @@ select option{background:#1a1820}
         <div class="tw"><table>
           <thead><tr><th>تاریخ</th><th>نوع</th><th>مبلغ (؋)</th><th>یادداشت</th></tr></thead>
           <tbody id="emp-pay-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <!-- PARTNERS / شریکان -->
+    <div id="page-partners" class="page">
+      <div class="kg k3">
+        <div class="kc gd"><div class="kl">💰 جمع سرمایه</div><div class="kv" id="prt-capital">—</div><div class="ks">مجموع سرمایه‌گذاری</div></div>
+        <div class="kc gr"><div class="kl">📈 سود تقسیم شده</div><div class="kv" id="prt-profit">—</div></div>
+        <div class="kc rd"><div class="kl">💸 برداشت‌ها</div><div class="kv" id="prt-withdraw">—</div></div>
+      </div>
+      <!-- کارت‌های شریکان -->
+      <div id="partners-cards" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px"></div>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button class="btn bpri" onclick="openModal('modalAddPartner')">+ شریک جدید</button>
+        <button class="btn bsec" onclick="openModal('modalPartnerTx')">💳 ثبت تراکنش</button>
+        <button class="btn bsec" onclick="openModal('modalDividend')">📊 تقسیم سود</button>
+      </div>
+      <div class="card">
+        <div class="ct">📋 تاریخچه تراکنش‌های شریکان</div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+          <button onclick="filterPrtTx('all')" class="bb by2" id="ptf-all" style="cursor:pointer;padding:4px 10px">همه</button>
+          <button onclick="filterPrtTx('capital')" class="bb bbl" id="ptf-capital" style="cursor:pointer;padding:4px 10px">💰 سرمایه</button>
+          <button onclick="filterPrtTx('withdraw')" class="bb br2" id="ptf-withdraw" style="cursor:pointer;padding:4px 10px">💸 برداشت</button>
+          <button onclick="filterPrtTx('profit')" class="bb bg2" id="ptf-profit" style="cursor:pointer;padding:4px 10px">📈 سود</button>
+          <button onclick="filterPrtTx('loan')" class="bb bpp" id="ptf-loan" style="cursor:pointer;padding:4px 10px">🏦 قرض</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>#</th><th>تاریخ</th><th>شریک</th><th>نوع</th><th>مبلغ (؋)</th><th>مبلغ ($)</th><th>شرح</th><th></th></tr></thead>
+          <tbody id="prt-tbody"><tr><td colspan="8" style="text-align:center;padding:20px;color:var(--t3)">هنوز تراکنشی ثبت نشده</td></tr></tbody>
         </table></div>
       </div>
     </div>
@@ -1500,21 +1531,27 @@ select option{background:#1a1820}
         </div>
       </div>
 
-      <!-- Mic Button -->
+      <!-- Mic Button — بزرگ برای موبایل -->
       <div style="text-align:center;margin:20px 0">
         <button id="micBtn" onclick="toggleVoice()" style="
-          width:90px;height:90px;border-radius:50%;border:none;cursor:pointer;
+          width:110px;height:110px;border-radius:50%;border:none;cursor:pointer;
           background:linear-gradient(135deg,#7c3aed,#a855f7);
-          color:#fff;font-size:36px;
-          box-shadow:0 8px 32px rgba(168,85,247,.4);
-          transition:all .2s;display:flex;align-items:center;justify-content:center;margin:0 auto;
+          color:#fff;font-size:44px;
+          box-shadow:0 8px 32px rgba(168,85,247,.5);
+          transition:all .2s;display:flex;align-items:center;justify-content:center;
+          margin:0 auto;-webkit-tap-highlight-color:transparent;
+          touch-action:manipulation;
         ">🎤</button>
-        <div id="voiceStatus" style="margin-top:12px;font-size:12px;color:var(--t3)">دکمه را بزن و صحبت کن</div>
-        <!-- Waveform animation -->
-        <div id="voiceWave" style="display:none;margin-top:10px;display:none;align-items:center;justify-content:center;gap:3px;height:30px">
+        <div id="voiceStatus" style="margin-top:16px;font-size:13px;color:var(--t3);line-height:1.6">
+          دکمه را بزن و صحبت کن
+        </div>
+        <!-- Waveform -->
+        <div id="voiceWave" style="display:none;margin-top:12px;align-items:center;justify-content:center;gap:4px;height:40px">
           <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
           <div class="wave-bar"></div><div class="wave-bar"></div>
         </div>
+        <!-- مرورگر پشتیبانی -->
+        <div id="browserInfo" style="margin-top:10px;font-size:10px;color:var(--t3)"></div>
       </div>
 
       <!-- Transcript -->
@@ -1580,6 +1617,97 @@ select option{background:#1a1820}
     <div class="modal-foot">
       <button class="btn bsec" onclick="closeModal('modalEditRecord')">انصراف</button>
       <button class="btn bpri" onclick="saveEditRecord()" id="ef-save-btn">ذخیره تغییرات ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PARTNER MODALS ══ -->
+<!-- اضافه کردن شریک جدید -->
+<div class="modal-overlay" id="modalAddPartner">
+  <div class="modal">
+    <div class="modal-head" style="background:linear-gradient(135deg,rgba(212,168,67,.1),transparent)">
+      <h3>🤝 شریک جدید</h3>
+      <button class="close-btn" onclick="closeModal('modalAddPartner')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="ap-msg"></div>
+      <div class="row2">
+        <div class="fg"><label>نام شریک</label><input id="ap-name" placeholder="نام کامل..."/></div>
+        <div class="fg"><label>تلفون</label><input id="ap-phone" placeholder="07..."/></div>
+      </div>
+      <div class="fg"><label>ایمیل / واتساپ</label><input id="ap-email" placeholder="اختیاری..."/></div>
+      <div class="row2">
+        <div class="fg"><label>درصد سهم (%)</label><input type="number" id="ap-pct" min="0" max="100" step="0.1" placeholder="مثال: 25"/></div>
+        <div class="fg"><label>سرمایه اولیه (؋)</label><input type="number" id="ap-capital" min="0" placeholder="0"/></div>
+      </div>
+      <div class="fg"><label>سرمایه اولیه ($)</label><input type="number" id="ap-capital-usd" min="0" step="0.01" placeholder="0"/></div>
+      <div class="fg"><label>تاریخ شراکت</label><input id="ap-date" placeholder="۱۴۰۲/۰۱/۰۱"/></div>
+      <div class="fg"><label>یادداشت</label><input id="ap-notes" placeholder="توضیحات اضافه..."/></div>
+      <div class="ib info">💡 مجموع درصد همه شریکان باید ۱۰۰٪ شود</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bsec" onclick="closeModal('modalAddPartner')">انصراف</button>
+      <button class="btn bpri" onclick="saveAddPartner()" id="ap-btn">ثبت شریک ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ثبت تراکنش شریک -->
+<div class="modal-overlay" id="modalPartnerTx">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>💳 ثبت تراکنش شریک</h3>
+      <button class="close-btn" onclick="closeModal('modalPartnerTx')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="ptx-msg"></div>
+      <div class="fg"><label>شریک</label>
+        <select id="ptx-partner"><option value="">— انتخاب کن —</option></select>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>تاریخ</label><input id="ptx-date"/></div>
+        <div class="fg"><label>نوع تراکنش</label>
+          <select id="ptx-type">
+            <option value="capital">💰 سرمایه‌گذاری جدید</option>
+            <option value="withdraw">💸 برداشت</option>
+            <option value="loan_in">🏦 قرض به شرکت</option>
+            <option value="loan_out">🏦 پس دادن قرض</option>
+            <option value="expense">📋 هزینه شخصی از شرکت</option>
+          </select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>مبلغ (؋)</label><input type="number" id="ptx-afn" min="0" value="0"/></div>
+        <div class="fg"><label>مبلغ ($)</label><input type="number" id="ptx-usd" min="0" step="0.01" value="0"/></div>
+      </div>
+      <div class="fg"><label>شرح</label><input id="ptx-desc" placeholder="توضیح تراکنش..."/></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bsec" onclick="closeModal('modalPartnerTx')">انصراف</button>
+      <button class="btn bpri" onclick="savePartnerTx()" id="ptx-btn">ثبت تراکنش ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- تقسیم سود -->
+<div class="modal-overlay" id="modalDividend">
+  <div class="modal">
+    <div class="modal-head" style="background:linear-gradient(135deg,rgba(46,204,122,.1),transparent)">
+      <h3>📊 تقسیم سود</h3>
+      <button class="close-btn" onclick="closeModal('modalDividend')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="div-msg"></div>
+      <div class="ib info" style="margin-bottom:12px">سود خالص شرکت بر اساس درصد هر شریک تقسیم می‌شود</div>
+      <div class="fg"><label>📅 دوره تقسیم سود</label><input id="div-period" placeholder="مثال: ۱۴۰۴ - نیم اول"/></div>
+      <div class="fg"><label>💰 مجموع سود خالص برای تقسیم (؋)</label>
+        <input type="number" id="div-amount" min="0" oninput="calcDividend()"/>
+      </div>
+      <div id="div-preview" style="margin-top:12px"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bsec" onclick="closeModal('modalDividend')">انصراف</button>
+      <button class="btn bpri" onclick="saveDividend()" id="div-btn">ثبت تقسیم سود ✓</button>
     </div>
   </div>
 </div>
@@ -2088,7 +2216,7 @@ const PAGE_TITLES={dash:"داشبورد",sales:"فروش",orders:"فرمایشا
   report:"گزارشات & P&L",settings:"تنظیمات"};
 
 function goPage(id){
-  const adminOnlyPages=["cash","report","reports_more","settings","emp","tax","cheque"];
+  const adminOnlyPages=["cash","report","reports_more","settings","emp","tax","cheque","partners"];
   if(adminOnlyPages.includes(id)&&currentUser?.role!=="admin"){goPage("dash");return;}
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   const pg=document.getElementById("page-"+id);
@@ -2101,7 +2229,8 @@ function goPage(id){
   const allTitles={dash:"داشبورد",sales:"فروش",orders:"فرمایشات",buy:"خرید مواد",prod:"تولید",
     stock:"انبار مواد",cust:"مشتریان",supp:"تامین‌کنندگان",cash:"صندوق افغانی",
     report:"گزارشات & P&L",reports_more:"گزارش‌های تفصیلی",
-    emp:"کارمندان و شاگردان",tax:"مالیات",cheque:"چک و اقساط",settings:"تنظیمات"};
+    emp:"کارمندان و شاگردان",tax:"مالیات",cheque:"چک و اقساط",
+    partners:"شریکان / سهام‌داران",settings:"تنظیمات"};
   document.getElementById("pageTitle").textContent=allTitles[id]||id;
   toggleDrawer(false);
   renderPage(id);
@@ -2121,6 +2250,7 @@ function renderPage(id){
   else if(id==="emp") renderEmp();
   else if(id==="tax") renderTax();
   else if(id==="cheque") renderCheque();
+  else if(id==="partners") renderPartners();
   else if(id==="settings") renderSettings();
 }
 
@@ -3597,6 +3727,22 @@ let _voiceRecog=null, _isListening=false, _voiceParsedData=null;
 function openVoiceModal(){
   openModal("modalVoice");
   resetVoiceUI();
+  // نشان دادن اطلاعات مرورگر
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid=/Android/.test(navigator.userAgent);
+  const hasSpeech=!!(window.SpeechRecognition||window.webkitSpeechRecognition);
+  const info=document.getElementById("browserInfo");
+  if(info){
+    if(isIOS&&!hasSpeech){
+      info.innerHTML='<span style="color:var(--og)">📱 iPhone: دکمه 🎤 کیبورد را استفاده کن</span>';
+    } else if(isAndroid&&hasSpeech){
+      info.innerHTML='<span style="color:var(--gr)">✅ Android: ضبط صدا پشتیبانی می‌شود</span>';
+    } else if(hasSpeech){
+      info.innerHTML='<span style="color:var(--gr)">✅ ضبط صدا پشتیبانی می‌شود</span>';
+    } else {
+      info.innerHTML='<span style="color:var(--og)">⚠️ این مرورگر ضبط ندارد — تایپ کن</span>';
+    }
+  }
 }
 function closeVoiceModal(){
   stopVoice();
@@ -3623,18 +3769,67 @@ function toggleVoice(){
 }
 
 function startVoice(){
-  // Check browser support
+  // ── اول اجازه میکروفون بخواه ──
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({audio:true})
+      .then(stream=>{
+        stream.getTracks().forEach(t=>t.stop()); // فقط اجازه — stream را بند کن
+        _startSpeechRecognition();
+      })
+      .catch(err=>{
+        if(err.name==="NotAllowedError"||err.name==="PermissionDeniedError"){
+          showMicPermissionHelp();
+        } else {
+          _startSpeechRecognition(); // باز هم تلاش کن
+        }
+      });
+  } else {
+    _startSpeechRecognition();
+  }
+}
+
+function showMicPermissionHelp(){
+  document.getElementById("voiceStatus").innerHTML='';
+  document.getElementById("voiceTranscript").style.display="block";
+  document.getElementById("transcriptText").innerHTML=`
+    <div style="text-align:center;padding:10px">
+      <div style="font-size:28px;margin-bottom:8px">🎤❌</div>
+      <div style="font-size:13px;font-weight:700;color:var(--rd);margin-bottom:8px">اجازه میکروفون داده نشده!</div>
+      <div style="font-size:11px;color:var(--t2);line-height:1.8">
+        <strong>Android Chrome:</strong><br>
+        بار نوار آدرس بزن → 🔒 → میکروفون → اجازه بده<br><br>
+        <strong>iPhone Safari:</strong><br>
+        تنظیمات → Safari → میکروفون → اجازه بده
+      </div>
+      <button onclick="resetVoiceUI();startVoice()" style="margin-top:12px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;border-radius:10px;padding:10px 20px;cursor:pointer;font-size:13px;font-family:inherit">🔄 دوباره امتحان</button>
+    </div>`;
+}
+
+function _startSpeechRecognition(){
+  // تشخیص نوع مرورگر و موبایل
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isAndroid=/Android/.test(navigator.userAgent);
+  
   const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  
+  // iOS Safari ندارد Speech Recognition
   if(!SpeechRecognition){
-    // Fallback: manual text input
-    showManualInput();
+    if(isIOS){
+      showIOSVoiceGuide();
+    } else {
+      showManualInput();
+    }
     return;
   }
+
   _voiceRecog=new SpeechRecognition();
-  _voiceRecog.lang="fa-IR"; // فارسی/دری
-  _voiceRecog.continuous=false;
+  
+  // زبان — چند گزینه برای دری/فارسی افغانستان
+  // Android معمولاً fa-IR یا fa را می‌فهمد
+  _voiceRecog.lang=isAndroid?"fa-IR":"fa-IR";
+  _voiceRecog.continuous=false; // false بهتر کار می‌کند در موبایل
   _voiceRecog.interimResults=true;
-  _voiceRecog.maxAlternatives=1;
+  _voiceRecog.maxAlternatives=3; // چند گزینه برای دقت بیشتر
 
   _voiceRecog.onstart=()=>{
     _isListening=true;
@@ -3642,35 +3837,105 @@ function startVoice(){
     btn.textContent="⏹";
     btn.style.background="linear-gradient(135deg,#dc2626,#f43f5e)";
     btn.classList.add("mic-pulse");
-    document.getElementById("voiceStatus").innerHTML='<span style="color:#f87171">🔴 در حال ضبط... صحبت کن</span>';
+    document.getElementById("voiceStatus").innerHTML='<span style="color:#f87171;font-size:14px;font-weight:700">🔴 در حال ضبط...<br>صحبت کن بعد ساکت شو</span>';
     document.getElementById("voiceWave").style.display="flex";
     document.getElementById("voiceTranscript").style.display="block";
   };
 
   _voiceRecog.onresult=(e)=>{
-    const t=Array.from(e.results).map(r=>r[0].transcript).join("");
-    document.getElementById("transcriptText").textContent=t;
+    // بهترین نتیجه را بگیر
+    let best="";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i][0].transcript) best=e.results[i][0].transcript;
+    }
+    if(best) document.getElementById("transcriptText").textContent=best;
   };
 
   _voiceRecog.onend=()=>{
     _isListening=false;
-    const txt=document.getElementById("transcriptText").textContent;
+    const txt=(document.getElementById("transcriptText").textContent||"").trim();
     const btn=document.getElementById("micBtn");
     btn.textContent="🎤";
     btn.style.background="linear-gradient(135deg,#7c3aed,#a855f7)";
     btn.classList.remove("mic-pulse");
     document.getElementById("voiceWave").style.display="none";
-    if(txt.trim()) processVoiceWithAI(txt);
-    else document.getElementById("voiceStatus").textContent="صدایی شنیده نشد — دوباره امتحان کن";
+    
+    if(txt&&txt.length>2){
+      processVoiceWithAI(txt);
+    } else {
+      // اگر چیزی نشنیده شد — دوباره تلاش کن
+      document.getElementById("voiceStatus").innerHTML=`
+        <span style="color:var(--og)">صدایی نشنیدم</span>
+        <br><button onclick="resetVoiceUI();startVoice()" style="margin-top:8px;background:rgba(168,85,247,.2);border:1px solid rgba(168,85,247,.4);color:#c084fc;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:12px;font-family:inherit">🎤 دوباره</button>`;
+    }
   };
 
   _voiceRecog.onerror=(e)=>{
     _isListening=false;
-    if(e.error==="not-allowed") showManualInput();
-    else document.getElementById("voiceStatus").textContent="خطا: "+e.error+" — دوباره امتحان کن";
+    const btn=document.getElementById("micBtn");
+    btn.textContent="🎤";
+    btn.style.background="linear-gradient(135deg,#7c3aed,#a855f7)";
+    btn.classList.remove("mic-pulse");
+    document.getElementById("voiceWave").style.display="none";
+    
+    const errMsgs={
+      "not-allowed":"اجازه میکروفون داده نشده ⚠️",
+      "no-speech":"صدایی شنیده نشد — دوباره امتحان کن",
+      "network":"مشکل اینترنت — دوباره امتحان کن",
+      "service-not-allowed":"سرویس Speech در این مرورگر کار نمی‌کند",
+      "aborted":"ضبط متوقف شد"
+    };
+    
+    if(e.error==="not-allowed"){
+      showMicPermissionHelp();
+    } else {
+      document.getElementById("voiceStatus").innerHTML=`
+        <span style="color:var(--og)">${errMsgs[e.error]||"خطا: "+e.error}</span>
+        <br><button onclick="resetVoiceUI();startVoice()" style="margin-top:8px;background:rgba(168,85,247,.2);border:1px solid rgba(168,85,247,.4);color:#c084fc;border-radius:8px;padding:6px 14px;cursor:pointer;font-size:12px;font-family:inherit">🎤 دوباره</button>`;
+    }
   };
 
-  _voiceRecog.start();
+  try {
+    _voiceRecog.start();
+  } catch(e) {
+    document.getElementById("voiceStatus").textContent="خطا در شروع — دوباره امتحان کن";
+  }
+}
+
+function showIOSVoiceGuide(){
+  // iPhone Safari Web Speech API ندارد — راهنمای تایپ نشان بده
+  document.getElementById("voiceStatus").innerHTML='';
+  document.getElementById("voiceTranscript").style.display="block";
+  document.getElementById("transcriptText").innerHTML=`
+    <div style="text-align:center;padding:10px">
+      <div style="font-size:28px;margin-bottom:8px">🍎</div>
+      <div style="font-size:13px;font-weight:700;color:var(--og);margin-bottom:8px">iPhone از ضبط مستقیم پشتیبانی نمی‌کند</div>
+      <div style="font-size:11px;color:var(--t2);line-height:1.8;margin-bottom:12px">
+        ۱. دکمه 🎤 کیبورد iPhone را بزن<br>
+        ۲. بگو: «قربان، ۵ درجن استاندارد، ۱۰۰۰۰ افغانی»<br>
+        ۳. متن در زیر ظاهر می‌شود
+      </div>
+    </div>`;
+  // فیلد قابل تایپ
+  document.getElementById("transcriptText").contentEditable="true";
+  document.getElementById("transcriptText").style.border="1px solid rgba(168,85,247,.4)";
+  document.getElementById("transcriptText").style.minHeight="60px";
+  document.getElementById("transcriptText").focus();
+  // دکمه پردازش
+  const existBtn=document.getElementById("ios-process-btn");
+  if(!existBtn){
+    const btn=document.createElement("button");
+    btn.id="ios-process-btn";
+    btn.className="btn btn-full";
+    btn.style.cssText="margin-top:10px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;box-shadow:0 4px 14px rgba(168,85,247,.3)";
+    btn.textContent="🤖 پردازش با AI";
+    btn.onclick=()=>{
+      const txt=document.getElementById("transcriptText").textContent.trim();
+      if(txt) processVoiceWithAI(txt);
+      else document.getElementById("voiceStatus").textContent="متن را بنویس یا وایس کن";
+    };
+    document.getElementById("voiceTranscript").appendChild(btn);
+  }
 }
 
 function stopVoice(){
@@ -4061,6 +4326,254 @@ async function saveEditRecord(){
   }
 }
 
+
+// ══ شریکان / سهام‌داران ══
+let _partners=[], _prtTxFilter="all";
+
+const PTX_LABEL={
+  capital:"💰 سرمایه‌گذاری",
+  withdraw:"💸 برداشت",
+  loan_in:"🏦 قرض به شرکت",
+  loan_out:"🏦 پس دادن قرض",
+  profit:"📈 سود تقسیم شده",
+  expense:"📋 هزینه شخصی"
+};
+
+async function renderPartners(){
+  // Load partners
+  const partners=await sbGet("partners","?order=id.asc")||[];
+  _partners=partners;
+  const txs=await sbGet("partner_transactions","?order=id.desc")||[];
+
+  // KPIs
+  const totalCapital=txs.filter(t=>t.type==="capital").reduce((a,r)=>a+(+r.amount_afn||0),0);
+  const totalProfit=txs.filter(t=>t.type==="profit").reduce((a,r)=>a+(+r.amount_afn||0),0);
+  const totalWithdraw=txs.filter(t=>t.type==="withdraw"||t.type==="expense").reduce((a,r)=>a+(+r.amount_afn||0),0);
+  document.getElementById("prt-capital").textContent=afn(totalCapital);
+  document.getElementById("prt-profit").textContent=afn(totalProfit);
+  document.getElementById("prt-withdraw").textContent=afn(totalWithdraw);
+
+  // Partner cards
+  const cards=document.getElementById("partners-cards");
+  if(!partners.length){
+    cards.innerHTML='<div class="card" style="grid-column:1/-1;text-align:center;padding:30px;color:var(--t3)">هنوز شریکی ثبت نشده — از دکمه + اضافه کن</div>';
+  } else {
+    cards.innerHTML=partners.map(p=>{
+      const cap=txs.filter(t=>t.partner_id===p.id&&t.type==="capital").reduce((a,r)=>a+(+r.amount_afn||0),0);
+      const draw=txs.filter(t=>t.partner_id===p.id&&(t.type==="withdraw"||t.type==="expense")).reduce((a,r)=>a+(+r.amount_afn||0),0);
+      const prof=txs.filter(t=>t.partner_id===p.id&&t.type==="profit").reduce((a,r)=>a+(+r.amount_afn||0),0);
+      const bal=cap+prof-draw;
+      return`<div class="card" style="border:1px solid rgba(212,168,67,.2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--gd),var(--g2));display:flex;align-items:center;justify-content:center;font-size:18px;color:#000;font-weight:800">${p.name.slice(0,1)}</div>
+          <div style="text-align:right">
+            <div style="font-size:14px;font-weight:800">${p.name}</div>
+            <div style="font-size:11px;color:var(--t3)">${p.phone||""}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div style="background:rgba(212,168,67,.08);border-radius:8px;padding:8px;text-align:center">
+            <div style="font-size:9px;color:var(--t3)">سهم</div>
+            <div style="font-size:16px;font-weight:800;color:var(--gd)">${p.share_percent||0}٪</div>
+          </div>
+          <div style="background:rgba(46,204,122,.08);border-radius:8px;padding:8px;text-align:center">
+            <div style="font-size:9px;color:var(--t3)">مانده حساب</div>
+            <div style="font-size:13px;font-weight:800;color:var(--gr)">${afn(bal)}</div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--t3);display:flex;justify-content:space-between">
+          <span>سرمایه: <strong style="color:var(--gd)">${afn(cap)}</strong></span>
+          <span>سود: <strong style="color:var(--gr)">${afn(prof)}</strong></span>
+          <span>برداشت: <strong style="color:var(--rd)">${afn(draw)}</strong></span>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:5px">
+          <button onclick="openPartnerTx(${p.id},'${p.name}')" style="flex:1;background:var(--g3);border:1px solid rgba(212,168,67,.3);color:var(--gd);border-radius:7px;padding:5px;cursor:pointer;font-size:11px;font-family:inherit">💳 تراکنش</button>
+          <button onclick="showPartnerDetail(${p.id},'${p.name}')" style="flex:1;background:rgba(91,138,245,.1);border:1px solid rgba(91,138,245,.3);color:var(--bl);border-radius:7px;padding:5px;cursor:pointer;font-size:11px;font-family:inherit">📋 تاریخچه</button>
+        </div>
+      </div>`;
+    }).join("");
+  }
+
+  // Transactions table
+  renderPrtTxTable(txs);
+
+  // Populate partner dropdown in modals
+  const sel=document.getElementById("ptx-partner");
+  if(sel) sel.innerHTML='<option value="">— انتخاب کن —</option>'+partners.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
+}
+
+function filterPrtTx(f){
+  _prtTxFilter=f;
+  document.querySelectorAll("[id^='ptf-']").forEach(b=>b.className="bb bbl");
+  const btn=document.getElementById("ptf-"+f);
+  if(btn) btn.className="bb by2";
+  sbGet("partner_transactions","?order=id.desc").then(txs=>renderPrtTxTable(txs||[]));
+}
+
+function renderPrtTxTable(txs){
+  let list=_prtTxFilter==="all"?txs:txs.filter(t=>t.type===_prtTxFilter);
+  document.getElementById("prt-tbody").innerHTML=list.length?list.map((t,i)=>`<tr>
+    <td style="color:var(--t3)">${i+1}</td>
+    <td>${t.date||"—"}</td>
+    <td style="font-weight:700">${t.partner_name||"—"}</td>
+    <td><span class="bb ${t.type==="capital"?"by2":t.type==="withdraw"||t.type==="expense"?"br2":t.type==="profit"?"bg2":"bpp"}">${PTX_LABEL[t.type]||t.type}</span></td>
+    <td class="tdr" style="font-weight:700;color:${t.type==="withdraw"||t.type==="expense"?"var(--rd)":"var(--gr)"}">${t.amount_afn>0?afn(t.amount_afn):"—"}</td>
+    <td class="tdr" style="color:var(--bl)">${t.amount_usd>0?usd(t.amount_usd):"—"}</td>
+    <td style="color:var(--t2);font-size:11px">${t.description||"—"}</td>
+    <td><button onclick="deleteRecord('partner_transactions',${t.id},'renderPartners')" style="${_editBtnStyle('rd')}" title="حذف">🗑️</button></td>
+  </tr>`).join(""):'<tr><td colspan="8" style="text-align:center;padding:16px;color:var(--t3)">تراکنشی یافت نشد</td></tr>';
+}
+
+async function saveAddPartner(){
+  const name=document.getElementById("ap-name").value.trim();
+  if(!name){document.getElementById("ap-msg").innerHTML='<div class="ib err">نام الزامی</div>';return;}
+  document.getElementById("ap-btn").disabled=true;document.getElementById("ap-btn").textContent="در حال ذخیره...";
+  const res=await sbPost("partners",{
+    name,
+    phone:document.getElementById("ap-phone").value,
+    email:document.getElementById("ap-email").value,
+    share_percent:+(document.getElementById("ap-pct").value)||0,
+    initial_capital_afn:+(document.getElementById("ap-capital").value)||0,
+    initial_capital_usd:+(document.getElementById("ap-capital-usd").value)||0,
+    join_date:document.getElementById("ap-date").value||today(),
+    notes:document.getElementById("ap-notes").value,
+    is_active:true
+  });
+  // ثبت سرمایه اولیه
+  const cap=+(document.getElementById("ap-capital").value)||0;
+  const capUSD=+(document.getElementById("ap-capital-usd").value)||0;
+  if(res&&(cap>0||capUSD>0)){
+    await sbPost("partner_transactions",{
+      partner_id:res[0]?.id||res.id,
+      partner_name:name,
+      date:document.getElementById("ap-date").value||today(),
+      type:"capital",
+      amount_afn:cap,
+      amount_usd:capUSD,
+      description:"سرمایه اولیه"
+    });
+  }
+  document.getElementById("ap-btn").disabled=false;document.getElementById("ap-btn").textContent="ثبت شریک ✓";
+  if(res){
+    document.getElementById("ap-msg").innerHTML='<div class="ib ok">✅ شریک ثبت شد!</div>';
+    showSaved();setTimeout(()=>{closeModal("modalAddPartner");renderPartners();},1000);
+  } else document.getElementById("ap-msg").innerHTML='<div class="ib err">خطا — دوباره امتحان کن</div>';
+}
+
+function openPartnerTx(id,name){
+  document.getElementById("ptx-partner").value=id;
+  document.getElementById("ptx-date").value=today();
+  document.getElementById("ptx-afn").value="0";
+  document.getElementById("ptx-usd").value="0";
+  document.getElementById("ptx-desc").value="";
+  document.getElementById("ptx-msg").innerHTML="";
+  openModal("modalPartnerTx");
+}
+
+async function savePartnerTx(){
+  const pid=document.getElementById("ptx-partner").value;
+  if(!pid){document.getElementById("ptx-msg").innerHTML='<div class="ib err">شریک را انتخاب کن</div>';return;}
+  const pname=document.getElementById("ptx-partner").options[document.getElementById("ptx-partner").selectedIndex].text;
+  const amt=+(document.getElementById("ptx-afn").value)||0;
+  const amtUSD=+(document.getElementById("ptx-usd").value)||0;
+  if(!amt&&!amtUSD){document.getElementById("ptx-msg").innerHTML='<div class="ib err">مبلغ الزامی</div>';return;}
+  document.getElementById("ptx-btn").disabled=true;document.getElementById("ptx-btn").textContent="در حال ذخیره...";
+  const res=await sbPost("partner_transactions",{
+    partner_id:+pid,partner_name:pname,
+    date:document.getElementById("ptx-date").value||today(),
+    type:document.getElementById("ptx-type").value,
+    amount_afn:amt,amount_usd:amtUSD,
+    description:document.getElementById("ptx-desc").value
+  });
+  document.getElementById("ptx-btn").disabled=false;document.getElementById("ptx-btn").textContent="ثبت تراکنش ✓";
+  if(res){
+    document.getElementById("ptx-msg").innerHTML='<div class="ib ok">✅ ثبت شد!</div>';
+    showSaved();setTimeout(()=>{closeModal("modalPartnerTx");renderPartners();},1000);
+  } else document.getElementById("ptx-msg").innerHTML='<div class="ib err">خطا!</div>';
+}
+
+function calcDividend(){
+  const total=+(document.getElementById("div-amount").value)||0;
+  const prev=document.getElementById("div-preview");
+  if(!total||!_partners.length){prev.innerHTML="";return;}
+  prev.innerHTML=`<div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--t2)">تقسیم سود برای هر شریک:</div>`+
+    _partners.map(p=>{
+      const share=total*(p.share_percent||0)/100;
+      return`<div style="display:flex;justify-content:space-between;padding:8px 12px;background:rgba(46,204,122,.08);border-radius:8px;margin-bottom:6px;border:1px solid rgba(46,204,122,.15)">
+        <span style="font-size:13px;font-weight:700;color:var(--gr)">${afn(share)}</span>
+        <span style="font-size:12px">${p.name} — ${p.share_percent}٪</span>
+      </div>`;
+    }).join("");
+}
+
+async function saveDividend(){
+  const total=+(document.getElementById("div-amount").value)||0;
+  const period=document.getElementById("div-period").value.trim();
+  if(!total){document.getElementById("div-msg").innerHTML='<div class="ib err">مبلغ الزامی</div>';return;}
+  if(!_partners.length){document.getElementById("div-msg").innerHTML='<div class="ib err">هنوز شریکی ثبت نشده</div>';return;}
+  document.getElementById("div-btn").disabled=true;document.getElementById("div-btn").textContent="در حال ذخیره...";
+  for(const p of _partners){
+    const share=total*(p.share_percent||0)/100;
+    if(share>0){
+      await sbPost("partner_transactions",{
+        partner_id:p.id,partner_name:p.name,
+        date:today(),type:"profit",
+        amount_afn:share,amount_usd:0,
+        description:`تقسیم سود: ${period||today()}`
+      });
+    }
+  }
+  document.getElementById("div-btn").disabled=false;document.getElementById("div-btn").textContent="ثبت تقسیم سود ✓";
+  document.getElementById("div-msg").innerHTML='<div class="ib ok">✅ سود تقسیم شد!</div>';
+  showSaved();setTimeout(()=>{closeModal("modalDividend");renderPartners();},1000);
+}
+
+async function showPartnerDetail(id,name){
+  const txs=await sbGet("partner_transactions",`?partner_id=eq.${id}&order=id.desc`)||[];
+  const cap=txs.filter(t=>t.type==="capital").reduce((a,r)=>a+(+r.amount_afn||0),0);
+  const draw=txs.filter(t=>t.type==="withdraw"||t.type==="expense").reduce((a,r)=>a+(+r.amount_afn||0),0);
+  const prof=txs.filter(t=>t.type==="profit").reduce((a,r)=>a+(+r.amount_afn||0),0);
+  const modal=document.createElement("div");
+  modal.className="modal-overlay open";modal.id="modalPrtDetail";
+  modal.innerHTML=`<div class="modal">
+    <div class="modal-head" style="background:linear-gradient(135deg,rgba(212,168,67,.1),transparent)">
+      <div><h3>📋 ${name}</h3><div style="font-size:10px;color:var(--t3)">تاریخچه کامل</div></div>
+      <button class="close-btn" onclick="document.getElementById('modalPrtDetail').remove()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+        <div style="background:rgba(212,168,67,.08);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--t3)">جمع سرمایه</div>
+          <div style="font-size:14px;font-weight:800;color:var(--gd)">${afn(cap)}</div>
+        </div>
+        <div style="background:rgba(46,204,122,.08);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--t3)">جمع سود</div>
+          <div style="font-size:14px;font-weight:800;color:var(--gr)">${afn(prof)}</div>
+        </div>
+        <div style="background:rgba(240,90,110,.08);border-radius:10px;padding:10px;text-align:center">
+          <div style="font-size:9px;color:var(--t3)">جمع برداشت</div>
+          <div style="font-size:14px;font-weight:800;color:var(--rd)">${afn(draw)}</div>
+        </div>
+      </div>
+      <div style="background:rgba(212,168,67,.1);border-radius:10px;padding:12px;text-align:center;margin-bottom:14px">
+        <div style="font-size:10px;color:var(--t3)">مانده حساب (سرمایه + سود - برداشت)</div>
+        <div style="font-size:20px;font-weight:900;color:var(--gd)">${afn(cap+prof-draw)}</div>
+      </div>
+      <div style="max-height:300px;overflow-y:auto">
+        ${txs.length?txs.map(t=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px">
+          <div style="color:var(--t3)">${t.date}</div>
+          <div><span class="bb ${t.type==="capital"?"by2":t.type==="profit"?"bg2":"br2"}">${PTX_LABEL[t.type]||t.type}</span></div>
+          <div style="font-weight:700;color:${t.type==="withdraw"||t.type==="expense"?"var(--rd)":"var(--gr)"}">${afn(t.amount_afn)}</div>
+          <div style="color:var(--t2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.description||"—"}</div>
+        </div>`).join(""):'<div style="text-align:center;padding:20px;color:var(--t3)">هنوز تراکنشی ندارد</div>'}
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bpri btn-full" onclick="document.getElementById('modalPrtDetail').remove()">بستن</button>
+    </div>
+  </div>`;
+  document.body.appendChild(modal);
+}
 
 // ── KEY LISTENER ──
 document.addEventListener("keydown",e=>{
