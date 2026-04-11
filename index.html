@@ -10,162 +10,722 @@
 <title>PCU ERP v9 | فابریکه حیات‌زاده</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#070d14;--b2:#0d1822;--b3:#132030;--b4:#192a3a;
-  --bd:#1a3448;--bd2:#224158;
-  --tx:#d8e8f2;--t2:#6a96b0;--t3:#3d6070;
-  --gd:#e8a020;--g2:#f5c842;--g3:rgba(232,160,32,.13);
-  --gr:#22c55e;--gr2:rgba(34,197,94,.13);
-  --rd:#f05252;--r2:rgba(240,82,82,.13);
-  --bl:#3b9eff;--bl2:rgba(59,158,255,.13);
-  --pp:#a855f7;--pp2:rgba(168,85,247,.13);
-  --tl:#06b6d4;--tl2:rgba(6,182,212,.13);
-  --og:#f97316;--og2:rgba(249,115,22,.13);
+  --bg:#09080a;--b2:#111018;--b3:#1a1820;--b4:#221f2a;
+  --bd:#2e2840;--bd2:#3d3558;
+  --tx:#f0eaff;--t2:#8878aa;--t3:#4a4060;
+  --gd:#d4a843;--g2:#f0c84e;--g3:rgba(212,168,67,.12);--g4:rgba(212,168,67,.06);
+  --gr:#2ecc7a;--gr2:rgba(46,204,122,.12);
+  --rd:#f05a6e;--r2:rgba(240,90,110,.12);
+  --bl:#5b8af5;--bl2:rgba(91,138,245,.12);
+  --pp:#9b6ef5;--pp2:rgba(155,110,245,.12);
+  --tl:#2ec4d4;--tl2:rgba(46,196,212,.12);
+  --og:#f07840;--og2:rgba(240,120,64,.12);
 }
+
+/* ── Body & Background ── */
 html,body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden}
-.navbar{position:fixed;top:0;right:0;left:0;z-index:100;background:var(--b2);border-bottom:1px solid var(--bd);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;height:52px}
-.nav-title{font-size:14px;font-weight:800;color:var(--g2)}
-.hamburger{background:none;border:none;color:var(--tx);font-size:22px;cursor:pointer;padding:2px}
-.rate-pill{background:var(--g3);border:1px solid rgba(232,160,32,.3);color:var(--gd);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;cursor:pointer}
-.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--gr);display:inline-block;margin-left:4px;animation:pulse 2s infinite}
+body::before{content:'';position:fixed;inset:0;background:
+  radial-gradient(ellipse 60% 40% at 80% 10%,rgba(212,168,67,.07) 0%,transparent 60%),
+  radial-gradient(ellipse 40% 60% at 10% 80%,rgba(155,110,245,.05) 0%,transparent 60%);
+  pointer-events:none;z-index:0}
+body>*{position:relative;z-index:1}
+
+/* ── Navbar ── */
+.navbar{
+  position:fixed;top:0;right:0;left:0;z-index:100;
+  height:54px;padding:0 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(9,8,10,.85);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(212,168,67,.15);
+}
+.nav-title{font-size:14px;font-weight:800;
+  background:linear-gradient(135deg,var(--gd),var(--g2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hamburger{background:none;border:none;color:var(--t2);font-size:22px;cursor:pointer;padding:2px;transition:color .2s}
+.hamburger:hover{color:var(--gd)}
+.rate-pill{
+  background:var(--g3);
+  border:1px solid rgba(212,168,67,.25);
+  color:var(--gd);font-size:11px;font-weight:700;
+  padding:4px 11px;border-radius:20px;cursor:pointer;
+  transition:all .2s;
+}
+.rate-pill:hover{background:rgba(212,168,67,.2)}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--gr);display:inline-block;margin-left:4px;animation:pulse 2s infinite}
 .sync-dot.off{background:var(--rd);animation:none}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Drawer ── */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:none;backdrop-filter:blur(4px)}
 .drawer-overlay.open{display:block}
-.drawer{position:fixed;right:0;top:0;bottom:0;width:265px;background:var(--b2);border-left:1px solid var(--bd);z-index:201;transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column;overflow-y:auto}
+.drawer{
+  position:fixed;right:0;top:0;bottom:0;width:270px;
+  background:linear-gradient(180deg,#110f1a 0%,#0d0b15 100%);
+  border-left:1px solid rgba(212,168,67,.15);
+  z-index:201;transform:translateX(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;overflow-y:auto;
+}
 .drawer.open{transform:translateX(0)}
-.drawer-head{padding:18px 14px 12px;border-bottom:1px solid var(--bd)}
-.drawer-logo{font-size:15px;font-weight:800;color:var(--g2)}
-.drawer-ver{font-size:10px;color:var(--t3);margin-top:2px}
-.drawer-nav{flex:1;padding:6px 5px}
-.nsec{font-size:9px;color:var(--t3);font-weight:800;padding:9px 9px 3px;letter-spacing:.5px}
-.ni{display:flex;align-items:center;gap:8px;padding:9px 11px;border-radius:8px;cursor:pointer;color:var(--t2);font-size:13px;font-weight:500;background:none;border:none;width:100%;text-align:right;font-family:inherit;margin-bottom:1px}
-.ni:hover,.ni.on{background:var(--g3);color:var(--g2);font-weight:700}
+.drawer-head{
+  padding:20px 16px 14px;
+  border-bottom:1px solid rgba(212,168,67,.1);
+  background:linear-gradient(135deg,rgba(212,168,67,.08),transparent);
+}
+.drawer-logo{
+  font-size:15px;font-weight:900;
+  background:linear-gradient(135deg,var(--gd),var(--g2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.drawer-ver{font-size:9px;color:var(--t3);margin-top:3px;letter-spacing:.5px}
+.drawer-nav{flex:1;padding:8px 6px}
+.nsec{
+  font-size:9px;color:rgba(212,168,67,.5);font-weight:800;
+  padding:10px 10px 4px;letter-spacing:1px;text-transform:uppercase;
+}
+.ni{
+  display:flex;align-items:center;gap:9px;
+  padding:9px 12px;border-radius:10px;cursor:pointer;
+  color:var(--t2);font-size:12.5px;font-weight:500;
+  background:none;border:none;width:100%;text-align:right;
+  font-family:inherit;margin-bottom:2px;transition:all .15s;
+}
+.ni:hover{background:rgba(212,168,67,.08);color:var(--tx)}
+.ni.on{
+  background:linear-gradient(135deg,rgba(212,168,67,.15),rgba(212,168,67,.05));
+  color:var(--gd);font-weight:700;
+  border:1px solid rgba(212,168,67,.2);
+}
 .ni .em{font-size:15px;width:20px;text-align:center;flex-shrink:0}
-.drawer-foot{padding:12px 14px;border-top:1px solid var(--bd)}
-.user-info{display:flex;align-items:center;gap:8px;margin-bottom:9px}
-.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#000;flex-shrink:0}
-.uname{font-size:12px;font-weight:700}
-.urole{font-size:10px;color:var(--t3)}
-.logout-btn{width:100%;padding:7px;background:var(--r2);border:1px solid rgba(240,82,82,.3);color:var(--rd);border-radius:7px;cursor:pointer;font-size:12px;font-family:inherit}
-.content{margin-top:52px;padding:14px;padding-bottom:75px}
-.page{display:none}.page.active{display:block}
-.bottom-tab{position:fixed;bottom:0;right:0;left:0;background:var(--b2);border-top:1px solid var(--bd);display:flex;z-index:100;height:58px}
-.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);font-size:10px;font-weight:500;gap:3px;border:none;background:none;font-family:inherit}
+.drawer-foot{
+  padding:12px 14px;
+  border-top:1px solid rgba(212,168,67,.1);
+}
+.user-info{display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.av{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:13px;color:#000;flex-shrink:0;
+  background:linear-gradient(135deg,var(--gd),var(--g2));
+  box-shadow:0 4px 12px rgba(212,168,67,.3);
+}
+.uname{font-size:12px;font-weight:700;color:var(--tx)}
+.urole{font-size:10px;color:var(--t3);margin-top:1px}
+.logout-btn{
+  width:100%;padding:8px;
+  background:rgba(240,90,110,.08);
+  border:1px solid rgba(240,90,110,.2);
+  color:var(--rd);border-radius:8px;cursor:pointer;
+  font-size:12px;font-family:inherit;transition:all .15s;
+}
+.logout-btn:hover{background:rgba(240,90,110,.15)}
+
+/* ── Content ── */
+.content{margin-top:54px;padding:14px;padding-bottom:75px}
+.page{display:none;animation:fadeIn .25s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Bottom Tab ── */
+.bottom-tab{
+  position:fixed;bottom:0;right:0;left:0;
+  background:rgba(9,8,10,.92);
+  border-top:1px solid rgba(212,168,67,.12);
+  backdrop-filter:blur(20px);
+  display:flex;z-index:100;height:58px;
+}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);font-size:10px;font-weight:500;gap:3px;border:none;background:none;font-family:inherit;transition:color .15s}
 .tab-item.on{color:var(--gd)}
 .tab-item .ti{font-size:20px}
+
+/* ── KPI Cards ── */
 .kg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .kg.k3{grid-template-columns:1fr 1fr 1fr}
 .kg.k4{grid-template-columns:1fr 1fr 1fr 1fr}
-.kc{background:var(--b2);border:1px solid var(--bd);border-radius:10px;padding:13px;position:relative;overflow:hidden}
-.kc::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;border-radius:0 10px 10px 0}
-.kc.gd::after{background:var(--gd)}.kc.gr::after{background:var(--gr)}.kc.bl::after{background:var(--bl)}.kc.rd::after{background:var(--rd)}.kc.pp::after{background:var(--pp)}.kc.tl::after{background:var(--tl)}.kc.og::after{background:var(--og)}
-.kl{font-size:10px;color:var(--t3);margin-bottom:3px}.kv{font-size:15px;font-weight:800;line-height:1.2;word-break:break-all}.ks{font-size:10px;color:var(--t3);margin-top:2px}.ke{position:absolute;top:10px;left:10px;font-size:20px;opacity:.12}
-.card{background:var(--b2);border:1px solid var(--bd);border-radius:10px;padding:13px;margin-bottom:12px}
+.kc{
+  background:linear-gradient(135deg,rgba(26,24,32,.95),rgba(17,16,24,.98));
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;padding:14px;position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s;
+}
+.kc:hover{transform:translateY(-2px);border-color:rgba(212,168,67,.2)}
+.kc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.02),transparent);pointer-events:none}
+.kc::after{content:'';position:absolute;top:0;right:0;width:3px;height:100%;border-radius:0 14px 14px 0}
+.kc.gd::after{background:linear-gradient(to bottom,var(--gd),var(--g2))}
+.kc.gr::after{background:var(--gr)}.kc.bl::after{background:var(--bl)}
+.kc.rd::after{background:var(--rd)}.kc.pp::after{background:var(--pp)}
+.kc.tl::after{background:var(--tl)}.kc.og::after{background:var(--og)}
+.kl{font-size:10px;color:var(--t3);margin-bottom:4px;font-weight:500}
+.kv{font-size:15px;font-weight:800;line-height:1.2;word-break:break-all}
+.ks{font-size:10px;color:var(--t3);margin-top:3px}
+.ke{position:absolute;top:10px;left:10px;font-size:22px;opacity:.08}
+
+/* ── Cards ── */
+.card{
+  background:linear-gradient(135deg,rgba(26,24,32,.95),rgba(17,16,24,.98));
+  border:1px solid rgba(255,255,255,.06);
+  border-radius:14px;padding:14px;margin-bottom:12px;
+  transition:border-color .2s;
+}
+.card:hover{border-color:rgba(212,168,67,.1)}
 .ct{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:5px}
+
+/* ── Table ── */
 .tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{width:100%;border-collapse:collapse;font-size:11px;min-width:480px}
-th{text-align:right;padding:7px 9px;background:var(--b3);color:var(--t2);font-weight:700;border-bottom:1px solid var(--bd);white-space:nowrap}
-td{padding:8px 9px;border-bottom:1px solid rgba(26,52,72,.4);vertical-align:middle}
+th{
+  text-align:right;padding:8px 10px;
+  background:rgba(212,168,67,.06);
+  color:rgba(212,168,67,.7);font-weight:700;
+  border-bottom:1px solid rgba(212,168,67,.1);white-space:nowrap;
+}
+td{padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
 tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(212,168,67,.03)}
 .tdr{text-align:left;direction:ltr;font-weight:600}
-.bb{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
-.bg2{background:var(--gr2);color:var(--gr)}.br2{background:var(--r2);color:var(--rd)}.by2{background:var(--g3);color:var(--gd)}.bbl{background:var(--bl2);color:var(--bl)}.bpp{background:var(--pp2);color:var(--pp)}.btl{background:var(--tl2);color:var(--tl)}.bog{background:var(--og2);color:var(--og)}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;font-family:inherit}
-.bpri{background:var(--gd);color:#000}.bpri:hover{background:var(--g2)}.bsec{background:var(--b3);color:var(--tx);border:1px solid var(--bd)}.btn-full{width:100%;justify-content:center;padding:11px}
-.fab{position:fixed;bottom:70px;left:16px;width:52px;height:52px;border-radius:50%;background:var(--gd);color:#000;font-size:24px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:90;box-shadow:0 4px 20px rgba(232,160,32,.4)}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:300;display:none;align-items:flex-end;justify-content:center}
+
+/* ── Badges ── */
+.bb{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap}
+.bg2{background:rgba(46,204,122,.12);color:var(--gr)}
+.br2{background:rgba(240,90,110,.12);color:var(--rd)}
+.by2{background:rgba(212,168,67,.12);color:var(--gd)}
+.bbl{background:rgba(91,138,245,.12);color:var(--bl)}
+.bpp{background:rgba(155,110,245,.12);color:var(--pp)}
+.btl{background:rgba(46,196,212,.12);color:var(--tl)}
+.bog{background:rgba(240,120,64,.12);color:var(--og)}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s}
+.bpri{
+  background:linear-gradient(135deg,var(--gd),var(--g2));
+  color:#000;box-shadow:0 4px 14px rgba(212,168,67,.25);
+}
+.bpri:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(212,168,67,.35)}
+.bpri:active{transform:scale(.97)}
+.bsec{background:rgba(255,255,255,.06);color:var(--tx);border:1px solid rgba(255,255,255,.1)}
+.bsec:hover{background:rgba(255,255,255,.1);border-color:rgba(212,168,67,.2)}
+.btn-full{width:100%;justify-content:center;padding:11px}
+
+/* ── FAB Button ── */
+.fab{
+  position:fixed;bottom:70px;left:16px;
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gd),var(--g2));
+  color:#000;font-size:24px;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  z-index:90;box-shadow:0 6px 24px rgba(212,168,67,.4);
+  transition:transform .2s,box-shadow .2s;
+}
+.fab:hover{transform:scale(1.08);box-shadow:0 8px 28px rgba(212,168,67,.5)}
+.fab:active{transform:scale(.95)}
+
+/* ── Modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
 .modal-overlay.open{display:flex}
-.modal{background:var(--b2);border:1px solid var(--bd);border-radius:16px 16px 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;animation:slideUp .2s ease}
+.modal{
+  background:linear-gradient(180deg,#1a1820 0%,#110f18 100%);
+  border:1px solid rgba(212,168,67,.15);
+  border-radius:20px 20px 0 0;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;
+  animation:slideUp .22s cubic-bezier(.4,0,.2,1);
+}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-head{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--b2);z-index:1}
-.modal-head h3{font-size:14px;font-weight:800}
+.modal-head{
+  padding:16px 18px;
+  border-bottom:1px solid rgba(212,168,67,.1);
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:1;
+  background:linear-gradient(180deg,#1a1820,#1a1820);
+}
+.modal-head h3{font-size:14px;font-weight:800;color:var(--tx)}
 .modal-body{padding:16px}
-.modal-foot{padding:11px 16px;border-top:1px solid var(--bd);display:flex;gap:8px;position:sticky;bottom:0;background:var(--b2)}
-.close-btn{background:none;border:none;color:var(--t3);font-size:17px;cursor:pointer}
+.modal-foot{
+  padding:12px 16px;
+  border-top:1px solid rgba(212,168,67,.1);
+  display:flex;gap:8px;position:sticky;bottom:0;
+  background:#110f18;
+}
+.close-btn{background:none;border:none;color:var(--t2);font-size:18px;cursor:pointer;transition:color .15s}
+.close-btn:hover{color:var(--rd)}
+
+/* ── Form ── */
 .fg{margin-bottom:10px}
-.fg label{display:block;font-size:11px;color:var(--t2);margin-bottom:3px;font-weight:600}
-.fg input,.fg select{width:100%;padding:9px 11px;background:var(--b3);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:13px;font-family:inherit;outline:none;-webkit-appearance:none}
-.fg input:focus,.fg select:focus{border-color:var(--gd)}
-.fg input[readonly]{color:var(--g2);font-weight:700;background:var(--bg)}
-select option{background:var(--b3)}
+.fg label{display:block;font-size:11px;color:var(--t2);margin-bottom:4px;font-weight:600}
+.fg input,.fg select{
+  width:100%;padding:10px 12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:9px;color:var(--tx);font-size:13px;
+  font-family:inherit;outline:none;-webkit-appearance:none;
+  transition:border-color .2s,background .2s;
+}
+.fg input:focus,.fg select:focus{border-color:var(--gd);background:rgba(212,168,67,.05)}
+.fg input[readonly]{color:var(--g2);font-weight:700;background:rgba(212,168,67,.06)}
+select option{background:#1a1820}
 .row2{display:flex;gap:8px}.row2 .fg{flex:1}
-.ib{display:flex;gap:7px;padding:9px 11px;border-radius:8px;font-size:11.5px;margin-bottom:10px;line-height:1.5}
-.info{background:var(--bl2);border:1px solid rgba(59,158,255,.25);color:var(--bl)}
-.warn{background:var(--g3);border:1px solid rgba(232,160,32,.3);color:var(--gd)}
-.ok{background:var(--gr2);border:1px solid rgba(34,197,94,.3);color:var(--gr)}
-.err{background:var(--r2);border:1px solid rgba(240,82,82,.3);color:var(--rd)}
-.search-bar{width:100%;padding:9px 11px;background:var(--b3);border:1px solid var(--bd);border-radius:8px;color:var(--tx);font-size:12px;font-family:inherit;outline:none;margin-bottom:10px}
+
+/* ── Info boxes ── */
+.ib{display:flex;gap:7px;padding:10px 12px;border-radius:10px;font-size:11.5px;margin-bottom:10px;line-height:1.5}
+.info{background:rgba(91,138,245,.08);border:1px solid rgba(91,138,245,.2);color:var(--bl)}
+.warn{background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);color:var(--gd)}
+.ok{background:rgba(46,204,122,.08);border:1px solid rgba(46,204,122,.2);color:var(--gr)}
+.err{background:rgba(240,90,110,.08);border:1px solid rgba(240,90,110,.2);color:var(--rd)}
+
+/* ── Search & Dropdown ── */
+.search-bar{
+  width:100%;padding:10px 12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:9px;color:var(--tx);font-size:12px;
+  font-family:inherit;outline:none;margin-bottom:10px;
+  transition:border-color .2s;
+}
 .search-bar:focus{border-color:var(--gd)}
-.ddrop{background:var(--b3);border:1px solid var(--bd);border-radius:8px;max-height:200px;overflow-y:auto;margin-bottom:10px}
-.ddi{padding:8px 12px;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--bd)}
-.ddi:last-child{border-bottom:none}.ddi:active{background:var(--b4)}
-.pbar{height:5px;background:var(--b3);border-radius:3px;margin-top:3px;overflow:hidden}
-.pfill{height:100%;border-radius:3px;background:linear-gradient(to right,var(--gd),var(--g2))}
-.dv{height:1px;background:var(--bd);margin:11px 0}
+.ddrop{
+  background:#1a1820;
+  border:1px solid rgba(212,168,67,.15);
+  border-radius:10px;max-height:210px;overflow-y:auto;margin-bottom:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.ddi{padding:9px 13px;cursor:pointer;font-size:12px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
+.ddi:last-child{border-bottom:none}
+.ddi:hover{background:rgba(212,168,67,.08)}
+
+/* ── Progress Bar ── */
+.pbar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:4px;overflow:hidden}
+.pfill{height:100%;border-radius:2px;background:linear-gradient(to right,var(--gd),var(--g2))}
+
+/* ── Divider ── */
+.dv{height:1px;background:rgba(255,255,255,.06);margin:12px 0}
+
+/* ── Loading ── */
 .loading{display:flex;align-items:center;justify-content:center;padding:30px;color:var(--t3);font-size:13px;gap:8px}
-.spinner{width:18px;height:18px;border:2px solid var(--bd2);border-top-color:var(--gd);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.spinner{width:18px;height:18px;border:2px solid rgba(212,168,67,.2);border-top-color:var(--gd);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-.saved-badge{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:var(--gr);color:#000;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;z-index:400;display:none}
+
+/* ── Toast ── */
+.saved-badge{
+  position:fixed;top:64px;left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--gd),var(--g2));
+  color:#000;padding:7px 18px;border-radius:20px;
+  font-size:12px;font-weight:800;z-index:400;display:none;
+  box-shadow:0 4px 20px rgba(212,168,67,.4);
+}
 .saved-badge.show{display:block;animation:fadeOut 2.5s forwards}
 @keyframes fadeOut{0%{opacity:0;transform:translate(-50%,-8px)}15%{opacity:1;transform:translate(-50%,0)}80%{opacity:1}100%{opacity:0}}
-/* LOGIN */
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg);background-image:radial-gradient(ellipse at 30% 40%,rgba(232,160,32,.07) 0%,transparent 60%)}
-.login-card{background:var(--b2);border:1px solid var(--bd);border-radius:18px;padding:32px 24px;width:100%;max-width:360px}
-.login-logo{text-align:center;margin-bottom:24px}
-.login-icon{width:58px;height:58px;background:linear-gradient(135deg,var(--gd),var(--g2));border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px}
-.login-card h1{font-size:20px;font-weight:800;text-align:center}
-.login-card p{color:var(--t3);font-size:11.5px;text-align:center;margin-top:3px}
-.login-btn{width:100%;padding:12px;background:var(--gd);color:#000;border:none;border-radius:9px;font-size:14px;font-weight:800;font-family:inherit;cursor:pointer;margin-top:4px}
-.role-btn{background:var(--b3);border:2px solid var(--bd);border-radius:9px;padding:10px 13px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .15s;margin-bottom:7px;width:100%}
-.role-btn.on{border-color:var(--gd);background:var(--g3)}
-.role-btn.on-tl{border-color:var(--tl);background:var(--tl2)}
+
+/* ── Login Page ── */
+.login-page{
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;
+  background:var(--bg);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%,rgba(212,168,67,.1) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 70% at 100% 100%,rgba(155,110,245,.06) 0%,transparent 60%);
+}
+.login-card{
+  background:linear-gradient(135deg,rgba(26,24,32,.98),rgba(17,16,24,.99));
+  border:1px solid rgba(212,168,67,.2);
+  border-radius:22px;padding:36px 28px;width:100%;max-width:370px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(212,168,67,.05);
+}
+.login-logo{text-align:center;margin-bottom:28px}
+.login-icon{
+  width:64px;height:64px;
+  background:linear-gradient(135deg,var(--gd),var(--g2));
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;font-size:28px;
+  box-shadow:0 8px 24px rgba(212,168,67,.35);
+}
+.login-card h1{font-size:22px;font-weight:900;text-align:center;background:linear-gradient(135deg,var(--gd),var(--g2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.login-card p{color:var(--t3);font-size:11.5px;text-align:center;margin-top:4px}
+.login-btn{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--gd),var(--g2));
+  color:#000;border:none;border-radius:11px;
+  font-size:14px;font-weight:900;font-family:inherit;cursor:pointer;margin-top:6px;
+  box-shadow:0 6px 20px rgba(212,168,67,.3);
+  transition:transform .15s,box-shadow .15s;
+}
+.login-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(212,168,67,.4)}
+.login-btn:active{transform:scale(.98)}
+.role-btn{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:11px;padding:11px 14px;cursor:pointer;
+  display:flex;align-items:center;gap:11px;
+  transition:all .2s;margin-bottom:8px;width:100%;
+}
+.role-btn:hover{background:rgba(212,168,67,.06);border-color:rgba(212,168,67,.2)}
+.role-btn.on{border-color:var(--gd);background:rgba(212,168,67,.1);box-shadow:0 0 0 3px rgba(212,168,67,.1)}
+.role-btn.on-tl{border-color:var(--tl);background:rgba(46,196,212,.08)}
+
+/* ── Scrollbar ── */
 ::-webkit-scrollbar{width:3px;height:3px}
-::-webkit-scrollbar-track{background:var(--bg)}
-::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:2px}
-@media(max-width:480px){.kg.k4{grid-template-columns:1fr 1fr}.login-card{padding:24px 16px}}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(212,168,67,.2);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:rgba(212,168,67,.4)}
+
+@media(max-width:480px){
+  .kg.k4{grid-template-columns:1fr 1fr}
+  .login-card{padding:28px 18px}
+  .kg.k3{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
+
+<!-- ══ SPLASH SCREEN ══ -->
+<div id="splashScreen" style="
+  position:fixed;inset:0;z-index:9999;
+  background:#09080a;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:opacity .6s ease;
+">
+  <!-- Background glow -->
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none">
+    <div style="position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,67,.12) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);animation:splashGlow 2s ease-in-out infinite"></div>
+  </div>
+
+  <style>
+    @keyframes splashGlow{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.1)}}
+    @keyframes splashLogo{0%{opacity:0;transform:scale(.8) translateY(20px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+    @keyframes splashText{0%{opacity:0;transform:translateY(15px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes splashBar{0%{width:0%}100%{width:100%}}
+    @keyframes splashDot{0%,80%,100%{opacity:0}40%{opacity:1}}
+  </style>
+
+  <!-- Logo -->
+  <div style="position:relative;z-index:1;text-align:center;animation:splashLogo .7s cubic-bezier(.34,1.56,.64,1) forwards">
+
+    <!-- App Icon -->
+    <div style="
+      width:96px;height:96px;margin:0 auto 24px;
+      background:linear-gradient(135deg,#1a1628,#2a2238);
+      border-radius:26px;
+      border:1px solid rgba(212,168,67,.3);
+      display:flex;align-items:center;justify-content:center;
+      font-size:44px;
+      box-shadow:0 20px 60px rgba(212,168,67,.2),0 0 0 1px rgba(212,168,67,.1);
+      position:relative;overflow:hidden;
+    ">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(212,168,67,.1),transparent)"></div>
+      📒
+    </div>
+
+    <!-- App Name -->
+    <div style="
+      font-size:38px;font-weight:900;letter-spacing:-1px;
+      background:linear-gradient(135deg,#fff 0%,#d4a843 40%,#f0c84e 60%,#d4a843 100%);
+      background-size:200%;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      animation:splashText .5s .3s ease both, shimmer 3s linear infinite;
+      margin-bottom:6px;
+    ">MOTIEBOOKS</div>
+
+    <!-- Tagline -->
+    <div style="
+      font-size:12px;color:rgba(212,168,67,.6);
+      font-weight:600;letter-spacing:2px;text-transform:uppercase;
+      animation:splashText .5s .5s ease both;
+      margin-bottom:32px;
+    ">Business Operating System</div>
+
+    <!-- Loading bar -->
+    <div style="
+      width:200px;height:3px;
+      background:rgba(255,255,255,.08);
+      border-radius:2px;margin:0 auto 12px;overflow:hidden;
+      animation:splashText .3s .6s ease both;
+    ">
+      <div id="splashBar" style="
+        height:100%;width:0%;border-radius:2px;
+        background:linear-gradient(to right,#d4a843,#f0c84e);
+        animation:splashBar 1.8s .7s cubic-bezier(.4,0,.2,1) forwards;
+      "></div>
+    </div>
+
+    <!-- Loading dots -->
+    <div style="display:flex;justify-content:center;gap:5px;animation:splashText .3s .7s ease both">
+      <div style="width:5px;height:5px;border-radius:50%;background:rgba(212,168,67,.5);animation:splashDot 1.2s .8s ease infinite"></div>
+      <div style="width:5px;height:5px;border-radius:50%;background:rgba(212,168,67,.5);animation:splashDot 1.2s 1s ease infinite"></div>
+      <div style="width:5px;height:5px;border-radius:50%;background:rgba(212,168,67,.5);animation:splashDot 1.2s 1.2s ease infinite"></div>
+    </div>
+
+  </div>
+
+  <!-- Bottom branding -->
+  <div style="
+    position:absolute;bottom:40px;
+    font-size:10px;color:rgba(255,255,255,.2);
+    font-weight:600;letter-spacing:1px;
+    animation:splashText .5s 1s ease both;
+    text-align:center;
+  ">
+    <div>فابریکه حیات‌زاده · کمپنی نورآغامنصور</div>
+    <div style="margin-top:4px">کابل، افغانستان 🇦🇫</div>
+  </div>
+</div>
 
 <div class="saved-badge" id="savedBadge">✅ ذخیره شد!</div>
 
 <!-- ══ LOGIN ══ -->
 <div id="loginPage" class="login-page">
-  <div class="login-card">
-    <div class="login-logo">
-      <div class="login-icon">👟</div>
-      <h1>فابریکه حیات‌زاده</h1>
-      <p>PCU ERP v9.0 | Supabase Cloud</p>
+
+  <!-- Background particles -->
+  <div style="position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0">
+    <div style="position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(212,168,67,.08) 0%,transparent 70%);top:-100px;right:-100px;animation:floatBg 8s ease-in-out infinite"></div>
+    <div style="position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(155,110,245,.06) 0%,transparent 70%);bottom:-80px;left:-80px;animation:floatBg 10s ease-in-out infinite reverse"></div>
+    <div style="position:absolute;width:1px;height:100%;background:linear-gradient(to bottom,transparent,rgba(212,168,67,.1),transparent);left:50%;animation:scanLine 4s linear infinite;opacity:.5"></div>
+  </div>
+  <style>
+    @keyframes floatBg{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-20px) scale(1.05)}}
+    @keyframes scanLine{0%{transform:translateX(-200px)}100%{transform:translateX(200px)}}
+    @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+    @keyframes slideInDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes slideInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes glow{0%,100%{box-shadow:0 0 20px rgba(212,168,67,.2)}50%{box-shadow:0 0 40px rgba(212,168,67,.4)}}
+    .login-wrap{position:relative;z-index:1;width:100%;max-width:400px;animation:slideInUp .5s ease}
+    .login-top-badge{
+      text-align:center;margin-bottom:16px;
+      animation:slideInDown .4s ease;
+    }
+    .company-tag{
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(212,168,67,.1);
+      border:1px solid rgba(212,168,67,.25);
+      color:var(--gd);font-size:10px;font-weight:700;
+      padding:4px 12px;border-radius:20px;letter-spacing:.5px;
+    }
+    .login-card-v2{
+      background:linear-gradient(145deg,rgba(30,26,42,.98),rgba(18,15,28,.99));
+      border:1px solid rgba(212,168,67,.2);
+      border-radius:24px;padding:32px 28px;
+      box-shadow:
+        0 0 0 1px rgba(212,168,67,.05),
+        0 20px 60px rgba(0,0,0,.6),
+        0 0 80px rgba(212,168,67,.04);
+      backdrop-filter:blur(20px);
+    }
+    .login-header-v2{
+      display:flex;flex-direction:column;align-items:center;
+      margin-bottom:28px;
+    }
+    .login-logo-ring{
+      position:relative;width:80px;height:80px;margin-bottom:16px;
+      animation:glow 3s ease-in-out infinite;
+    }
+    .login-logo-ring::before{
+      content:'';position:absolute;inset:-3px;
+      border-radius:22px;
+      background:linear-gradient(135deg,var(--gd),var(--g2),rgba(212,168,67,.2),var(--gd));
+      background-size:300%;
+      animation:shimmer 3s linear infinite;
+    }
+    .login-logo-inner{
+      position:relative;width:100%;height:100%;
+      background:linear-gradient(135deg,#1a1628,#2a2238);
+      border-radius:20px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:32px;z-index:1;
+    }
+    .login-brand-name{
+      font-size:22px;font-weight:900;letter-spacing:-.3px;
+      background:linear-gradient(135deg,#fff 0%,var(--gd) 50%,var(--g2) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      margin-bottom:4px;
+    }
+    .login-brand-sub{
+      font-size:11px;color:var(--t3);
+      display:flex;align-items:center;gap:6px;
+    }
+    .login-brand-sub::before,.login-brand-sub::after{
+      content:'';flex:1;height:1px;
+      background:linear-gradient(to var(--dir,right),transparent,rgba(212,168,67,.2));
+    }
+    .login-brand-sub::after{--dir:left}
+    .login-divider{
+      display:flex;align-items:center;gap:10px;
+      margin:16px 0;
+    }
+    .login-divider::before,.login-divider::after{
+      content:'';flex:1;height:1px;
+      background:rgba(255,255,255,.06);
+    }
+    .login-divider span{font-size:10px;color:var(--t3);font-weight:600}
+    .role-btn-v2{
+      display:flex;align-items:center;gap:12px;
+      width:100%;padding:13px 16px;margin-bottom:8px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;cursor:pointer;
+      font-family:inherit;
+      transition:all .2s;text-align:right;
+      position:relative;overflow:hidden;
+    }
+    .role-btn-v2::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(212,168,67,.05),transparent);
+      opacity:0;transition:opacity .2s;
+    }
+    .role-btn-v2:hover::before{opacity:1}
+    .role-btn-v2:hover{border-color:rgba(212,168,67,.25);transform:translateX(-2px)}
+    .role-btn-v2.on{
+      border-color:var(--gd);
+      background:linear-gradient(135deg,rgba(212,168,67,.12),rgba(212,168,67,.04));
+      box-shadow:0 0 0 1px rgba(212,168,67,.15),inset 0 1px 0 rgba(212,168,67,.1);
+    }
+    .role-btn-v2.on-tl{border-color:var(--tl);background:rgba(46,196,212,.08)}
+    .role-icon-wrap{
+      width:40px;height:40px;border-radius:12px;flex-shrink:0;
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .role-btn-v2.on .role-icon-wrap{background:rgba(212,168,67,.15);border-color:rgba(212,168,67,.3)}
+    .role-info{flex:1;text-align:right}
+    .role-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:2px}
+    .role-btn-v2.on .role-title{color:var(--g2)}
+    .role-desc{font-size:10px;color:var(--t3)}
+    .role-check{
+      width:18px;height:18px;border-radius:50%;
+      border:1.5px solid rgba(255,255,255,.15);
+      flex-shrink:0;display:flex;align-items:center;justify-content:center;
+      font-size:10px;color:#000;transition:all .2s;
+    }
+    .role-btn-v2.on .role-check{
+      background:linear-gradient(135deg,var(--gd),var(--g2));
+      border-color:var(--gd);
+    }
+    .login-pass-wrap{position:relative;margin-bottom:16px}
+    .login-pass-label{
+      font-size:11px;color:var(--t2);font-weight:600;
+      display:block;margin-bottom:6px;
+    }
+    .login-pass-input{
+      width:100%;padding:12px 44px 12px 14px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;color:var(--tx);
+      font-size:14px;font-family:inherit;outline:none;
+      transition:border-color .2s,background .2s;
+      -webkit-appearance:none;
+    }
+    .login-pass-input:focus{
+      border-color:var(--gd);
+      background:rgba(212,168,67,.04);
+      box-shadow:0 0 0 3px rgba(212,168,67,.1);
+    }
+    .pass-toggle{
+      position:absolute;left:14px;bottom:13px;
+      background:none;border:none;cursor:pointer;
+      font-size:17px;color:var(--t3);
+      transition:color .2s;padding:0;line-height:1;
+    }
+    .pass-toggle:hover{color:var(--gd)}
+    .login-btn-v2{
+      width:100%;padding:14px;
+      background:linear-gradient(135deg,#c8992a,#f0c84e,#d4a843);
+      background-size:200%;
+      color:#000;border:none;border-radius:14px;
+      font-size:15px;font-weight:900;font-family:inherit;
+      cursor:pointer;letter-spacing:.3px;
+      box-shadow:0 6px 24px rgba(212,168,67,.3);
+      transition:all .2s;
+      animation:shimmer 3s linear infinite;
+    }
+    .login-btn-v2:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(212,168,67,.4)}
+    .login-btn-v2:active{transform:scale(.98)}
+    .login-footer{
+      margin-top:20px;text-align:center;
+      font-size:10px;color:var(--t3);
+      display:flex;align-items:center;justify-content:center;gap:8px;
+    }
+    .login-footer-dot{width:3px;height:3px;border-radius:50%;background:var(--t3)}
+  </style>
+
+  <div class="login-wrap">
+    <!-- شرکت badge -->
+    <div class="login-top-badge">
+      <span class="company-tag">🇦🇫 کمپنی نورآغامنصور · کابل</span>
     </div>
-    <div id="loginErr" class="ib err" style="display:none"></div>
-    <div id="loginLoading" class="ib info" style="display:none"><div class="spinner"></div>در حال اتصال به سرور...</div>
 
-    <label style="display:block;font-size:11px;color:var(--t2);margin-bottom:7px;font-weight:600">نقش خود را انتخاب کن:</label>
-    <button class="role-btn" id="role-admin" onclick="selectRole('admin')">
-      <span style="font-size:22px">👑</span>
-      <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--g2)">مالک / Admin</div><div style="font-size:10px;color:var(--t3)">دسترسی کامل</div></div>
-    </button>
-    <button class="role-btn" id="role-staff" onclick="selectRole('staff')">
-      <span style="font-size:22px">👷</span>
-      <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--tl)">کارمند فابریکه</div><div style="font-size:10px;color:var(--t3)">فروش، انبار، تولید</div></div>
-    </button>
+    <div class="login-card-v2">
+      <!-- Header -->
+      <div class="login-header-v2">
+        <div class="login-logo-ring">
+          <div class="login-logo-inner">👟</div>
+        </div>
+        <div class="login-brand-name">فابریکه حیات‌زاده</div>
+        <div class="login-brand-sub">PCU ERP v9.0 · Supabase Cloud</div>
+      </div>
 
-    <div class="fg" style="margin-top:10px">
-      <label>رمز عبور</label>
-      <div style="position:relative">
-        <input type="password" id="loginPass" placeholder="پسورد را بنویس..." onkeydown="if(event.key==='Enter')doLogin()" style="width:100%;padding-left:44px"/>
-        <button type="button" onclick="
+      <!-- Error / Loading -->
+      <div id="loginErr" class="ib err" style="display:none;margin-bottom:12px"></div>
+      <div id="loginLoading" class="ib info" style="display:none;margin-bottom:12px">
+        <div class="spinner"></div>در حال اتصال به سرور...
+      </div>
+
+      <!-- Role Selection -->
+      <div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">نقش خود را انتخاب کن</div>
+
+      <button class="role-btn-v2" id="role-admin" onclick="selectRole('admin')">
+        <div class="role-icon-wrap">👑</div>
+        <div class="role-info">
+          <div class="role-title">مالک / Admin</div>
+          <div class="role-desc">دسترسی کامل به همه بخش‌ها</div>
+        </div>
+        <div class="role-check" id="check-admin"></div>
+      </button>
+
+      <button class="role-btn-v2" id="role-staff" onclick="selectRole('staff')">
+        <div class="role-icon-wrap">👷</div>
+        <div class="role-info">
+          <div class="role-title" style="color:var(--tl)">کارمند فابریکه</div>
+          <div class="role-desc">فروش، انبار، تولید</div>
+        </div>
+        <div class="role-check" id="check-staff"></div>
+      </button>
+
+      <!-- Divider -->
+      <div class="login-divider"><span>رمز عبور</span></div>
+
+      <!-- Password -->
+      <div class="login-pass-wrap">
+        <input type="password" class="login-pass-input" id="loginPass"
+          placeholder="پسورد خود را وارد کنید..."
+          onkeydown="if(event.key==='Enter')doLogin()"/>
+        <button type="button" class="pass-toggle" id="showPassBtn" onclick="
           var inp=document.getElementById('loginPass');
           var btn=document.getElementById('showPassBtn');
           if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
           else{inp.type='password';btn.textContent='👁';}
-        " id="showPassBtn" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:0;line-height:1">👁</button>
+        ">👁</button>
       </div>
+
+      <!-- Login Button -->
+      <button class="login-btn-v2" onclick="doLogin()">
+        ورود به سیستم &nbsp;🚀
+      </button>
+
+      <p id="role-hint" style="text-align:center;color:var(--t3);font-size:10px;margin-top:12px">
+        ابتدا نقش خود را انتخاب کنید
+      </p>
     </div>
-    <button class="login-btn" onclick="doLogin()">ورود به سیستم 🚀</button>
-    <p id="role-hint" style="text-align:center;color:var(--t3);font-size:10.5px;margin-top:10px">اول نقش را انتخاب کن</p>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <span>PCU ERP</span>
+      <div class="login-footer-dot"></div>
+      <span>فابریکه حیات‌زاده</span>
+      <div class="login-footer-dot"></div>
+      <span>v9.0</span>
+    </div>
   </div>
 </div>
 
@@ -505,6 +1065,15 @@ select option{background:var(--b3)}
     <button class="tab-item" onclick="goPage('report')" data-tab="report"><div class="ti">📈</div><span>گزارش</span></button>
   </div>
   <button class="fab" onclick="openFab()">＋</button>
+  <button id="voiceBtn" onclick="openVoiceModal()" style="
+    position:fixed;bottom:70px;left:78px;
+    width:54px;height:54px;border-radius:50%;
+    background:linear-gradient(135deg,#7c3aed,#a855f7);
+    color:#fff;font-size:22px;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    z-index:90;box-shadow:0 6px 24px rgba(168,85,247,.4);
+    transition:transform .2s,box-shadow .2s;
+  " title="ثبت صوتی فروش">🎤</button>
 </div><!-- /app -->
 
 <!-- ══ MODALS ══ -->
@@ -909,6 +1478,88 @@ select option{background:var(--b3)}
   </div>
 </div>
 
+<!-- ══ VOICE MODAL ══ -->
+<div class="modal-overlay" id="modalVoice">
+  <div class="modal" style="border-radius:24px 24px 0 0;border-top:2px solid rgba(168,85,247,.3)">
+    <div class="modal-head" style="background:linear-gradient(135deg,rgba(124,58,237,.15),transparent)">
+      <div>
+        <h3 style="color:#c084fc">🎤 ثبت صوتی</h3>
+        <div style="font-size:10px;color:var(--t3);margin-top:2px">دری یا پشتو صحبت کن</div>
+      </div>
+      <button class="close-btn" onclick="closeVoiceModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- راهنمای صحبت کردن -->
+      <div style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:12px;padding:12px;margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;color:#c084fc;margin-bottom:8px">💡 مثال‌های صحبت:</div>
+        <div style="font-size:11px;color:var(--t2);line-height:2">
+          🗣 <strong style="color:var(--tx)">"قربان، پنج درجن استاندارد، ده هزار افغانی"</strong><br>
+          🗣 <strong style="color:var(--tx)">"حاجی زمریالی، سه درجن VIP، قرضه"</strong><br>
+          🗣 <strong style="color:var(--tx)">"فدا محمد، ده درجن کودکانه، پنج هزار دادم"</strong>
+        </div>
+      </div>
+
+      <!-- Mic Button -->
+      <div style="text-align:center;margin:20px 0">
+        <button id="micBtn" onclick="toggleVoice()" style="
+          width:90px;height:90px;border-radius:50%;border:none;cursor:pointer;
+          background:linear-gradient(135deg,#7c3aed,#a855f7);
+          color:#fff;font-size:36px;
+          box-shadow:0 8px 32px rgba(168,85,247,.4);
+          transition:all .2s;display:flex;align-items:center;justify-content:center;margin:0 auto;
+        ">🎤</button>
+        <div id="voiceStatus" style="margin-top:12px;font-size:12px;color:var(--t3)">دکمه را بزن و صحبت کن</div>
+        <!-- Waveform animation -->
+        <div id="voiceWave" style="display:none;margin-top:10px;display:none;align-items:center;justify-content:center;gap:3px;height:30px">
+          <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+          <div class="wave-bar"></div><div class="wave-bar"></div>
+        </div>
+      </div>
+
+      <!-- Transcript -->
+      <div id="voiceTranscript" style="display:none">
+        <div style="font-size:11px;color:var(--t2);margin-bottom:6px;font-weight:600">آنچه گفتی:</div>
+        <div id="transcriptText" style="background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);border-radius:10px;padding:12px;font-size:13px;color:var(--tx);line-height:1.7;min-height:50px"></div>
+      </div>
+
+      <!-- Parsed Result -->
+      <div id="voiceParsed" style="display:none;margin-top:12px">
+        <div style="font-size:11px;color:var(--t2);margin-bottom:8px;font-weight:600">✅ اطلاعات استخراج شده:</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="parsedFields"></div>
+        <div class="ib warn" style="margin-top:10px;font-size:11px" id="voiceWarning"></div>
+      </div>
+
+      <!-- Claude AI Processing -->
+      <div id="voiceAILoading" style="display:none;text-align:center;padding:16px">
+        <div class="spinner" style="margin:0 auto 8px"></div>
+        <div style="font-size:12px;color:#c084fc">Claude AI در حال پردازش صدا...</div>
+      </div>
+
+    </div>
+    <div class="modal-foot" style="background:linear-gradient(135deg,rgba(124,58,237,.05),transparent)">
+      <button class="btn bsec" onclick="closeVoiceModal()">انصراف</button>
+      <button class="btn" id="voiceConfirmBtn" onclick="confirmVoiceSale()" style="display:none;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;box-shadow:0 4px 14px rgba(168,85,247,.3)">✅ تایید و ثبت فروش</button>
+      <button class="btn bsec" id="voiceRetryBtn" onclick="retryVoice()" style="display:none">🔄 دوباره</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.wave-bar{
+  width:4px;background:linear-gradient(to top,#7c3aed,#c084fc);
+  border-radius:2px;animation:wave .6s ease-in-out infinite;
+}
+.wave-bar:nth-child(1){height:12px;animation-delay:0s}
+.wave-bar:nth-child(2){height:22px;animation-delay:.1s}
+.wave-bar:nth-child(3){height:32px;animation-delay:.2s}
+.wave-bar:nth-child(4){height:22px;animation-delay:.3s}
+.wave-bar:nth-child(5){height:12px;animation-delay:.4s}
+@keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.5)}}
+.mic-pulse{animation:micPulse 1s ease-in-out infinite}
+@keyframes micPulse{0%,100%{box-shadow:0 8px 32px rgba(168,85,247,.4)}50%{box-shadow:0 8px 48px rgba(168,85,247,.8),0 0 0 12px rgba(168,85,247,.1)}}
+</style>
+
 <script>
 // ══ ORDERS v2 — چند آیتم ══
 const PRD_NAMES={STD:"PCU استاندارد ۳۶-۴۲",VIP:"PCU ویژه ۴۳-۴۵",KID:"PCU کودکانه ۲۴-۳۵"};
@@ -1169,6 +1820,26 @@ async function submitDelivery(){
   document.getElementById("del-btn").textContent="ثبت ارسال ✓";
 }
 
+// ── SPLASH SCREEN ──
+(function(){
+  // Hide login and app during splash
+  document.getElementById("loginPage").style.display="none";
+  setTimeout(()=>{
+    const splash=document.getElementById("splashScreen");
+    splash.style.opacity="0";
+    splash.style.pointerEvents="none";
+    setTimeout(()=>{
+      splash.style.display="none";
+      // Show login page with animation
+      const login=document.getElementById("loginPage");
+      login.style.display="flex";
+      login.style.opacity="0";
+      login.style.transition="opacity .5s ease";
+      setTimeout(()=>login.style.opacity="1",50);
+    },600);
+  },2500);
+})();
+
 // ══ Supabase + Core ══
 //  فابریکه حیات‌زاده
 // ══════════════════════════════════════════════════════
@@ -1305,9 +1976,11 @@ const PASS_DEFAULT={admin:"Admin1234",staff:"Staff1234"};
 
 function selectRole(r){
   selectedRole=r;
-  document.getElementById("role-admin").className="role-btn"+(r==="admin"?" on":"");
-  document.getElementById("role-staff").className="role-btn"+(r==="staff"?" on-tl":"");
-  document.getElementById("role-hint").textContent=r==="admin"?"👑 پسورد مالک را بنویس":"👷 پسورد کارمندان را بنویس";
+  document.getElementById("role-admin").className="role-btn-v2"+(r==="admin"?" on":"");
+  document.getElementById("role-staff").className="role-btn-v2"+(r==="staff"?" on-tl":"");
+  document.getElementById("check-admin").textContent=r==="admin"?"✓":"";
+  document.getElementById("check-staff").textContent=r==="staff"?"✓":"";
+  document.getElementById("role-hint").textContent=r==="admin"?"👑 پسورد مالک را وارد کنید":"👷 پسورد کارمندان را وارد کنید";
   document.getElementById("loginPass").focus();
 }
 
@@ -2868,6 +3541,304 @@ async function saveCustNote(custId){
   await sbPost("customer_notes",{cust_id:custId,note,type:document.getElementById("crm-note-type")?.value,date:today()});
   document.getElementById("modalCRM_tmp")?.remove();
   showSaved();
+}
+
+// ══ VOICE SYSTEM ══
+let _voiceRecog=null, _isListening=false, _voiceParsedData=null;
+
+function openVoiceModal(){
+  openModal("modalVoice");
+  resetVoiceUI();
+}
+function closeVoiceModal(){
+  stopVoice();
+  closeModal("modalVoice");
+}
+function resetVoiceUI(){
+  document.getElementById("voiceTranscript").style.display="none";
+  document.getElementById("voiceParsed").style.display="none";
+  document.getElementById("voiceAILoading").style.display="none";
+  document.getElementById("voiceConfirmBtn").style.display="none";
+  document.getElementById("voiceRetryBtn").style.display="none";
+  document.getElementById("voiceWave").style.display="none";
+  document.getElementById("voiceStatus").textContent="دکمه را بزن و صحبت کن";
+  document.getElementById("micBtn").style.background="linear-gradient(135deg,#7c3aed,#a855f7)";
+  document.getElementById("micBtn").className="";
+  document.getElementById("transcriptText").textContent="";
+  _voiceParsedData=null;
+}
+function retryVoice(){resetVoiceUI();}
+
+function toggleVoice(){
+  if(_isListening) stopVoice();
+  else startVoice();
+}
+
+function startVoice(){
+  // Check browser support
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    // Fallback: manual text input
+    showManualInput();
+    return;
+  }
+  _voiceRecog=new SpeechRecognition();
+  _voiceRecog.lang="fa-IR"; // فارسی/دری
+  _voiceRecog.continuous=false;
+  _voiceRecog.interimResults=true;
+  _voiceRecog.maxAlternatives=1;
+
+  _voiceRecog.onstart=()=>{
+    _isListening=true;
+    const btn=document.getElementById("micBtn");
+    btn.textContent="⏹";
+    btn.style.background="linear-gradient(135deg,#dc2626,#f43f5e)";
+    btn.classList.add("mic-pulse");
+    document.getElementById("voiceStatus").innerHTML='<span style="color:#f87171">🔴 در حال ضبط... صحبت کن</span>';
+    document.getElementById("voiceWave").style.display="flex";
+    document.getElementById("voiceTranscript").style.display="block";
+  };
+
+  _voiceRecog.onresult=(e)=>{
+    const t=Array.from(e.results).map(r=>r[0].transcript).join("");
+    document.getElementById("transcriptText").textContent=t;
+  };
+
+  _voiceRecog.onend=()=>{
+    _isListening=false;
+    const txt=document.getElementById("transcriptText").textContent;
+    const btn=document.getElementById("micBtn");
+    btn.textContent="🎤";
+    btn.style.background="linear-gradient(135deg,#7c3aed,#a855f7)";
+    btn.classList.remove("mic-pulse");
+    document.getElementById("voiceWave").style.display="none";
+    if(txt.trim()) processVoiceWithAI(txt);
+    else document.getElementById("voiceStatus").textContent="صدایی شنیده نشد — دوباره امتحان کن";
+  };
+
+  _voiceRecog.onerror=(e)=>{
+    _isListening=false;
+    if(e.error==="not-allowed") showManualInput();
+    else document.getElementById("voiceStatus").textContent="خطا: "+e.error+" — دوباره امتحان کن";
+  };
+
+  _voiceRecog.start();
+}
+
+function stopVoice(){
+  if(_voiceRecog&&_isListening){_voiceRecog.stop();}
+  _isListening=false;
+}
+
+function showManualInput(){
+  // If mic not available, show text input
+  document.getElementById("voiceStatus").innerHTML='<span style="color:var(--og)">⚠️ میکروفون در دسترس نیست</span>';
+  document.getElementById("voiceTranscript").style.display="block";
+  document.getElementById("transcriptText").contentEditable="true";
+  document.getElementById("transcriptText").style.border="1px solid var(--gd)";
+  document.getElementById("transcriptText").innerHTML='<span style="color:var(--t3)">اینجا تایپ کن: مثلاً "قربان، ۵ درجن استاندارد، ۱۰۰۰۰ افغانی"</span>';
+  document.getElementById("transcriptText").onclick=function(){if(this.textContent.includes("اینجا"))this.textContent="";};
+  // Show process button
+  const btn=document.createElement("button");
+  btn.className="btn bpri btn-full";btn.style.marginTop="10px";
+  btn.textContent="🤖 پردازش با AI";
+  btn.onclick=()=>processVoiceWithAI(document.getElementById("transcriptText").textContent);
+  document.getElementById("voiceTranscript").appendChild(btn);
+}
+
+async function processVoiceWithAI(text){
+  document.getElementById("voiceStatus").textContent="🤖 Claude AI در حال تحلیل...";
+  document.getElementById("voiceAILoading").style.display="block";
+  document.getElementById("voiceParsed").style.display="none";
+  document.getElementById("voiceConfirmBtn").style.display="none";
+  document.getElementById("voiceRetryBtn").style.display="none";
+
+  // Build customer list for AI
+  const custNames=CUSTOMERS.slice(0,30).map(c=>c.n).join("، ");
+
+  const prompt=`You are an AI assistant for an Afghan PCU slipper factory ERP system.
+Extract sale information from this voice command in Dari/Persian/Pashto:
+"${text}"
+
+Customer list (match the closest): ${custNames}
+
+Return ONLY valid JSON, no other text:
+{
+  "customer_name": "exact name from list or closest match",
+  "customer_id": "c-number if found, else null",
+  "product": "STD or VIP or KID (STD=استاندارد/عادی, VIP=ویژه/خاص/گران, KID=کودک/بچه)",
+  "dozen": number,
+  "price_per_dozen": number or null,
+  "paid": number or null,
+  "is_credit": boolean (true if قرضه/نسیه/قرض mentioned),
+  "confidence": "high/medium/low",
+  "notes": "any unclear parts"
+}`;
+
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:500,
+        messages:[{role:"user",content:prompt}]
+      })
+    });
+    const data=await r.json();
+    const raw=data.content?.[0]?.text||"{}";
+    const clean=raw.replace(/```json|```/g,"").trim();
+    const parsed=JSON.parse(clean);
+    _voiceParsedData=parsed;
+    showParsedResult(parsed,text);
+  }catch(e){
+    // Fallback: simple regex parsing
+    const fallback=simpleVoiceParse(text);
+    _voiceParsedData=fallback;
+    showParsedResult(fallback,text);
+  }
+  document.getElementById("voiceAILoading").style.display="none";
+}
+
+function simpleVoiceParse(text){
+  // Simple fallback parser
+  const t=text.toLowerCase();
+  let product="STD";
+  if(t.includes("ویژه")||t.includes("vip")||t.includes("خاص")) product="VIP";
+  if(t.includes("کودک")||t.includes("بچه")||t.includes("kid")) product="KID";
+
+  const dozMatch=text.match(/(\d+)\s*(درجن|دزن)/);
+  const dozen=dozMatch?+dozMatch[1]:0;
+
+  const priceMatch=text.match(/(\d[\d,]*)\s*(افغانی|افغان|هزار)/);
+  let price=0;
+  if(priceMatch){
+    price=+priceMatch[1].replace(/,/g,"");
+    if(text.includes("هزار")) price*=1000;
+  }
+
+  const isCredit=t.includes("قرضه")||t.includes("نسیه")||t.includes("قرض");
+
+  // Try to find customer
+  const custMatch=CUSTOMERS.find(c=>text.includes(c.n.split(" ")[0])||text.includes(c.n));
+
+  return{
+    customer_name:custMatch?.n||"نامشخص",
+    customer_id:custMatch?.id||null,
+    product,dozen,
+    price_per_dozen:price||null,
+    paid:isCredit?0:price*dozen||null,
+    is_credit:isCredit,
+    confidence:"low",
+    notes:"پردازش آفلاین"
+  };
+}
+
+function showParsedResult(p,originalText){
+  document.getElementById("voiceParsed").style.display="block";
+  document.getElementById("voiceRetryBtn").style.display="inline-flex";
+
+  const conf={high:"🟢 بالا",medium:"🟡 متوسط",low:"🔴 پایین"};
+  const prdNames={STD:"PCU استاندارد",VIP:"PCU ویژه",KID:"PCU کودکانه"};
+
+  document.getElementById("parsedFields").innerHTML=`
+    <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:9px;color:var(--t3);margin-bottom:4px">👤 مشتری</div>
+      <div style="font-size:13px;font-weight:700;color:${p.customer_id?"var(--gr)":"var(--og)"}">${p.customer_name}</div>
+      <div style="font-size:10px;color:var(--t3)">${p.customer_id?"✅ پیدا شد":"⚠️ پیدا نشد"}</div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:9px;color:var(--t3);margin-bottom:4px">👟 مدل</div>
+      <div style="font-size:13px;font-weight:700;color:var(--pp)">${prdNames[p.product]||p.product}</div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:9px;color:var(--t3);margin-bottom:4px">📦 درجن</div>
+      <div style="font-size:13px;font-weight:700;color:var(--gd)">${p.dozen||"؟"} درجن</div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:9px;color:var(--t3);margin-bottom:4px">💵 قیمت/درجن</div>
+      <div style="font-size:13px;font-weight:700;color:var(--bl)">${p.price_per_dozen?afn(p.price_per_dozen):"نامشخص"}</div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:9px;color:var(--t3);margin-bottom:4px">💰 پول دریافتی</div>
+      <div style="font-size:13px;font-weight:700;color:${p.is_credit?"var(--og)":"var(--gr)"}">${p.is_credit?"قرضه 💳":p.paid!=null?afn(p.paid):"نامشخص"}</div>
+    </div>
+    <div style="background:rgba(255,255,255,.04);border-radius:10px;padding:10px;border:1px solid rgba(255,255,255,.08)">
+      <div style="font-size:9px;color:var(--t3);margin-bottom:4px">🎯 دقت</div>
+      <div style="font-size:13px;font-weight:700">${conf[p.confidence]||p.confidence}</div>
+    </div>`;
+
+  if(p.notes) document.getElementById("voiceWarning").innerHTML=`⚠️ ${p.notes}`;
+  else document.getElementById("voiceWarning").innerHTML="";
+
+  // Only show confirm if we have enough data
+  if(p.dozen>0&&p.product){
+    document.getElementById("voiceConfirmBtn").style.display="inline-flex";
+    document.getElementById("voiceStatus").innerHTML='<span style="color:var(--gr)">✅ اطلاعات آماده است — تایید کن</span>';
+  } else {
+    document.getElementById("voiceStatus").innerHTML='<span style="color:var(--og)">⚠️ اطلاعات ناقص — دوباره صحبت کن</span>';
+  }
+}
+
+async function confirmVoiceSale(){
+  if(!_voiceParsedData) return;
+  const p=_voiceParsedData;
+
+  // Find customer
+  let cust=CUSTOMERS.find(c=>c.id===p.customer_id);
+  if(!cust&&p.customer_name) cust=CUSTOMERS.find(c=>c.n.includes(p.customer_name.split(" ")[0]));
+
+  const tot=(p.dozen||0)*(p.price_per_dozen||0);
+  const paid=p.is_credit?0:(p.paid!=null?p.paid:tot);
+  const rem=tot-paid;
+  const prod=p.product||"STD";
+  const cg=calcCOGS(prod,p.dozen||0),gp=tot-cg;
+  const wj=22*(p.dozen||0), ws=25*(p.dozen||0);
+  const saleDate=today();
+
+  document.getElementById("voiceConfirmBtn").disabled=true;
+  document.getElementById("voiceConfirmBtn").textContent="در حال ثبت...";
+
+  const res=await sbPost("sales",{
+    date:saleDate,
+    cust_id:cust?.id||"voice",
+    cust_name:cust?.n||p.customer_name||"مشتری صوتی",
+    province:cust?.p||"نامشخص",
+    bill:"V"+Date.now().toString().slice(-4),
+    product:prod,
+    dozen:p.dozen||0,
+    price_per_doz:p.price_per_dozen||0,
+    total:tot,paid,remaining:rem,
+    cogs:cg,gross_profit:gp,margin:tot>0?gp/tot*100:0,
+    note:"ثبت صوتی"
+  });
+
+  if(res){
+    // ثبت اجرت سرکاریگران
+    const emps=await sbGet("employees","?select=id,name");
+    if(emps){
+      const j=emps.find(e=>e.name.includes("جمشید"));
+      const s=emps.find(e=>e.name.includes("سمیع"));
+      if(j) await sbPost("employee_payments",{employee_id:j.id,employee_name:"جمشید",date:saleDate,amount_afn:wj,type:"salary",notes:"اجرت ثبت صوتی"});
+      if(s) await sbPost("employee_payments",{employee_id:s.id,employee_name:"سمیع‌الله",date:saleDate,amount_afn:ws,type:"salary",notes:"اجرت ثبت صوتی"});
+    }
+
+    // Success feedback
+    document.getElementById("voiceParsed").style.display="none";
+    document.getElementById("voiceTranscript").style.display="none";
+    document.getElementById("voiceStatus").innerHTML=`
+      <div style="text-align:center;padding:16px">
+        <div style="font-size:48px;margin-bottom:8px">✅</div>
+        <div style="font-size:15px;font-weight:800;color:var(--gr)">فروش ثبت شد!</div>
+        <div style="font-size:12px;color:var(--t2);margin-top:6px">${cust?.n||p.customer_name} | ${p.dozen} درجن | ${tot>0?afn(tot):"قرضه"}</div>
+      </div>`;
+    showSaved();
+    setTimeout(()=>{closeVoiceModal();renderSales();},2000);
+  } else {
+    document.getElementById("voiceConfirmBtn").disabled=false;
+    document.getElementById("voiceConfirmBtn").textContent="✅ تایید و ثبت";
+    document.getElementById("voiceStatus").innerHTML='<span style="color:var(--rd)">❌ خطا در ثبت — دوباره امتحان کن</span>';
+  }
 }
 
 // ── KEY LISTENER ──
