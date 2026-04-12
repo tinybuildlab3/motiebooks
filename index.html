@@ -3173,6 +3173,7 @@ async function renderTax(){
   </tr>`).join(""):'<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--t3)">هنوز سابقه مالیاتی ثبت نشده</td></tr>';
 }
 
+function calcBRT(totalSales){ return totalSales*0.02; }
 function calcIncomeTax(annual){
   if(annual<=60000) return 0;
   if(annual<=150000) return (annual-60000)*0.02;
@@ -3812,13 +3813,9 @@ function _startSpeechRecognition(){
   
   const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
   
-  // iOS Safari ندارد Speech Recognition
+  // iOS Safari ندارد Speech Recognition — از MediaRecorder استفاده کن
   if(!SpeechRecognition){
-    if(isIOS){
-      showIOSVoiceGuide();
-    } else {
-      showManualInput();
-    }
+    showIOSVoiceGuide();
     return;
   }
 
@@ -3903,39 +3900,195 @@ function _startSpeechRecognition(){
 }
 
 function showIOSVoiceGuide(){
-  // iPhone Safari Web Speech API ندارد — راهنمای تایپ نشان بده
+  // iPhone — از MediaRecorder استفاده کن + Whisper API
   document.getElementById("voiceStatus").innerHTML='';
   document.getElementById("voiceTranscript").style.display="block";
+
   document.getElementById("transcriptText").innerHTML=`
-    <div style="text-align:center;padding:10px">
-      <div style="font-size:28px;margin-bottom:8px">🍎</div>
-      <div style="font-size:13px;font-weight:700;color:var(--og);margin-bottom:8px">iPhone از ضبط مستقیم پشتیبانی نمی‌کند</div>
-      <div style="font-size:11px;color:var(--t2);line-height:1.8;margin-bottom:12px">
-        ۱. دکمه 🎤 کیبورد iPhone را بزن<br>
-        ۲. بگو: «قربان، ۵ درجن استاندارد، ۱۰۰۰۰ افغانی»<br>
-        ۳. متن در زیر ظاهر می‌شود
+    <div style="text-align:center;padding:12px">
+      <div style="font-size:11px;color:var(--t2);line-height:1.9;margin-bottom:14px">
+        🎤 دکمه را نگه دار و صحبت کن<br>
+        بعد رها کن — AI صدا را تبدیل می‌کند
       </div>
+      <button id="iosRecBtn" ontouchstart="startIOSRecord(event)" ontouchend="stopIOSRecord(event)"
+        onmousedown="startIOSRecord(event)" onmouseup="stopIOSRecord(event)"
+        style="width:90px;height:90px;border-radius:50%;border:none;cursor:pointer;
+          background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:32px;
+          box-shadow:0 8px 32px rgba(168,85,247,.4);display:flex;align-items:center;
+          justify-content:center;margin:0 auto;-webkit-user-select:none;user-select:none;
+          touch-action:none;">🎤</button>
+      <div id="iosRecStatus" style="margin-top:10px;font-size:12px;color:var(--t3)">
+        نگه دار و صحبت کن
+      </div>
+      <div class="dv"></div>
+      <div style="font-size:10px;color:var(--t3);margin-top:8px">یا متن را تایپ کن:</div>
+      <textarea id="iosTextInput" placeholder="مثال: قربان، ۵ درجن استاندارد، ۱۰۰۰۰ افغانی"
+        style="width:100%;margin-top:6px;padding:9px;background:rgba(168,85,247,.08);
+          border:1px solid rgba(168,85,247,.3);border-radius:10px;color:var(--tx);
+          font-family:'Vazirmatn',sans-serif;font-size:13px;direction:rtl;
+          resize:none;height:70px;outline:none"></textarea>
+      <button onclick="processIOSText()" id="ios-process-btn"
+        style="width:100%;margin-top:10px;padding:12px;
+          background:linear-gradient(135deg,#7c3aed,#a855f7);
+          color:#fff;border:none;border-radius:12px;
+          font-size:14px;font-weight:700;font-family:'Vazirmatn',sans-serif;cursor:pointer">
+        🤖 پردازش با AI
+      </button>
     </div>`;
-  // فیلد قابل تایپ
-  document.getElementById("transcriptText").contentEditable="true";
-  document.getElementById("transcriptText").style.border="1px solid rgba(168,85,247,.4)";
-  document.getElementById("transcriptText").style.minHeight="60px";
-  document.getElementById("transcriptText").focus();
-  // دکمه پردازش
-  const existBtn=document.getElementById("ios-process-btn");
-  if(!existBtn){
-    const btn=document.createElement("button");
-    btn.id="ios-process-btn";
-    btn.className="btn btn-full";
-    btn.style.cssText="margin-top:10px;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;box-shadow:0 4px 14px rgba(168,85,247,.3)";
-    btn.textContent="🤖 پردازش با AI";
-    btn.onclick=()=>{
-      const txt=document.getElementById("transcriptText").textContent.trim();
-      if(txt) processVoiceWithAI(txt);
-      else document.getElementById("voiceStatus").textContent="متن را بنویس یا وایس کن";
-    };
-    document.getElementById("voiceTranscript").appendChild(btn);
+}
+
+// ── iOS MediaRecorder ──
+let _iosMediaRecorder=null, _iosAudioChunks=[], _iosStream=null;
+
+async function startIOSRecord(e){
+  e.preventDefault();
+  const btn=document.getElementById("iosRecBtn");
+  const status=document.getElementById("iosRecStatus");
+
+  try {
+    _iosStream=await navigator.mediaDevices.getUserMedia({audio:true});
+    _iosAudioChunks=[];
+
+    // پیدا کردن فرمت پشتیبانی شده
+    const mimeType=MediaRecorder.isTypeSupported("audio/webm")?
+      "audio/webm":
+      MediaRecorder.isTypeSupported("audio/mp4")?
+      "audio/mp4":"";
+
+    _iosMediaRecorder=new MediaRecorder(_iosStream, mimeType?{mimeType}:{});
+    _iosMediaRecorder.ondataavailable=e=>{if(e.data.size>0)_iosAudioChunks.push(e.data);};
+    _iosMediaRecorder.start(100);
+
+    btn.textContent="⏹";
+    btn.style.background="linear-gradient(135deg,#dc2626,#f43f5e)";
+    btn.style.animation="mic-pulse 1s ease-in-out infinite";
+    btn.style.boxShadow="0 8px 32px rgba(240,90,110,.6)";
+    status.innerHTML='<span style="color:#f87171;font-weight:700">🔴 در حال ضبط...</span>';
+  } catch(err){
+    status.innerHTML=`<span style="color:var(--rd)">خطا: ${err.message}</span><br>
+      <small style="color:var(--t3)">در مرورگر Safari باز کن</small>`;
   }
+}
+
+async function stopIOSRecord(e){
+  e.preventDefault();
+  if(!_iosMediaRecorder||_iosMediaRecorder.state==="inactive") return;
+
+  const btn=document.getElementById("iosRecBtn");
+  const status=document.getElementById("iosRecStatus");
+
+  btn.textContent="🎤";
+  btn.style.background="linear-gradient(135deg,#7c3aed,#a855f7)";
+  btn.style.animation="";
+  btn.style.boxShadow="0 8px 32px rgba(168,85,247,.4)";
+
+  _iosMediaRecorder.stop();
+  if(_iosStream) _iosStream.getTracks().forEach(t=>t.stop());
+
+  status.innerHTML='<div class="spinner" style="margin:6px auto;border-top-color:#a855f7"></div><span style="color:#c084fc">در حال پردازش صدا...</span>';
+
+  await new Promise(r=>setTimeout(r,400));
+
+  const audioBlob=new Blob(_iosAudioChunks,{type:_iosAudioChunks[0]?.type||"audio/mp4"});
+
+  // اگر فایل خیلی کوچک بود
+  if(audioBlob.size<1000){
+    status.innerHTML='<span style="color:var(--og)">صدا خیلی کوتاه بود — دوباره امتحان کن</span>';
+    return;
+  }
+
+  // تبدیل به base64 و ارسال به Claude برای پردازش
+  await processAudioWithWhisper(audioBlob);
+}
+
+async function processAudioWithWhisper(audioBlob){
+  const status=document.getElementById("iosRecStatus");
+  status.innerHTML='<span style="color:#c084fc">🤖 Claude AI در حال پردازش...</span>';
+
+  try {
+    // تبدیل blob به base64
+    const reader=new FileReader();
+    const base64Audio=await new Promise((resolve,reject)=>{
+      reader.onload=()=>resolve(reader.result.split(",")[1]);
+      reader.onerror=reject;
+      reader.readAsDataURL(audioBlob);
+    });
+
+    // ارسال به Claude با audio
+    const mediaType=audioBlob.type||"audio/mp4";
+    const response=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        model:"claude-sonnet-4-20250514",
+        max_tokens:500,
+        messages:[{
+          role:"user",
+          content:[
+            {
+              type:"text",
+              text:`این یک فایل صوتی از یک مدیر فروش فابریکه چپلی PCU در افغانستان است. صدا را به متن تبدیل کن و اطلاعات فروش را استخراج کن.
+
+لیست مشتریان: ${CUSTOMERS.slice(0,40).map(c=>c.n).join("، ")}
+
+فقط JSON برگردان:
+{
+  "transcript": "متن کامل صدا",
+  "customer_name": "نام مشتری",
+  "customer_id": "id یا null",
+  "product": "STD یا VIP یا KID",
+  "dozen": عدد,
+  "price_per_dozen": عدد یا null,
+  "paid": عدد یا null,
+  "is_credit": true/false,
+  "confidence": "high/medium/low"
+}`
+            },
+            {
+              type:"document",
+              source:{type:"base64",media_type:mediaType,data:base64Audio}
+            }
+          ]
+        }]
+      })
+    });
+
+    const data=await response.json();
+    const raw=data.content?.[0]?.text||"{}";
+    const clean=raw.replace(/```json|```/g,"").trim();
+
+    let parsed;
+    try { parsed=JSON.parse(clean); }
+    catch(e){ parsed=null; }
+
+    if(parsed&&parsed.transcript){
+      // نمایش متن ضبط شده
+      document.getElementById("iosTextInput").value=parsed.transcript;
+      document.getElementById("transcriptText").querySelector("div").innerHTML+=
+        `<div style="background:rgba(168,85,247,.1);border-radius:8px;padding:8px;margin-top:8px;font-size:12px;color:var(--tx)">"${parsed.transcript}"</div>`;
+
+      _voiceParsedData=parsed;
+      showParsedResult(parsed, parsed.transcript);
+      status.innerHTML='<span style="color:var(--gr)">✅ صدا پردازش شد!</span>';
+    } else {
+      // اگر Claude نتوانست — از متن تایپ شده استفاده کن
+      status.innerHTML='<span style="color:var(--og)">⚠️ پردازش ناموفق — متن را تایپ کن</span>';
+    }
+  } catch(err){
+    // Fallback: متن تایپی
+    status.innerHTML=`<span style="color:var(--og)">⚠️ خطا: ${err.message}</span>`;
+  }
+}
+
+function processIOSText(){
+  const txt=(document.getElementById("iosTextInput")?.value||"").trim();
+  if(!txt){
+    document.getElementById("iosRecStatus").innerHTML='<span style="color:var(--rd)">متن را بنویس</span>';
+    return;
+  }
+  document.getElementById("voiceTranscript").style.display="block";
+  document.getElementById("transcriptText").textContent=txt;
+  processVoiceWithAI(txt);
 }
 
 function stopVoice(){
