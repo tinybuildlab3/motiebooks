@@ -845,13 +845,43 @@ select option{background:#1a1820}
     </div>
     <!-- STOCK -->
     <div id="page-stock" class="page">
-      <div class="ib info">☁️ Moving Weighted Average Cost | موجودی زنده از Supabase</div>
-      <div class="card">
-        <div class="ct">🏗️ انبار مواد خام</div>
-        <div class="tw"><table>
-          <thead><tr><th>#</th><th>ماده</th><th>موجودی (کیلو)</th><th>Avg Cost (؋/کیلو)</th><th>ارزش کل</th><th>وضعیت</th></tr></thead>
-          <tbody id="stock-tbody"><tr><td colspan="6" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
-        </table></div>
+      <!-- KPI -->
+      <div class="kg">
+        <div class="kc tl"><div class="kl">ارزش مواد خام</div><div class="kv" id="stock-raw-val">—</div></div>
+        <div class="kc pp"><div class="kl">ارزش جنس تولیدشده</div><div class="kv" id="stock-fg-val">—</div></div>
+      </div>
+      <!-- تب -->
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button id="tab-raw" onclick="switchStockTab('raw')" class="btn bpri" style="flex:1;justify-content:center">🏗️ مواد خام</button>
+        <button id="tab-fg" onclick="switchStockTab('fg')" class="btn bsec" style="flex:1;justify-content:center">👟 جنس تولیدشده</button>
+      </div>
+      <!-- مواد خام -->
+      <div id="stock-raw-panel">
+        <div class="ib info" style="font-size:10.5px">☁️ Moving Avg Cost | ✏️ Admin می‌تواند موجودی را ادیت کند</div>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div class="ct" style="margin-bottom:0">🏗️ انبار مواد خام</div>
+            <button class="btn bpri" onclick="openModal('modalEditStock')">✏️ ادیت موجودی</button>
+          </div>
+          <div class="tw"><table>
+            <thead><tr><th>#</th><th>ماده</th><th>موجودی (کیلو)</th><th>Avg Cost (؋/کیلو)</th><th>ارزش کل</th><th>وضعیت</th></tr></thead>
+            <tbody id="stock-tbody"><tr><td colspan="6" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+      <!-- جنس تولیدشده -->
+      <div id="stock-fg-panel" style="display:none">
+        <div class="ib info" style="font-size:10.5px">📦 موجودی جنس تولیدشده | قابل ادیت</div>
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div class="ct" style="margin-bottom:0">👟 جنس تولیدشده</div>
+            <button class="btn bpri" onclick="openModal('modalAddFG')">+ اضافه کردن</button>
+          </div>
+          <div class="tw"><table>
+            <thead><tr><th>#</th><th>نام جنس</th><th>سایز</th><th>درجن</th><th>قیمت/درجن</th><th>ارزش کل</th><th></th></tr></thead>
+            <tbody id="fg-tbody"><tr><td colspan="7" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
+          </table></div>
+        </div>
       </div>
     </div>
     <!-- CUSTOMERS -->
@@ -1248,6 +1278,35 @@ select option{background:#1a1820}
   </div>
 </div>
 
+<!-- ══ MODAL ادیت مواد خام ══ -->
+<div class="modal-overlay" id="modalEditStock">
+  <div class="modal">
+    <div class="modal-head"><h3>✏️ ادیت موجودی مواد خام</h3><button class="close-btn" onclick="closeModal('modalEditStock')">✕</button></div>
+    <div class="modal-body">
+      <div class="ib warn">⚠️ این مقادیر مستقیم در Supabase آپدیت می‌شوند</div>
+      <div id="edit-stock-list"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bsec" onclick="closeModal('modalEditStock')">انصراف</button>
+      <button class="btn bpri" onclick="saveStockEdits()" id="edit-stock-btn">ذخیره همه ✓</button>
+    </div>
+  </div>
+</div>
+<!-- ══ MODAL جنس تولیدشده ══ -->
+<div class="modal-overlay" id="modalAddFG">
+  <div class="modal">
+    <div class="modal-head"><h3 id="fg-modal-title">👟 اضافه کردن جنس</h3><button class="close-btn" onclick="closeModal('modalAddFG')">✕</button></div>
+    <div class="modal-body">
+      <div id="fg-msg"></div>
+      <div class="row2"><div class="fg"><label>نام جنس</label><input id="fg-name" placeholder="مثال: بوت شیما سیاه"/></div><div class="fg"><label>سایز</label><input id="fg-size" placeholder="مثال: ۷-۱۰"/></div></div>
+      <div class="row2"><div class="fg"><label>درجن</label><input type="number" id="fg-dozen" min="0" step="0.5" oninput="calcFG()"/></div><div class="fg"><label>قیمت/درجن (؋)</label><input type="number" id="fg-price" min="0" oninput="calcFG()"/></div></div>
+      <div class="fg"><label>ارزش کل (اتومات)</label><input id="fg-total" readonly/></div>
+      <div class="fg"><label>یادداشت</label><input id="fg-note" placeholder="اختیاری..."/></div>
+      <input type="hidden" id="fg-edit-id" value=""/>
+    </div>
+    <div class="modal-foot"><button class="btn bsec" onclick="closeModal('modalAddFG')">انصراف</button><button class="btn bpri" onclick="submitFG()" id="fg-btn">ذخیره ✓</button></div>
+  </div>
+</div>
 <!-- ══ ORDER MODAL (فرمایش جدید — چند آیتم) ══ -->
 <div class="modal-overlay" id="modalOrder">
   <div class="modal">
@@ -2608,6 +2667,8 @@ function initModal(id){
   else if(id==="modalBuy") initBuyModal();
   else if(id==="modalProd") initProdModal();
   else if(id==="modalCash") initCashModal();
+  else if(id==="modalEditStock") initEditStockModal();
+  else if(id==="modalAddFG") initAddFG();
 }
 
 // Order modal init
@@ -4726,6 +4787,168 @@ async function showPartnerDetail(id,name){
     </div>
   </div>`;
   document.body.appendChild(modal);
+}
+
+// ── STOCK TAB SWITCHER ──
+function switchStockTab(tab){
+  const isRaw = tab==='raw';
+  document.getElementById('stock-raw-panel').style.display = isRaw?'block':'none';
+  document.getElementById('stock-fg-panel').style.display = isRaw?'none':'block';
+  document.getElementById('tab-raw').className = 'btn '+(isRaw?'bpri':'bsec');
+  document.getElementById('tab-fg').className = 'btn '+(isRaw?'bsec':'bpri');
+  if(!isRaw) renderFG();
+}
+
+// ── STOCK EDIT ──
+async function initEditStockModal(){
+  const rows = await sbGet('mat_stock','?order=material.asc')||[];
+  document.getElementById('edit-stock-list').innerHTML = rows.map(r=>`
+    <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px;padding:8px;background:var(--b3);border-radius:8px;border:1px solid var(--bd)">
+      <div style="flex:2;font-size:12px;font-weight:700">${r.material}</div>
+      <div style="flex:1">
+        <div style="font-size:10px;color:var(--t2);margin-bottom:2px">کیلو</div>
+        <input type="number" id="esk_kg_${r.material.replace(/[^a-zA-Z0-9]/g,'_')}" value="${r.total_kg||0}" step="0.1"
+          style="width:100%;padding:6px;background:var(--b4);border:1px solid var(--bd2);border-radius:6px;color:var(--tx);font-size:12px;font-family:inherit"/>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:10px;color:var(--t2);margin-bottom:2px">قیمت/کیلو (؋)</div>
+        <input type="number" id="esk_cost_${r.material.replace(/[^a-zA-Z0-9]/g,'_')}" value="${r.avg_cost||0}" step="1"
+          style="width:100%;padding:6px;background:var(--b4);border:1px solid var(--bd2);border-radius:6px;color:var(--gd);font-size:12px;font-family:inherit"/>
+      </div>
+    </div>`).join('');
+  window._stockEditRows = rows;
+}
+
+async function saveStockEdits(){
+  document.getElementById('edit-stock-btn').disabled=true;
+  document.getElementById('edit-stock-btn').textContent='در حال ذخیره...';
+  const rows = window._stockEditRows||[];
+  for(const r of rows){
+    const key = r.material.replace(/[^a-zA-Z0-9]/g,'_');
+    const kg = +(document.getElementById('esk_kg_'+key)?.value)||0;
+    const cost = +(document.getElementById('esk_cost_'+key)?.value)||0;
+    await sbPatch('mat_stock',{
+      total_kg:kg, avg_cost:cost,
+      total_value_afn:kg*cost,
+      updated_at:new Date().toISOString()
+    },`?material=eq.${encodeURIComponent(r.material)}`);
+  }
+  await refreshStockMap();
+  showSaved();
+  closeModal('modalEditStock');
+  renderStock();
+  document.getElementById('edit-stock-btn').disabled=false;
+  document.getElementById('edit-stock-btn').textContent='ذخیره همه ✓';
+}
+
+// ── FINISHED GOODS ──
+async function renderFG(){
+  document.getElementById('fg-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr>';
+  const rows = await sbGet('finished_goods','?order=id.asc')||[];
+  const totalVal = rows.reduce((a,r)=>a+(+r.total_value||0),0);
+  document.getElementById('stock-fg-val').textContent = afn(totalVal);
+  if(!rows.length){
+    document.getElementById('fg-tbody').innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--t3);padding:18px">هنوز جنسی ثبت نشده</td></tr>';
+    return;
+  }
+  document.getElementById('fg-tbody').innerHTML = rows.map((r,i)=>`<tr>
+    <td style="color:var(--t3)">${i+1}</td>
+    <td style="font-weight:700">${r.product_name}</td>
+    <td><span class="bb bbl">${r.size_range||'—'}</span></td>
+    <td style="font-weight:800;color:var(--gd)">${r.dozen} درجن</td>
+    <td class="tdr" style="color:var(--tl)">${afn(r.unit_price)}</td>
+    <td class="tdr" style="font-weight:700">${afn(r.total_value)}</td>
+    <td style="display:flex;gap:3px">
+      <button onclick="editFG(${r.id})" style="background:var(--bl2);border:1px solid rgba(59,158,255,.3);color:var(--bl);border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer">✏️</button>
+      <button onclick="deleteFG(${r.id})" style="background:var(--r2);border:1px solid rgba(240,82,82,.3);color:var(--rd);border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer">🗑️</button>
+    </td>
+  </tr>`).join('');
+}
+
+function calcFG(){
+  const d=+(document.getElementById('fg-dozen').value)||0;
+  const p=+(document.getElementById('fg-price').value)||0;
+  document.getElementById('fg-total').value=afn(d*p);
+}
+
+function initAddFG(){
+  document.getElementById('fg-modal-title').textContent='👟 اضافه کردن جنس';
+  document.getElementById('fg-edit-id').value='';
+  document.getElementById('fg-name').value='';
+  document.getElementById('fg-size').value='';
+  document.getElementById('fg-dozen').value='';
+  document.getElementById('fg-price').value='';
+  document.getElementById('fg-total').value='';
+  document.getElementById('fg-note').value='';
+  document.getElementById('fg-msg').innerHTML='';
+}
+
+async function editFG(id){
+  const rows = await sbGet('finished_goods',`?id=eq.${id}`)||[];
+  if(!rows[0]) return;
+  const r=rows[0];
+  document.getElementById('fg-modal-title').textContent='✏️ ادیت جنس';
+  document.getElementById('fg-edit-id').value=id;
+  document.getElementById('fg-name').value=r.product_name||'';
+  document.getElementById('fg-size').value=r.size_range||'';
+  document.getElementById('fg-dozen').value=r.dozen||0;
+  document.getElementById('fg-price').value=r.unit_price||0;
+  document.getElementById('fg-total').value=afn(r.total_value||0);
+  document.getElementById('fg-note').value=r.note||'';
+  openModal('modalAddFG');
+}
+
+async function submitFG(){
+  const name=document.getElementById('fg-name').value.trim();
+  const dozen=+(document.getElementById('fg-dozen').value)||0;
+  const price=+(document.getElementById('fg-price').value)||0;
+  if(!name||!dozen){document.getElementById('fg-msg').innerHTML='<div class="ib err">نام و تعداد الزامی است</div>';return;}
+  document.getElementById('fg-btn').disabled=true;
+  const editId=document.getElementById('fg-edit-id').value;
+  const body={
+    product_name:name,
+    size_range:document.getElementById('fg-size').value,
+    dozen,unit_price:price,
+    total_value:dozen*price,
+    note:document.getElementById('fg-note').value,
+    updated_at:new Date().toISOString()
+  };
+  let res;
+  if(editId) res=await sbPatch('finished_goods',body,`?id=eq.${editId}`);
+  else res=await sbPost('finished_goods',body);
+  document.getElementById('fg-btn').disabled=false;
+  if(res){showSaved();closeModal('modalAddFG');renderFG();}
+  else document.getElementById('fg-msg').innerHTML='<div class="ib err">خطا! دوباره امتحان کن</div>';
+}
+
+async function deleteFG(id){
+  if(!confirm('این جنس پاک شود؟')) return;
+  await sbPatch('finished_goods',{dozen:0,total_value:0},`?id=eq.${id}`);
+  // یا حذف کامل:
+  const r=await fetch(`${SB_URL}/rest/v1/finished_goods?id=eq.${id}`,{method:'DELETE',headers:{"apikey":SB_KEY,"Authorization":"Bearer "+SB_KEY}});
+  renderFG();
+}
+
+// آپدیت renderStock برای KPI
+const _origRenderStock = renderStock;
+async function renderStock(){
+  await refreshStockMap();
+  const totalRaw = Object.values(S.stockMap).reduce((a,m)=>a+(m.kg*m.avgCost),0);
+  document.getElementById('stock-raw-val').textContent = afn(totalRaw);
+  const fgRows = await sbGet('finished_goods','?select=total_value')||[];
+  const totalFG = fgRows.reduce((a,r)=>a+(+r.total_value||0),0);
+  document.getElementById('stock-fg-val').textContent = afn(totalFG);
+  document.getElementById('stock-tbody').innerHTML=MATS.map((m,i)=>{
+    const st=S.stockMap[m]||{kg:0,avgCost:0,val:0};
+    const sta=st.kg<=0?'🔴 ندارد':st.kg<5?'🟡 کم':'🟢 کافی';
+    return`<tr>
+      <td style="color:var(--t3)">${i+1}</td>
+      <td style="font-weight:700">${m}</td>
+      <td style="font-weight:800;color:${st.kg<=0?'var(--rd)':st.kg<5?'var(--gd)':'var(--tx)'}">${n2(st.kg)} کیلو</td>
+      <td class="tdr" style="color:var(--tl);font-weight:700">${afn(st.avgCost)}</td>
+      <td class="tdr" style="font-weight:700">${afn(st.kg*st.avgCost)}</td>
+      <td>${sta}</td></tr>`;
+  }).join('');
 }
 
 // ── KEY LISTENER ──
