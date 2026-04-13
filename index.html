@@ -764,6 +764,7 @@ select option{background:#1a1820}
       <button class="ni" onclick="goPage('emp')" data-page="emp" data-roles="admin"><span class="em">👨‍💼</span>کارمندان و شاگردان</button>
       <button class="ni" onclick="goPage('partners')" data-page="partners" data-roles="admin"><span class="em">🤝</span>شریکان / سهام‌داران</button>
       <div class="nsec">مالی و گزارش</div>
+      <button class="ni" onclick="goPage('assets')" data-page="assets" data-roles="admin"><span class="em">🏭</span>دارایی‌های ثابت</button>
       <button class="ni" onclick="goPage('report')" data-page="report" data-roles="admin"><span class="em">📈</span>گزارشات & P&L</button>
       <button class="ni" onclick="goPage('reports_more')" data-page="reports_more" data-roles="admin"><span class="em">📊</span>گزارش‌های تفصیلی</button>
       <button class="ni" onclick="goPage('tax')" data-page="tax" data-roles="admin"><span class="em">🧾</span>مالیات</button>
@@ -933,6 +934,25 @@ select option{background:#1a1820}
         <div class="tw"><table>
           <thead><tr><th>#</th><th>تاریخ</th><th>نوع</th><th>شرح</th><th>ورودی</th><th>خروجی</th><th>مانده</th><th>✏️</th></tr></thead>
           <tbody id="cash-tbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <!-- FIXED ASSETS -->
+    <div id="page-assets" class="page">
+      <div class="kg">
+        <div class="kc gd"><div class="kl">ارزش اصلی کل ($)</div><div class="kv" id="fa-total-cost">—</div></div>
+        <div class="kc gr"><div class="kl">ارزش دفتری امروز ($)</div><div class="kv" id="fa-book-val">—</div></div>
+        <div class="kc rd"><div class="kl">استهلاک انباشته ($)</div><div class="kv" id="fa-total-dep">—</div></div>
+        <div class="kc bl"><div class="kl">تعداد دارایی‌ها</div><div class="kv" id="fa-count">—</div></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="ct" style="margin-bottom:0">🏭 دارایی‌های ثابت</div>
+          <button class="btn bpri" onclick="openModal('modalAddAsset')">+ دارایی جدید</button>
+        </div>
+        <div class="tw"><table>
+          <thead><tr><th>#</th><th>نام</th><th>نوع</th><th>تاریخ خرید</th><th>قیمت ($)</th><th>عمر (سال)</th><th>استهلاک/سال</th><th>ارزش دفتری</th><th>وضعیت</th><th></th></tr></thead>
+          <tbody id="assets-tbody"><tr><td colspan="10" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr></tbody>
         </table></div>
       </div>
     </div>
@@ -1274,6 +1294,41 @@ select option{background:#1a1820}
     <div class="modal-foot">
       <button class="btn bsec" onclick="closeModal('modalCash')">انصراف</button>
       <button class="btn bpri" onclick="submitCash()" id="cash-btn">ثبت ✓</button>
+    </div>
+  </div>
+</div>
+<!-- ══ MODAL دارایی ثابت ══ -->
+<div class="modal-overlay" id="modalAddAsset">
+  <div class="modal">
+    <div class="modal-head"><h3 id="asset-modal-title">🏭 دارایی جدید</h3><button class="close-btn" onclick="closeModal('modalAddAsset')">✕</button></div>
+    <div class="modal-body">
+      <div id="asset-msg"></div>
+      <div class="row2">
+        <div class="fg"><label>نام دارایی</label><input id="fa-name" placeholder="مثال: ماشین تولید جدید"/></div>
+        <div class="fg"><label>نوع</label>
+          <select id="fa-cat">
+            <option value="machine">🏭 ماشین</option>
+            <option value="mold">🔧 قالب</option>
+            <option value="vehicle">🚗 وسیله نقلیه</option>
+            <option value="other">📦 سایر</option>
+          </select>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>تاریخ خرید</label><input id="fa-date"/></div>
+        <div class="fg"><label>عمر مفید (سال)</label><input type="number" id="fa-life" value="10" min="1"/></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>قیمت خرید ($)</label><input type="number" id="fa-price-usd" min="0" step="0.01" oninput="calcAssetDep()"/></div>
+        <div class="fg"><label>قیمت خرید (؋)</label><input type="number" id="fa-price-afn" min="0" oninput="calcAssetDep()"/></div>
+      </div>
+      <div class="fg"><label>استهلاک سالانه (اتومات)</label><input id="fa-dep-yr" readonly/></div>
+      <div class="fg"><label>توضیحات</label><input id="fa-desc" placeholder="اختیاری..."/></div>
+      <input type="hidden" id="fa-edit-id" value=""/>
+    </div>
+    <div class="modal-foot">
+      <button class="btn bsec" onclick="closeModal('modalAddAsset')">انصراف</button>
+      <button class="btn bpri" onclick="submitAsset()" id="fa-btn">ذخیره ✓</button>
     </div>
   </div>
 </div>
@@ -2215,7 +2270,7 @@ async function doLogin(){
       av:selectedRole==="admin"?"م":"ک",
       color:selectedRole==="admin"?"var(--gd)":"var(--tl)",
       pages:selectedRole==="admin"
-        ?["dash","sales","orders","buy","prod","stock","cust","supp","cash","report","settings"]
+        ?["dash","sales","orders","buy","prod","stock","cust","supp","cash","assets","report","settings"]
         :["dash","sales","orders","buy","prod","stock","cust","supp"]
     };
     document.getElementById("loginPage").style.display="none";
@@ -2272,7 +2327,7 @@ function calcCOGS(prod,doz){
 // ── Navigation ──
 const PAGE_TITLES={dash:"داشبورد",sales:"فروش",orders:"فرمایشات",buy:"خرید مواد",prod:"تولید",
   stock:"انبار مواد",cust:"مشتریان",supp:"تامین‌کنندگان",cash:"صندوق افغانی",
-  report:"گزارشات & P&L",settings:"تنظیمات"};
+  assets:"دارایی‌های ثابت",report:"گزارشات & P&L",settings:"تنظیمات"};
 
 function goPage(id){
   const adminOnlyPages=["cash","report","reports_more","settings","emp","tax","cheque","partners"];
@@ -2304,6 +2359,7 @@ function renderPage(id){
   else if(id==="cust") renderCust();
   else if(id==="supp") renderSupp();
   else if(id==="cash") renderCash();
+  else if(id==="assets") renderAssets();
   else if(id==="report") renderReport();
   else if(id==="reports_more") renderReportsMore();
   else if(id==="emp") renderEmp();
@@ -2667,6 +2723,7 @@ function initModal(id){
   else if(id==="modalBuy") initBuyModal();
   else if(id==="modalProd") initProdModal();
   else if(id==="modalCash") initCashModal();
+  else if(id==="modalAddAsset") initAddAsset();
   else if(id==="modalEditStock") initEditStockModal();
   else if(id==="modalAddFG") initAddFG();
 }
@@ -4949,6 +5006,127 @@ async function renderStock(){
       <td class="tdr" style="font-weight:700">${afn(st.kg*st.avgCost)}</td>
       <td>${sta}</td></tr>`;
   }).join('');
+}
+
+
+// ── FIXED ASSETS ──
+const CAT_LABELS={machine:"🏭 ماشین",mold:"🔧 قالب",vehicle:"🚗 وسیله",other:"📦 سایر"};
+
+function calcYearsUsed(purchaseDate){
+  try{
+    const parts=purchaseDate.split("/");
+    const nowYear=new Date().getFullYear()-621;
+    return Math.max(0,nowYear-(+parts[0]));
+  }catch(e){return 0;}
+}
+
+function calcBookValue(price,life,yearsUsed,salvage=0){
+  const annualDep=(price-salvage)/life;
+  const accumulated=Math.min(annualDep*yearsUsed,price-salvage);
+  return Math.max(salvage,price-accumulated);
+}
+
+async function renderAssets(){
+  document.getElementById("assets-tbody").innerHTML='<tr><td colspan="10" style="text-align:center;padding:20px"><div class="spinner" style="margin:auto"></div></td></tr>';
+  const rows=await sbGet("fixed_assets","?order=id.asc&is_active=eq.true")||[];
+  document.getElementById("fa-count").textContent=rows.length;
+  let totalCost=0,totalBook=0,totalDep=0;
+  document.getElementById("assets-tbody").innerHTML=rows.map((r,i)=>{
+    const yr=calcYearsUsed(r.purchase_date);
+    const annDep=(+r.purchase_price_usd-(+r.salvage_value||0))/(+r.useful_life_years||1);
+    const bookVal=calcBookValue(+r.purchase_price_usd,+r.useful_life_years,yr,+r.salvage_value||0);
+    const accDep=+r.purchase_price_usd-bookVal;
+    const pct=Math.round((accDep/+r.purchase_price_usd)*100);
+    totalCost+=+r.purchase_price_usd;
+    totalBook+=bookVal;
+    totalDep+=accDep;
+    const status=pct>=100?"🔴 مستهلک":pct>=70?"🟡 رو به پایان":"🟢 خوب";
+    return`<tr>
+      <td style="color:var(--t3)">${i+1}</td>
+      <td style="font-weight:700">${r.name}</td>
+      <td><span class="bb bbl">${CAT_LABELS[r.category]||r.category}</span></td>
+      <td style="font-size:11px">${r.purchase_date}</td>
+      <td class="tdr" style="color:var(--gd);font-weight:700">$${(+r.purchase_price_usd).toFixed(0)}</td>
+      <td style="text-align:center">${r.useful_life_years} سال</td>
+      <td class="tdr" style="color:var(--tl)">$${annDep.toFixed(0)}/سال</td>
+      <td class="tdr" style="font-weight:800;color:${bookVal>0?"var(--gr)":"var(--rd)"}">$${bookVal.toFixed(0)}</td>
+      <td>${status}</td>
+      <td style="display:flex;gap:3px">
+        <button onclick="editAsset(${r.id})" style="background:var(--bl2);border:1px solid rgba(59,158,255,.3);color:var(--bl);border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer">✏️</button>
+        <button onclick="deleteAsset(${r.id})" style="background:var(--r2);border:1px solid rgba(240,82,82,.3);color:var(--rd);border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer">🗑️</button>
+      </td>
+    </tr>`;
+  }).join("");
+  document.getElementById("fa-total-cost").textContent="$"+totalCost.toFixed(0);
+  document.getElementById("fa-book-val").textContent="$"+totalBook.toFixed(0);
+  document.getElementById("fa-total-dep").textContent="$"+totalDep.toFixed(0);
+}
+
+function calcAssetDep(){
+  const price=+(document.getElementById("fa-price-usd").value)||0;
+  const life=+(document.getElementById("fa-life").value)||1;
+  document.getElementById("fa-dep-yr").value="$"+(price/life).toFixed(2)+"/سال";
+}
+
+function initAddAsset(){
+  document.getElementById("asset-modal-title").textContent="🏭 دارایی جدید";
+  document.getElementById("fa-edit-id").value="";
+  document.getElementById("fa-name").value="";
+  document.getElementById("fa-cat").value="machine";
+  document.getElementById("fa-date").value=today();
+  document.getElementById("fa-life").value="10";
+  document.getElementById("fa-price-usd").value="";
+  document.getElementById("fa-price-afn").value="";
+  document.getElementById("fa-dep-yr").value="";
+  document.getElementById("fa-desc").value="";
+  document.getElementById("asset-msg").innerHTML="";
+}
+
+async function editAsset(id){
+  const rows=await sbGet("fixed_assets","?id=eq."+id)||[];
+  if(!rows[0]) return;
+  const r=rows[0];
+  document.getElementById("asset-modal-title").textContent="✏️ ادیت دارایی";
+  document.getElementById("fa-edit-id").value=id;
+  document.getElementById("fa-name").value=r.name||"";
+  document.getElementById("fa-cat").value=r.category||"machine";
+  document.getElementById("fa-date").value=r.purchase_date||"";
+  document.getElementById("fa-life").value=r.useful_life_years||10;
+  document.getElementById("fa-price-usd").value=r.purchase_price_usd||0;
+  document.getElementById("fa-price-afn").value=r.purchase_price_afn||0;
+  document.getElementById("fa-desc").value=r.description||"";
+  calcAssetDep();
+  openModal("modalAddAsset");
+}
+
+async function submitAsset(){
+  const name=document.getElementById("fa-name").value.trim();
+  const priceUsd=+(document.getElementById("fa-price-usd").value)||0;
+  if(!name||!priceUsd){document.getElementById("asset-msg").innerHTML='<div class="ib err">نام و قیمت الزامی است</div>';return;}
+  document.getElementById("fa-btn").disabled=true;
+  const editId=document.getElementById("fa-edit-id").value;
+  const body={
+    name,
+    category:document.getElementById("fa-cat").value,
+    purchase_date:document.getElementById("fa-date").value,
+    useful_life_years:+(document.getElementById("fa-life").value)||10,
+    purchase_price_usd:priceUsd,
+    purchase_price_afn:+(document.getElementById("fa-price-afn").value)||0,
+    description:document.getElementById("fa-desc").value,
+    updated_at:new Date().toISOString()
+  };
+  let res;
+  if(editId) res=await sbPatch("fixed_assets",body,"?id=eq."+editId);
+  else res=await sbPost("fixed_assets",body);
+  document.getElementById("fa-btn").disabled=false;
+  if(res){showSaved();closeModal("modalAddAsset");renderAssets();}
+  else document.getElementById("asset-msg").innerHTML='<div class="ib err">خطا! دوباره امتحان کن</div>';
+}
+
+async function deleteAsset(id){
+  if(!confirm("این دارایی پاک شود؟")) return;
+  await sbPatch("fixed_assets",{is_active:false,updated_at:new Date().toISOString()},"?id=eq."+id);
+  renderAssets();
 }
 
 // ── KEY LISTENER ──
