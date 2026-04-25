@@ -1,178 +1,140 @@
-
 <!DOCTYPE html>
+
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>حیات‌زاده لمتد — سیستم حسابداری سهامی</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>حیات‌زاده لمتد</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --gold:#C9A84C;--gold-dim:#8B6E2E;--gold-light:#E8C97A;
+  --gold:#C9A84C;--gold-dim:#8B6E2E;
   --navy:#0A1628;--navy-mid:#12213A;--navy-light:#1C2F4E;--navy-border:#243657;
   --white:#F4F0E8;--white-dim:#C8C0B0;
   --red:#E05252;--green:#52C785;--blue:#5286C7;--radius:12px;
 }
-body{font-family:'Vazirmatn',sans-serif;background:var(--navy);color:var(--white);direction:rtl;min-height:100vh}
-.app{display:flex;min-height:100vh}
-/* SIDEBAR */
-.sidebar{width:260px;background:var(--navy-mid);border-left:1px solid var(--navy-border);display:flex;flex-direction:column;position:fixed;right:0;top:0;bottom:0;z-index:100}
-.sidebar-logo{padding:24px 20px 18px;border-bottom:1px solid var(--navy-border)}
-.logo-title{font-size:17px;font-weight:800;color:var(--gold)}
-.logo-sub{font-size:11px;color:var(--white-dim);margin-top:3px}
-.nav-section{padding:14px 10px 6px}
-.nav-label{font-size:10px;color:var(--white-dim);letter-spacing:1px;padding:0 8px 8px}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--white-dim);transition:all .2s;margin-bottom:2px;border:none;background:none;width:100%;text-align:right;font-family:inherit}
-.nav-item:hover{background:var(--navy-light);color:var(--white)}
-.nav-item.active{background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:var(--navy);font-weight:700}
-/* MAIN */
-.main{flex:1;margin-right:260px;min-height:100vh;display:flex;flex-direction:column}
-.topbar{background:var(--navy-mid);border-bottom:1px solid var(--navy-border);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.topbar-title{font-size:18px;font-weight:700}
-.topbar-user{display:flex;align-items:center;gap:8px;background:var(--navy-light);border-radius:8px;padding:7px 14px;font-size:13px}
-.user-dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
-.content{padding:24px;flex:1}
+body{font-family:'Vazirmatn',sans-serif;background:var(--navy);color:var(--white);direction:rtl;min-height:100vh;overflow-x:hidden}
+/* LOGIN */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(ellipse at 60% 40%,#1C2F4E 0%,#0A1628 70%)}
+.login-card{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:20px;padding:32px 24px;width:100%;max-width:380px}
+.login-icon{width:56px;height:56px;background:linear-gradient(135deg,var(--gold-dim),var(--gold));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px}
+.login-title{font-size:20px;font-weight:800;color:var(--gold);text-align:center}
+.login-sub{font-size:11px;color:var(--white-dim);text-align:center;margin-top:4px;margin-bottom:24px}
+/* APP */
+.app{display:flex;flex-direction:column;min-height:100vh;padding-bottom:65px}
+/* TOPBAR */
+.topbar{background:var(--navy-mid);border-bottom:1px solid var(--navy-border);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:16px;font-weight:700}
+.topbar-user{display:flex;align-items:center;gap:6px;background:var(--navy-light);border-radius:8px;padding:6px 12px;font-size:12px}
+.user-dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+/* BOTTOM TAB */
+.bottom-tab{position:fixed;bottom:0;right:0;left:0;background:var(--navy-mid);border-top:1px solid var(--navy-border);display:flex;z-index:100;height:62px}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--white-dim);font-size:10px;font-weight:500;gap:3px;border:none;background:none;font-family:inherit;transition:color .15s}
+.tab-item.active{color:var(--gold)}
+.tab-icon{font-size:20px}
+/* CONTENT */
+.content{padding:16px;flex:1}
 /* CARDS */
-.card{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:var(--radius);padding:18px;margin-bottom:16px}
-.card-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:14px}
+.card{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:12px}
 /* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:20px}
-.stat-card{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:var(--radius);padding:18px;position:relative;overflow:hidden}
-.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;border-radius:0 var(--radius) var(--radius) 0}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:var(--radius);padding:14px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%}
 .stat-card.gold::before{background:var(--gold)}.stat-card.green::before{background:var(--green)}.stat-card.blue::before{background:var(--blue)}.stat-card.red::before{background:var(--red)}
-.stat-label{font-size:11px;color:var(--white-dim);margin-bottom:6px}
-.stat-value{font-size:24px;font-weight:800}
+.stat-label{font-size:10px;color:var(--white-dim);margin-bottom:5px}
+.stat-value{font-size:20px;font-weight:800}
 .stat-card.gold .stat-value{color:var(--gold)}.stat-card.green .stat-value{color:var(--green)}.stat-card.blue .stat-value{color:var(--blue)}.stat-card.red .stat-value{color:var(--red)}
-.stat-sub{font-size:10px;color:var(--white-dim);margin-top:3px}
+.stat-sub{font-size:10px;color:var(--white-dim);margin-top:2px}
 /* TABLE */
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:400px}
 thead tr{background:var(--navy-light)}
-th{padding:11px 13px;text-align:right;font-weight:600;color:var(--gold);font-size:11px;white-space:nowrap}
-td{padding:10px 13px;border-bottom:1px solid var(--navy-border);color:var(--white-dim)}
+th{padding:9px 11px;text-align:right;font-weight:600;color:var(--gold);font-size:11px;white-space:nowrap}
+td{padding:9px 11px;border-bottom:1px solid var(--navy-border);color:var(--white-dim)}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,.02);color:var(--white)}
 /* BADGES */
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
 .badge-green{background:rgba(82,199,133,.15);color:var(--green)}
 .badge-red{background:rgba(224,82,82,.15);color:var(--red)}
 .badge-gold{background:rgba(201,168,76,.15);color:var(--gold)}
 .badge-blue{background:rgba(82,134,199,.15);color:var(--blue)}
 /* BUTTONS */
-.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:600;transition:all .2s}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:9px 16px;border-radius:8px;border:none;cursor:pointer;font-family:'Vazirmatn',sans-serif;font-size:13px;font-weight:600;transition:all .2s}
 .btn-primary{background:linear-gradient(135deg,var(--gold-dim),var(--gold));color:var(--navy)}
-.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
 .btn-outline{background:transparent;border:1px solid var(--navy-border);color:var(--white-dim)}
-.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
 .btn-danger{background:rgba(224,82,82,.15);color:var(--red);border:1px solid rgba(224,82,82,.3)}
-.btn-sm{padding:5px 11px;font-size:11px}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-full{width:100%;justify-content:center}
 /* FORMS */
-.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
-.form-group{display:flex;flex-direction:column;gap:5px}
+.form-group{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
 .form-label{font-size:11px;color:var(--white-dim);font-weight:500}
-.form-input,.form-select,.form-textarea{background:var(--navy-light);border:1px solid var(--navy-border);border-radius:8px;padding:10px 13px;color:var(--white);font-family:'Vazirmatn',sans-serif;font-size:13px;transition:border-color .2s;direction:rtl;width:100%}
-.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--gold)}
-.form-textarea{min-height:75px;resize:vertical}
+.form-input,.form-select,.form-textarea{background:var(--navy-light);border:1px solid var(--navy-border);border-radius:8px;padding:10px 13px;color:var(--white);font-family:'Vazirmatn',sans-serif;font-size:14px;direction:rtl;width:100%;outline:none;-webkit-appearance:none}
+.form-input:focus,.form-select:focus{border-color:var(--gold)}
+.form-textarea{min-height:70px;resize:vertical}
 option{background:var(--navy-mid)}
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
-.modal{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:16px;padding:26px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
-.modal-title{font-size:17px;font-weight:700;color:var(--gold);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--navy-border)}
-.modal-actions{display:flex;gap:10px;justify-content:flex-start;margin-top:18px}
-/* LOGIN */
-.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 60% 40%,#1C2F4E 0%,#0A1628 70%)}
-.login-card{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:20px;padding:38px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-.login-icon{width:58px;height:58px;background:linear-gradient(135deg,var(--gold-dim),var(--gold));border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 12px}
-.login-title{font-size:22px;font-weight:800;color:var(--gold);text-align:center}
-.login-sub{font-size:11px;color:var(--white-dim);text-align:center;margin-top:4px;margin-bottom:28px}
-/* CHART */
-.bar-chart{display:flex;align-items:flex-end;gap:8px;height:100px;padding-top:8px}
-.bar-col{display:flex;flex-direction:column;align-items:center;flex:1}
-.bar-fill{width:100%;border-radius:5px 5px 0 0;transition:height .5s ease;min-height:3px}
-.bar-label{font-size:10px;color:var(--white-dim);margin-top:5px;text-align:center}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--navy-mid);border:1px solid var(--navy-border);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:700;color:var(--gold);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--navy-border)}
+.modal-actions{display:flex;gap:8px;margin-top:16px}
 /* RECEIPT */
-.receipt-box{background:#fff;color:#000;padding:22px;border-radius:8px;direction:rtl;max-width:340px;margin:0 auto}
-.receipt-title{font-size:17px;font-weight:800;text-align:center;margin-bottom:3px}
-.receipt-sub{font-size:10px;text-align:center;color:#666;margin-bottom:14px}
+.receipt-box{background:#fff;color:#000;padding:20px;border-radius:8px;direction:rtl}
+.receipt-title{font-size:16px;font-weight:800;text-align:center;margin-bottom:3px}
+.receipt-sub{font-size:10px;text-align:center;color:#666;margin-bottom:12px}
 .receipt-hr{border:none;border-top:1px dashed #ccc;margin:10px 0}
 .receipt-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
-.receipt-total{font-weight:800;font-size:14px}
+.receipt-total{font-weight:800;font-size:13px}
 .receipt-footer{font-size:9px;text-align:center;color:#888;margin-top:10px}
-/* SEARCH */
-.search-bar{background:var(--navy-light);border:1px solid var(--navy-border);border-radius:8px;padding:8px 13px;color:var(--white);font-family:'Vazirmatn',sans-serif;font-size:13px;direction:rtl;width:100%;max-width:260px}
-.search-bar:focus{outline:none;border-color:var(--gold)}
-.flex-between{display:flex;justify-content:space-between;align-items:center}
-.flex-gap{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.mb-16{margin-bottom:16px}.mb-20{margin-bottom:20px}
-.text-gold{color:var(--gold)}.text-green{color:var(--green)}.text-red{color:var(--red)}.text-dim{color:var(--white-dim)}.text-sm{font-size:11px}.font-bold{font-weight:700}
-/* SIDEBAR FOOTER */
-.sidebar-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--navy-border)}
+/* LOADING */
+#loadingBar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--gold);z-index:9999;display:none}
 /* TOAST */
-.toast{position:fixed;bottom:24px;left:24px;z-index:9999;background:var(--green);color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.3);display:none}
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:9999;background:var(--green);color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;display:none;white-space:nowrap}
 .toast.show{display:block}
-@media(max-width:768px){
-  .sidebar{width:220px}
-  .main{margin-right:0}
-  .content{padding:14px}
-  .stats-grid{grid-template-columns:1fr 1fr}
-  .topbar{padding:12px 14px}
-}
+.flex-between{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.flex-gap{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.mb-14{margin-bottom:14px}
+.text-gold{color:var(--gold)}.text-green{color:var(--green)}.text-red{color:var(--red)}.text-dim{color:var(--white-dim)}.text-sm{font-size:11px}.font-bold{font-weight:700}
+.spinner{width:20px;height:20px;border:2px solid rgba(201,168,76,.2);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
+<div id="loadingBar"></div>
+<div class="toast" id="toast"></div>
+
 <!-- LOGIN -->
+
 <div id="loginPage">
 <div class="login-page">
   <div class="login-card">
     <div class="login-icon">🏢</div>
     <div class="login-title">حیات‌زاده لمتد</div>
     <div class="login-sub">سیستم حسابداری سهامی</div>
-    <div class="form-group" style="margin-bottom:12px">
+    <div class="form-group">
       <label class="form-label">نام کاربری</label>
-      <input class="form-input" id="loginUser" placeholder="نام کاربری را بنویس" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <input class="form-input" id="loginUser" placeholder="نام کاربری" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
-    <div class="form-group" style="margin-bottom:20px">
+    <div class="form-group">
       <label class="form-label">رمز عبور</label>
-      <input class="form-input" type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+      <div style="position:relative">
+        <input class="form-input" type="password" id="loginPass" placeholder="••••••••" style="padding-left:42px" onkeydown="if(event.key==='Enter')doLogin()"/>
+        <button type="button" onclick="togglePass()" id="passToggle" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:var(--white-dim)">👁️</button>
+      </div>
     </div>
-    <div id="loginErr" style="color:var(--red);font-size:12px;text-align:center;margin-bottom:12px;display:none"></div>
-    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doLogin()">🔐 ورود به سیستم</button>
+    <div id="loginErr" style="color:var(--red);font-size:12px;text-align:center;margin-bottom:10px;display:none"></div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">🔐 ورود به سیستم</button>
   </div>
 </div>
 </div>
 
 <!-- APP -->
-<div id="appPage" style="display:none">
-<div class="app">
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-title">🏢 حیات‌زاده لمتد</div>
-      <div class="logo-sub">سیستم حسابداری سهامی</div>
-    </div>
-    <div class="nav-section">
-      <div class="nav-label">منوی اصلی</div>
-      <button class="nav-item active" onclick="goPage('dashboard')" id="nav-dashboard">🏠 داشبورد</button>
-      <button class="nav-item" onclick="goPage('shareholders')" id="nav-shareholders" data-admin>👥 سهم‌داران</button>
-      <button class="nav-item" onclick="goPage('payments')" id="nav-payments" data-admin>💳 پرداخت‌ها</button>
-      <button class="nav-item" onclick="goPage('investments')" id="nav-investments" data-admin>🏭 سرمایه‌گذاری</button>
-      <button class="nav-item" onclick="goPage('returns')" id="nav-returns" data-admin>🔄 برگشت سرمایه</button>
-      <button class="nav-item" onclick="goPage('profit')" id="nav-profit" data-admin>📈 تقسیم مفاد</button>
-      <button class="nav-item" onclick="goPage('reports')" id="nav-reports">📊 گزارشات</button>
-    </div>
-    <div class="sidebar-footer">
-      <div style="font-size:11px;color:var(--white-dim);margin-bottom:8px">
-        <span id="userRoleBadge" class="badge badge-gold">مدیر</span>
-        <span id="userNameSide" style="margin-right:8px"></span>
-      </div>
-      <button class="btn btn-danger btn-sm" style="width:100%;justify-content:center" onclick="doLogout()">🚪 خروج</button>
-    </div>
-  </div>
 
-  <!-- MAIN -->
-  <div class="main">
+<div id="appPage" style="display:none">
+  <div class="app">
     <div class="topbar">
       <div class="topbar-title" id="pageTitle">🏠 داشبورد</div>
       <div class="topbar-user">
@@ -180,80 +142,79 @@ option{background:var(--navy-mid)}
         <span id="userNameTop"></span>
       </div>
     </div>
-    <div class="content" id="mainContent"></div>
+    <div class="content" id="mainContent">
+      <div class="spinner"></div>
+    </div>
+  </div>
+  <div class="bottom-tab" id="bottomTab">
+    <button class="tab-item active" onclick="goPage('dashboard')" id="tab-dashboard"><div class="tab-icon">🏠</div><span>داشبورد</span></button>
+    <button class="tab-item" onclick="goPage('shareholders')" id="tab-shareholders" data-admin><div class="tab-icon">👥</div><span>سهم‌داران</span></button>
+    <button class="tab-item" onclick="goPage('payments')" id="tab-payments" data-admin><div class="tab-icon">💳</div><span>پرداخت</span></button>
+    <button class="tab-item" onclick="goPage('investments')" id="tab-investments" data-admin><div class="tab-icon">🏭</div><span>سرمایه</span></button>
+    <button class="tab-item" onclick="goPage('reports')" id="tab-reports"><div class="tab-icon">📊</div><span>گزارش</span></button>
   </div>
 </div>
-</div>
-
-<div class="toast" id="toast">✅ ذخیره شد!</div>
 
 <script>
-// ==================== DATA ====================
-let DB = JSON.parse(localStorage.getItem('hz_db') || 'null') || {
-  users: [
-    {id:1, username:'admin', password:'admin123', role:'admin', name:'مدیر سیستم'},
-    {id:2, username:'user', password:'user123', role:'user', name:'سهم‌دار'}
-  ],
-  shareholders: [
-    {id:1, name:'احمد شاه محمدی', phone:'0700111222', shares:5, totalPaid:25000, status:'active', joinDate:'1402/01/15'},
-    {id:2, name:'نجیب الله رحیمی', phone:'0701333444', shares:8, totalPaid:40000, status:'active', joinDate:'1402/02/10'},
-    {id:3, name:'محمد اکرم حیات‌زاده', phone:'0702555666', shares:12, totalPaid:60000, status:'active', joinDate:'1402/01/01'},
-    {id:4, name:'فریده نوری', phone:'0703777888', shares:3, totalPaid:15000, status:'active', joinDate:'1402/03/20'},
-    {id:5, name:'عبدالرحمن ستانکزی', phone:'0704999000', shares:6, totalPaid:30000, status:'inactive', joinDate:'1402/02/05'},
-  ],
-  payments: [
-    {id:1, shareholderId:1, amount:5000, date:'1402/04/01', type:'monthly', note:'پرداخت ماه چهارم'},
-    {id:2, shareholderId:2, amount:8000, date:'1402/04/01', type:'monthly', note:'پرداخت ماه چهارم'},
-    {id:3, shareholderId:3, amount:12000, date:'1402/04/01', type:'share_purchase', note:'خرید ۲ سهم اضافی'},
-  ],
-  investments: [
-    {id:1, amount:80000, type:'PU خرید مواد خام', date:'1402/03/01', description:'خرید ۸ تن مواد خام PU از بازار کابل', status:'returned'},
-    {id:2, amount:50000, type:'PU خرید مواد خام', date:'1402/04/10', description:'خرید ۵ تن مواد خام PU از بازار قندهار', status:'active'},
-  ],
-  returns: [
-    {id:1, investmentId:1, totalReturn:96000, investmentAmount:80000, profit:16000, date:'1402/04/15', note:'فروش موفق - سود ۲۰٪'},
-  ],
-  distributions: [
-    {id:1, returnId:1, totalProfit:16000, totalShares:34, profitPerShare:470.6, date:'1402/04/16'},
-  ]
-};
+const SB_URL='https://cichvpyaijiyckmwwemg.supabase.co';
+const SB_KEY='sb_publishable_-KUgfcA4kFdjbWHHWSEFBw_klmDk20L';
 
-let currentUser = null;
-let currentPage = 'dashboard';
-
-function saveDB(){ localStorage.setItem('hz_db', JSON.stringify(DB)); }
-function fmt(n){ return new Intl.NumberFormat('fa-AF').format(Math.round(n||0)); }
-function genId(arr){ return arr.length ? Math.max(...arr.map(x=>x.id))+1 : 1; }
-function today(){
-  const d=new Date();
-  return d.getFullYear()+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getDate().toString().padStart(2,'0');
+async function sbGet(t,p=''){
+  try{const r=await fetch(`${SB_URL}/rest/v1/${t}${p}`,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});return r.ok?r.json():[];}catch{return[];}
 }
-function showToast(msg='✅ ذخیره شد!'){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),2500);
+async function sbPost(t,b){
+  try{const r=await fetch(`${SB_URL}/rest/v1/${t}`,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(b)});return r.ok?r.json():null;}catch{return null;}
+}
+async function sbPatch(t,b,p){
+  try{const r=await fetch(`${SB_URL}/rest/v1/${t}${p}`,{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(b)});return r.ok?r.json():null;}catch{return null;}
+}
+async function sbDel(t,p){
+  try{await fetch(`${SB_URL}/rest/v1/${t}${p}`,{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});}catch{}
 }
 
-// ==================== AUTH ====================
-function doLogin(){
+let DB={shareholders:[],payments:[],investments:[],returns:[],distributions:[],users:[]};
+let currentUser=null;
+
+function fmt(n){return new Intl.NumberFormat('fa-AF').format(Math.round(n||0));}
+function today(){const d=new Date();return d.getFullYear()+'/'+(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getDate().toString().padStart(2,'0');}
+function showToast(msg='✅ ذخیره شد!'){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function loading(show){document.getElementById('loadingBar').style.display=show?'block':'none';}
+function togglePass(){const i=document.getElementById('loginPass'),b=document.getElementById('passToggle');if(i.type==='password'){i.type='text';b.textContent='🙈';}else{i.type='password';b.textContent='👁️';}}
+
+async function loadDB(){
+  loading(true);
+  const [sh,py,inv,ret,dist,us]=await Promise.all([
+    sbGet('shareholders','?order=id.asc'),
+    sbGet('payments','?order=id.asc'),
+    sbGet('investments','?order=id.asc'),
+    sbGet('returns','?order=id.asc'),
+    sbGet('distributions','?order=id.asc'),
+    sbGet('users','?order=id.asc')
+  ]);
+  DB={shareholders:sh||[],payments:py||[],investments:inv||[],returns:ret||[],distributions:dist||[],users:us||[]};
+  loading(false);
+}
+
+async function doLogin(){
   const u=document.getElementById('loginUser').value.trim();
   const p=document.getElementById('loginPass').value;
-  const user=DB.users.find(x=>x.username===u && x.password===p);
+  loading(true);
+  const users=await sbGet('users',`?username=eq.${u}&password=eq.${p}`);
+  loading(false);
   const err=document.getElementById('loginErr');
-  if(!user){ err.style.display='block'; err.textContent='نام کاربری یا رمز عبور اشتباه است'; return; }
-  currentUser=user;
+  if(!users||!users.length){err.style.display='block';err.textContent='نام کاربری یا رمز عبور اشتباه است';return;}
+  currentUser=users[0];
   err.style.display='none';
   document.getElementById('loginPage').style.display='none';
   document.getElementById('appPage').style.display='block';
-  document.getElementById('userNameTop').textContent=user.name;
-  document.getElementById('userNameSide').textContent=user.name;
-  document.getElementById('userRoleBadge').textContent=user.role==='admin'?'مدیر':'سهم‌دار';
-  // نمایش منو بر اساس نقش
+  document.getElementById('userNameTop').textContent=currentUser.name;
   document.querySelectorAll('[data-admin]').forEach(el=>{
-    el.style.display=user.role==='admin'?'flex':'none';
+    el.style.display=currentUser.role==='admin'?'flex':'none';
   });
+  await loadDB();
   goPage('dashboard');
 }
+
 function doLogout(){
   currentUser=null;
   document.getElementById('loginPage').style.display='block';
@@ -262,600 +223,414 @@ function doLogout(){
   document.getElementById('loginPass').value='';
 }
 
-// ==================== NAVIGATION ====================
 const pageTitles={dashboard:'🏠 داشبورد',shareholders:'👥 سهم‌داران',payments:'💳 پرداخت‌ها',investments:'🏭 سرمایه‌گذاری',returns:'🔄 برگشت سرمایه',profit:'📈 تقسیم مفاد',reports:'📊 گزارشات'};
+
 function goPage(page){
-  currentPage=page;
-  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
-  const navEl=document.getElementById('nav-'+page);
-  if(navEl) navEl.classList.add('active');
+  document.querySelectorAll('.tab-item').forEach(el=>el.classList.remove('active'));
+  const tab=document.getElementById('tab-'+page);
+  if(tab) tab.classList.add('active');
   document.getElementById('pageTitle').textContent=pageTitles[page]||page;
   const c=document.getElementById('mainContent');
-  if(page==='dashboard') c.innerHTML=renderDashboard();
-  else if(page==='shareholders') c.innerHTML=renderShareholders();
-  else if(page==='payments') c.innerHTML=renderPayments();
-  else if(page==='investments') c.innerHTML=renderInvestments();
-  else if(page==='returns') c.innerHTML=renderReturns();
-  else if(page==='profit') c.innerHTML=renderProfit();
-  else if(page==='reports') c.innerHTML=renderReports();
+  if(page==='dashboard') renderDashboard(c);
+  else if(page==='shareholders') renderShareholders(c);
+  else if(page==='payments') renderPayments(c);
+  else if(page==='investments') renderInvestments(c);
+  else if(page==='returns') renderReturns(c);
+  else if(page==='profit') renderProfit(c);
+  else if(page==='reports') renderReports(c);
 }
 
-// ==================== DASHBOARD ====================
-function renderDashboard(){
-  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+s.shares,0);
-  const totalCapital=DB.shareholders.reduce((a,s)=>a+s.totalPaid,0);
-  const totalProfit=DB.returns.reduce((a,r)=>a+r.profit,0);
-  const totalInvested=DB.investments.reduce((a,i)=>a+i.amount,0);
-  const active=DB.shareholders.filter(s=>s.status==='active').length;
-
-  const chartData=DB.shareholders.filter(s=>s.status==='active').slice(0,6);
-  const maxShares=Math.max(...chartData.map(s=>s.shares),1);
-  const bars=chartData.map(s=>`
-    <div class="bar-col">
-      <div class="bar-fill" style="height:${(s.shares/maxShares)*100}%;background:var(--gold);opacity:.8"></div>
-      <div class="bar-label">${s.name.split(' ')[0]}</div>
-    </div>`).join('');
-
-  const lastPayments=DB.payments.slice(-5).reverse().map(p=>{
-    const sh=DB.shareholders.find(s=>s.id===p.shareholderId);
-    return`<tr>
-      <td class="font-bold">${sh?.name?.split(' ')[0]||'—'}</td>
-      <td class="text-gold font-bold">${fmt(p.amount)}</td>
-      <td><span class="badge ${p.type==='monthly'?'badge-blue':'badge-gold'}">${p.type==='monthly'?'ماهانه':'سهم'}</span></td>
-    </tr>`;
-  }).join('');
-
-  return`
+// DASHBOARD
+function renderDashboard(c){
+  const active=DB.shareholders.filter(s=>s.status==='active');
+  const totalShares=active.reduce((a,s)=>a+(+s.shares||0),0);
+  const totalCapital=DB.shareholders.reduce((a,s)=>a+(+s.total_paid||0),0);
+  const totalProfit=DB.returns.reduce((a,r)=>a+(+r.profit||0),0);
+  c.innerHTML=`
   <div class="stats-grid">
-    <div class="stat-card blue"><div class="stat-label">👥 سهم‌داران فعال</div><div class="stat-value">${active}</div><div class="stat-sub">از ${DB.shareholders.length} نفر کل</div></div>
-    <div class="stat-card gold"><div class="stat-label">📊 کل سهام</div><div class="stat-value">${fmt(activeShares)}</div><div class="stat-sub">واحد سهم</div></div>
+    <div class="stat-card blue"><div class="stat-label">👥 سهم‌داران فعال</div><div class="stat-value">${active.length}</div><div class="stat-sub">از ${DB.shareholders.length} نفر</div></div>
+    <div class="stat-card gold"><div class="stat-label">📊 کل سهام</div><div class="stat-value">${fmt(totalShares)}</div><div class="stat-sub">واحد سهم</div></div>
     <div class="stat-card green"><div class="stat-label">💰 کل سرمایه</div><div class="stat-value">${fmt(totalCapital)}</div><div class="stat-sub">افغانی</div></div>
     <div class="stat-card green"><div class="stat-label">📈 کل مفاد</div><div class="stat-value">${fmt(totalProfit)}</div><div class="stat-sub">افغانی</div></div>
-    <div class="stat-card gold"><div class="stat-label">🏭 سرمایه‌گذاری</div><div class="stat-value">${fmt(totalInvested)}</div><div class="stat-sub">${DB.investments.length} پروژه</div></div>
-    <div class="stat-card blue"><div class="stat-label">🔄 برگشت سرمایه</div><div class="stat-value">${DB.returns.length}</div><div class="stat-sub">تراکنش</div></div>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-    <div class="card">
-      <div class="card-title">📊 توزیع سهام</div>
-      <div class="bar-chart">${bars}</div>
-    </div>
-    <div class="card">
-      <div class="card-title">💹 آخرین پرداخت‌ها</div>
-      <table><thead><tr><th>سهم‌دار</th><th>مبلغ</th><th>نوع</th></tr></thead>
-      <tbody>${lastPayments||'<tr><td colspan="3" style="text-align:center;color:var(--white-dim)">هنوز پرداختی ثبت نشده</td></tr>'}</tbody></table>
-    </div>
   </div>
   <div class="card">
-    <div class="card-title">🏭 وضعیت سرمایه‌گذاری‌ها</div>
+    <div class="card-title">🏭 سرمایه‌گذاری‌ها</div>
     <div class="table-wrap"><table>
-      <thead><tr><th>توضیح</th><th>مبلغ</th><th>تاریخ</th><th>وضعیت</th></tr></thead>
+      <thead><tr><th>توضیح</th><th>مبلغ</th><th>وضعیت</th></tr></thead>
       <tbody>${DB.investments.map(i=>`<tr>
-        <td>${i.description}</td>
+        <td>${i.description||'—'}</td>
         <td class="text-gold font-bold">${fmt(i.amount)}</td>
-        <td class="text-dim">${i.date}</td>
         <td><span class="badge ${i.status==='returned'?'badge-green':'badge-gold'}">${i.status==='returned'?'تکمیل':'در جریان'}</span></td>
-      </tr>`).join('')}</tbody>
+      </tr>`).join('')||'<tr><td colspan="3" style="text-align:center;color:var(--white-dim)">هنوز سرمایه‌گذاری ثبت نشده</td></tr>'}</tbody>
     </table></div>
-  </div>`;
+  </div>
+  <div class="card">
+    <div class="card-title">💹 آخرین پرداخت‌ها</div>
+    <div class="table-wrap"><table>
+      <thead><tr><th>سهم‌دار</th><th>مبلغ</th><th>نوع</th></tr></thead>
+      <tbody>${[...DB.payments].reverse().slice(0,5).map(p=>{
+        const sh=DB.shareholders.find(s=>s.id===p.shareholder_id);
+        return`<tr><td class="font-bold">${sh?.name?.split(' ')[0]||'—'}</td>
+        <td class="text-green font-bold">${fmt(p.amount)}</td>
+        <td><span class="badge ${p.type==='monthly'?'badge-blue':'badge-gold'}">${p.type==='monthly'?'ماهانه':'سهم'}</span></td></tr>`;
+      }).join('')||'<tr><td colspan="3" style="text-align:center;color:var(--white-dim)">هنوز پرداختی ثبت نشده</td></tr>'}</tbody>
+    </table></div>
+  </div>
+  ${currentUser?.role==='admin'?`
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+    <button class="btn btn-outline btn-full" onclick="goPage('returns')">🔄 برگشت سرمایه</button>
+    <button class="btn btn-outline btn-full" onclick="goPage('profit')">📈 تقسیم مفاد</button>
+  </div>`:''}`;
 }
 
-// ==================== SHAREHOLDERS ====================
-function renderShareholders(){
-  const totalShares=DB.shareholders.reduce((a,s)=>a+s.shares,0);
-  const rows=DB.shareholders.map((s,i)=>`<tr>
-    <td class="text-dim">${i+1}</td>
-    <td class="font-bold">${s.name}</td>
-    <td class="text-dim">${s.phone}</td>
-    <td><span class="text-gold font-bold">${s.shares}</span></td>
-    <td>${fmt(s.totalPaid)} <span class="text-dim text-sm">افغانی</span></td>
-    <td class="text-dim">${s.joinDate}</td>
-    <td><span class="badge ${s.status==='active'?'badge-green':'badge-red'}">${s.status==='active'?'فعال':'غیرفعال'}</span></td>
-    <td>
-      <div class="flex-gap">
+// SHAREHOLDERS
+function renderShareholders(c){
+  c.innerHTML=`
+  <div class="flex-between mb-14">
+    <div><div style="font-size:18px;font-weight:800">سهم‌داران</div>
+    <div class="text-dim text-sm">${DB.shareholders.length} نفر</div></div>
+    <button class="btn btn-primary btn-sm" onclick="showAddShareholder()">+ افزودن</button>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>نام</th><th>سهام</th><th>پرداخت</th><th>وضعیت</th><th></th></tr></thead>
+    <tbody>${DB.shareholders.map(s=>`<tr>
+      <td><div class="font-bold">${s.name}</div><div class="text-dim text-sm">${s.phone||''}</div></td>
+      <td class="text-gold font-bold">${s.shares}</td>
+      <td>${fmt(s.total_paid)}</td>
+      <td><span class="badge ${s.status==='active'?'badge-green':'badge-red'}">${s.status==='active'?'فعال':'غیرفعال'}</span></td>
+      <td><div class="flex-gap">
         <button class="btn btn-outline btn-sm" onclick="editShareholder(${s.id})">✏️</button>
         <button class="btn btn-danger btn-sm" onclick="deleteShareholder(${s.id})">🗑️</button>
-      </div>
-    </td>
-  </tr>`).join('');
-
-  return`
-  <div class="flex-between mb-20">
-    <div><div style="font-size:20px;font-weight:800">سهم‌داران</div>
-    <div class="text-dim text-sm">${DB.shareholders.length} نفر — ${fmt(totalShares)} سهم</div></div>
-    <button class="btn btn-primary" onclick="showAddShareholder()">+ افزودن سهم‌دار</button>
-  </div>
-  <div class="card">
-    <div class="flex-between mb-16">
-      <div class="card-title" style="margin:0">👥 لیست سهم‌داران</div>
-      <input class="search-bar" placeholder="جستجو..." oninput="filterShareholders(this.value)"/>
-    </div>
-    <div class="table-wrap" id="shTable"><table>
-      <thead><tr><th>#</th><th>نام کامل</th><th>تماس</th><th>سهام</th><th>پرداخت کل</th><th>تاریخ عضویت</th><th>وضعیت</th><th>عملیات</th></tr></thead>
-      <tbody id="shTbody">${rows}</tbody>
-    </table></div>
-  </div>
-  <div id="shModal" style="display:none"></div>`;
+      </div></td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
 }
 
-function filterShareholders(q){
-  const rows=DB.shareholders.filter(s=>!q||s.name.includes(q)||s.phone.includes(q));
-  document.getElementById('shTbody').innerHTML=rows.map((s,i)=>`<tr>
-    <td class="text-dim">${i+1}</td>
-    <td class="font-bold">${s.name}</td>
-    <td class="text-dim">${s.phone}</td>
-    <td><span class="text-gold font-bold">${s.shares}</span></td>
-    <td>${fmt(s.totalPaid)} <span class="text-dim text-sm">افغانی</span></td>
-    <td class="text-dim">${s.joinDate}</td>
-    <td><span class="badge ${s.status==='active'?'badge-green':'badge-red'}">${s.status==='active'?'فعال':'غیرفعال'}</span></td>
-    <td><div class="flex-gap">
-      <button class="btn btn-outline btn-sm" onclick="editShareholder(${s.id})">✏️</button>
-      <button class="btn btn-danger btn-sm" onclick="deleteShareholder(${s.id})">🗑️</button>
-    </div></td>
-  </tr>`).join('');
+async function showAddShareholder(){
+  showModal('افزودن سهم‌دار',`
+    <div class="form-group"><label class="form-label">نام کامل *</label><input class="form-input" id="m-name" placeholder="نام کامل"/></div>
+    <div class="form-group"><label class="form-label">شماره تماس</label><input class="form-input" id="m-phone" placeholder="07xxxxxxxx"/></div>
+    <div class="form-group"><label class="form-label">تعداد سهم *</label><input class="form-input" type="number" id="m-shares" placeholder="مثال: 5"/></div>
+    <div class="form-group"><label class="form-label">تاریخ عضویت</label><input class="form-input" id="m-date" value="${today()}"/></div>
+    <div class="form-group"><label class="form-label">وضعیت</label>
+      <select class="form-select" id="m-status"><option value="active">فعال</option><option value="inactive">غیرفعال</option></select>
+    </div>`,'saveShareholder(0)');
 }
 
-function showAddShareholder(){
-  showModal('افزودن سهم‌دار جدید',`
-    <div class="form-grid">
-      <div class="form-group"><label class="form-label">نام کامل *</label><input class="form-input" id="m-name" placeholder="نام کامل"/></div>
-      <div class="form-group"><label class="form-label">شماره تماس</label><input class="form-input" id="m-phone" placeholder="07xxxxxxxx"/></div>
-      <div class="form-group"><label class="form-label">تعداد سهم *</label><input class="form-input" type="number" id="m-shares" placeholder="مثال: 5"/></div>
-      <div class="form-group"><label class="form-label">تاریخ عضویت</label><input class="form-input" id="m-date" value="${today()}"/></div>
-      <div class="form-group"><label class="form-label">وضعیت</label>
-        <select class="form-select" id="m-status"><option value="active">فعال</option><option value="inactive">غیرفعال</option></select>
-      </div>
-    </div>`,
-    `saveShareholder(0)`);
-}
-
-function editShareholder(id){
-  const s=DB.shareholders.find(x=>x.id===id);
-  if(!s) return;
+async function editShareholder(id){
+  const s=DB.shareholders.find(x=>x.id===id);if(!s)return;
   showModal('ویرایش سهم‌دار',`
-    <div class="form-grid">
-      <div class="form-group"><label class="form-label">نام کامل *</label><input class="form-input" id="m-name" value="${s.name}"/></div>
-      <div class="form-group"><label class="form-label">شماره تماس</label><input class="form-input" id="m-phone" value="${s.phone}"/></div>
-      <div class="form-group"><label class="form-label">تعداد سهم *</label><input class="form-input" type="number" id="m-shares" value="${s.shares}"/></div>
-      <div class="form-group"><label class="form-label">تاریخ عضویت</label><input class="form-input" id="m-date" value="${s.joinDate}"/></div>
-      <div class="form-group"><label class="form-label">وضعیت</label>
-        <select class="form-select" id="m-status">
-          <option value="active" ${s.status==='active'?'selected':''}>فعال</option>
-          <option value="inactive" ${s.status==='inactive'?'selected':''}>غیرفعال</option>
-        </select>
-      </div>
-    </div>`,
-    `saveShareholder(${id})`);
+    <div class="form-group"><label class="form-label">نام کامل *</label><input class="form-input" id="m-name" value="${s.name}"/></div>
+    <div class="form-group"><label class="form-label">شماره تماس</label><input class="form-input" id="m-phone" value="${s.phone||''}"/></div>
+    <div class="form-group"><label class="form-label">تعداد سهم *</label><input class="form-input" type="number" id="m-shares" value="${s.shares}"/></div>
+    <div class="form-group"><label class="form-label">تاریخ عضویت</label><input class="form-input" id="m-date" value="${s.join_date||''}"/></div>
+    <div class="form-group"><label class="form-label">وضعیت</label>
+      <select class="form-select" id="m-status">
+        <option value="active" ${s.status==='active'?'selected':''}>فعال</option>
+        <option value="inactive" ${s.status==='inactive'?'selected':''}>غیرفعال</option>
+      </select>
+    </div>`,'saveShareholder('+id+')');
 }
 
-function saveShareholder(id){
+async function saveShareholder(id){
   const name=document.getElementById('m-name').value.trim();
   const shares=Number(document.getElementById('m-shares').value);
-  if(!name||!shares){ alert('نام و سهام الزامی است!'); return; }
-  if(id){
-    const idx=DB.shareholders.findIndex(s=>s.id===id);
-    DB.shareholders[idx]={...DB.shareholders[idx],name,phone:document.getElementById('m-phone').value,shares,joinDate:document.getElementById('m-date').value,status:document.getElementById('m-status').value};
-  } else {
-    DB.shareholders.push({id:genId(DB.shareholders),name,phone:document.getElementById('m-phone').value,shares,totalPaid:0,status:document.getElementById('m-status').value,joinDate:document.getElementById('m-date').value});
-  }
-  saveDB(); closeModal(); showToast(); goPage('shareholders');
+  if(!name||!shares){alert('نام و سهام الزامی است!');return;}
+  const body={name,phone:document.getElementById('m-phone').value,shares,join_date:document.getElementById('m-date').value,status:document.getElementById('m-status').value};
+  loading(true);
+  if(id){await sbPatch('shareholders',body,`?id=eq.${id}`);}
+  else{await sbPost('shareholders',body);}
+  await loadDB();loading(false);closeModal();showToast();goPage('shareholders');
 }
 
-function deleteShareholder(id){
-  if(!confirm('این سهم‌دار حذف شود؟')) return;
-  DB.shareholders=DB.shareholders.filter(s=>s.id!==id);
-  saveDB(); showToast('🗑️ حذف شد!'); goPage('shareholders');
+async function deleteShareholder(id){
+  if(!confirm('این سهم‌دار حذف شود؟'))return;
+  loading(true);await sbDel('shareholders',`?id=eq.${id}`);await loadDB();loading(false);showToast('🗑️ حذف شد!');goPage('shareholders');
 }
 
-// ==================== PAYMENTS ====================
-function renderPayments(){
-  const rows=[...DB.payments].reverse().map(p=>{
-    const sh=DB.shareholders.find(s=>s.id===p.shareholderId);
-    return`<tr>
-      <td class="text-dim">#${String(p.id).padStart(4,'0')}</td>
-      <td class="font-bold">${sh?.name||'—'}</td>
-      <td class="text-green font-bold">${fmt(p.amount)}</td>
-      <td class="text-dim">${p.date}</td>
-      <td><span class="badge ${p.type==='monthly'?'badge-blue':'badge-gold'}">${p.type==='monthly'?'ماهانه':'خرید سهم'}</span></td>
-      <td class="text-dim">${p.note||'—'}</td>
-      <td><button class="btn btn-outline btn-sm" onclick="showReceipt(${p.id})">🧾 رسید</button></td>
-    </tr>`;
-  }).join('');
-
-  return`
-  <div class="flex-between mb-20">
-    <div><div style="font-size:20px;font-weight:800">پرداخت‌ها و رسیدها</div>
-    <div class="text-dim text-sm">${DB.payments.length} تراکنش — ${fmt(DB.payments.reduce((a,p)=>a+p.amount,0))} افغانی</div></div>
-    <button class="btn btn-primary" onclick="showAddPayment()">+ ثبت پرداخت</button>
+// PAYMENTS
+function renderPayments(c){
+  c.innerHTML=`
+  <div class="flex-between mb-14">
+    <div><div style="font-size:18px;font-weight:800">پرداخت‌ها</div>
+    <div class="text-dim text-sm">${DB.payments.length} تراکنش</div></div>
+    <button class="btn btn-primary btn-sm" onclick="showAddPayment()">+ ثبت</button>
   </div>
-  <div class="card">
-    <div class="card-title">🧾 لیست پرداخت‌ها</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>#</th><th>سهم‌دار</th><th>مبلغ</th><th>تاریخ</th><th>نوع</th><th>یادداشت</th><th>رسید</th></tr></thead>
-      <tbody>${rows||'<tr><td colspan="7" style="text-align:center;color:var(--white-dim)">هنوز پرداختی ثبت نشده</td></tr>'}</tbody>
-    </table></div>
-  </div>`;
+  <div class="table-wrap"><table>
+    <thead><tr><th>سهم‌دار</th><th>مبلغ</th><th>تاریخ</th><th>نوع</th><th></th></tr></thead>
+    <tbody>${[...DB.payments].reverse().map(p=>{
+      const sh=DB.shareholders.find(s=>s.id===p.shareholder_id);
+      return`<tr>
+        <td class="font-bold">${sh?.name?.split(' ')[0]||'—'}</td>
+        <td class="text-green font-bold">${fmt(p.amount)}</td>
+        <td class="text-dim">${p.date||'—'}</td>
+        <td><span class="badge ${p.type==='monthly'?'badge-blue':'badge-gold'}">${p.type==='monthly'?'ماهانه':'سهم'}</span></td>
+        <td><button class="btn btn-outline btn-sm" onclick="showReceipt(${p.id})">🧾</button></td>
+      </tr>`;
+    }).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--white-dim)">هنوز پرداختی ثبت نشده</td></tr>'}</tbody>
+  </table></div>`;
 }
 
 function showAddPayment(){
-  const options=DB.shareholders.filter(s=>s.status==='active').map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
-  showModal('ثبت پرداخت جدید',`
-    <div class="form-grid">
-      <div class="form-group"><label class="form-label">سهم‌دار *</label>
-        <select class="form-select" id="m-shId"><option value="">انتخاب کنید...</option>${options}</select></div>
-      <div class="form-group"><label class="form-label">مبلغ (افغانی) *</label><input class="form-input" type="number" id="m-amount" placeholder="مثال: 5000"/></div>
-      <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>
-      <div class="form-group"><label class="form-label">نوع پرداخت</label>
-        <select class="form-select" id="m-type"><option value="monthly">پرداخت ماهانه</option><option value="share_purchase">خرید سهم</option></select></div>
-      <div class="form-group" style="grid-column:1/-1"><label class="form-label">یادداشت</label><input class="form-input" id="m-note" placeholder="توضیح اختیاری..."/></div>
-    </div>`,
-    'savePayment()');
+  const opts=DB.shareholders.filter(s=>s.status==='active').map(s=>`<option value="${s.id}">${s.name}</option>`).join('');
+  showModal('ثبت پرداخت',`
+    <div class="form-group"><label class="form-label">سهم‌دار *</label>
+      <select class="form-select" id="m-shId"><option value="">انتخاب کنید...</option>${opts}</select></div>
+    <div class="form-group"><label class="form-label">مبلغ (افغانی) *</label><input class="form-input" type="number" id="m-amount" placeholder="5000"/></div>
+    <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>
+    <div class="form-group"><label class="form-label">نوع</label>
+      <select class="form-select" id="m-type"><option value="monthly">ماهانه</option><option value="share_purchase">خرید سهم</option></select></div>
+    <div class="form-group"><label class="form-label">یادداشت</label><input class="form-input" id="m-note" placeholder="اختیاری..."/></div>`,'savePayment()');
 }
 
-function savePayment(){
+async function savePayment(){
   const shId=Number(document.getElementById('m-shId').value);
   const amount=Number(document.getElementById('m-amount').value);
-  if(!shId||!amount){ alert('سهم‌دار و مبلغ الزامی است!'); return; }
-  const p={id:genId(DB.payments),shareholderId:shId,amount,date:document.getElementById('m-date').value,type:document.getElementById('m-type').value,note:document.getElementById('m-note').value};
-  DB.payments.push(p);
-  const shIdx=DB.shareholders.findIndex(s=>s.id===shId);
-  if(shIdx>=0){
-    DB.shareholders[shIdx].totalPaid+=amount;
-    if(p.type==='share_purchase') DB.shareholders[shIdx].shares+=Math.floor(amount/5000);
+  if(!shId||!amount){alert('سهم‌دار و مبلغ الزامی است!');return;}
+  const type=document.getElementById('m-type').value;
+  loading(true);
+  await sbPost('payments',{shareholder_id:shId,amount,date:document.getElementById('m-date').value,type,note:document.getElementById('m-note').value});
+  const sh=DB.shareholders.find(s=>s.id===shId);
+  if(sh){
+    const newPaid=(+sh.total_paid||0)+amount;
+    const newShares=type==='share_purchase'?(+sh.shares||0)+Math.floor(amount/5000):(+sh.shares||0);
+    await sbPatch('shareholders',{total_paid:newPaid,shares:newShares},`?id=eq.${shId}`);
   }
-  saveDB(); closeModal(); showToast(); goPage('payments');
+  await loadDB();loading(false);closeModal();showToast();goPage('payments');
 }
 
 function showReceipt(id){
   const p=DB.payments.find(x=>x.id===id);
-  const sh=DB.shareholders.find(s=>s.id===p.shareholderId);
+  const sh=DB.shareholders.find(s=>s.id===p.shareholder_id);
   showModal('رسید پرداخت',`
     <div class="receipt-box">
       <div class="receipt-title">حیات‌زاده لمتد</div>
       <div class="receipt-sub">سیستم حسابداری سهامی</div>
       <hr class="receipt-hr"/>
       <div class="receipt-row"><span>شماره رسید:</span><span>#${String(p.id).padStart(5,'0')}</span></div>
-      <div class="receipt-row"><span>سهم‌دار:</span><span>${sh?.name}</span></div>
-      <div class="receipt-row"><span>تاریخ:</span><span>${p.date}</span></div>
+      <div class="receipt-row"><span>سهم‌دار:</span><span>${sh?.name||'—'}</span></div>
+      <div class="receipt-row"><span>تاریخ:</span><span>${p.date||'—'}</span></div>
       <div class="receipt-row"><span>نوع:</span><span>${p.type==='monthly'?'پرداخت ماهانه':'خرید سهم'}</span></div>
-      ${p.note?`<div class="receipt-row"><span>توضیح:</span><span>${p.note}</span></div>`:''}
+      ${p.note?`<div class="receipt-row"><span>یادداشت:</span><span>${p.note}</span></div>`:''}
       <hr class="receipt-hr"/>
       <div class="receipt-row receipt-total"><span>مبلغ:</span><span>${fmt(p.amount)} افغانی</span></div>
       <div class="receipt-footer">این رسید معتبر می‌باشد — حیات‌زاده لمتد</div>
-    </div>`,null,'🖨️ پرینت',()=>window.print());
+    </div>`,null);
 }
 
-// ==================== INVESTMENTS ====================
-function renderInvestments(){
-  const totalActive=DB.investments.filter(i=>i.status==='active').reduce((a,i)=>a+i.amount,0);
-  const rows=DB.investments.map((inv,i)=>`<tr>
-    <td class="text-dim">${i+1}</td>
-    <td class="font-bold">${inv.type}</td>
-    <td class="text-gold font-bold">${fmt(inv.amount)}</td>
-    <td class="text-dim">${inv.date}</td>
-    <td class="text-dim">${inv.description}</td>
-    <td><span class="badge ${inv.status==='returned'?'badge-green':'badge-gold'}">${inv.status==='returned'?'تکمیل':'در جریان'}</span></td>
-    <td>
-      ${inv.status==='active'?`<button class="btn btn-outline btn-sm" onclick="completeInvestment(${inv.id})">✅ تکمیل</button>`:'—'}
-      <button class="btn btn-danger btn-sm" onclick="deleteInvestment(${inv.id})" style="margin-right:5px">🗑️</button>
-    </td>
-  </tr>`).join('');
-
-  return`
-  <div class="flex-between mb-20">
-    <div><div style="font-size:20px;font-weight:800">سرمایه‌گذاری‌ها</div>
-    <div class="text-dim text-sm">در جریان: ${fmt(totalActive)} افغانی</div></div>
-    <button class="btn btn-primary" onclick="showAddInvestment()">+ ثبت سرمایه‌گذاری</button>
+// INVESTMENTS
+function renderInvestments(c){
+  c.innerHTML=`
+  <div class="flex-between mb-14">
+    <div><div style="font-size:18px;font-weight:800">سرمایه‌گذاری</div>
+    <div class="text-dim text-sm">${DB.investments.length} پروژه</div></div>
+    <button class="btn btn-primary btn-sm" onclick="showAddInvestment()">+ ثبت</button>
   </div>
-  <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
-    <div class="stat-card gold"><div class="stat-label">🏭 کل سرمایه‌گذاری</div><div class="stat-value">${fmt(DB.investments.reduce((a,i)=>a+i.amount,0))}</div><div class="stat-sub">افغانی</div></div>
-    <div class="stat-card blue"><div class="stat-label">🔄 در جریان</div><div class="stat-value">${fmt(totalActive)}</div><div class="stat-sub">${DB.investments.filter(i=>i.status==='active').length} پروژه</div></div>
-    <div class="stat-card green"><div class="stat-label">✅ تکمیل‌شده</div><div class="stat-value">${DB.investments.filter(i=>i.status==='returned').length}</div><div class="stat-sub">پروژه</div></div>
+  <div class="stats-grid">
+    <div class="stat-card gold"><div class="stat-label">🏭 کل سرمایه</div><div class="stat-value">${fmt(DB.investments.reduce((a,i)=>a+(+i.amount||0),0))}</div></div>
+    <div class="stat-card green"><div class="stat-label">✅ تکمیل</div><div class="stat-value">${DB.investments.filter(i=>i.status==='returned').length}</div></div>
   </div>
-  <div class="card">
-    <div class="card-title">🏭 پروژه‌های سرمایه‌گذاری</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>#</th><th>نوع</th><th>مبلغ</th><th>تاریخ</th><th>توضیح</th><th>وضعیت</th><th>عملیات</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>توضیح</th><th>مبلغ</th><th>تاریخ</th><th>وضعیت</th><th></th></tr></thead>
+    <tbody>${DB.investments.map(inv=>`<tr>
+      <td>${inv.description||'—'}</td>
+      <td class="text-gold font-bold">${fmt(inv.amount)}</td>
+      <td class="text-dim">${inv.date||'—'}</td>
+      <td><span class="badge ${inv.status==='returned'?'badge-green':'badge-gold'}">${inv.status==='returned'?'تکمیل':'در جریان'}</span></td>
+      <td>${inv.status==='active'?`<button class="btn btn-outline btn-sm" onclick="completeInv(${inv.id})">✅</button>`:'—'}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>
+  <div style="margin-top:14px;display:flex;gap:8px">
+    <button class="btn btn-outline btn-full" onclick="goPage('returns')">🔄 برگشت سرمایه</button>
+    <button class="btn btn-outline btn-full" onclick="goPage('profit')">📈 تقسیم مفاد</button>
   </div>`;
 }
 
 function showAddInvestment(){
-  showModal('ثبت سرمایه‌گذاری جدید',`
-    <div class="form-grid">
-      <div class="form-group"><label class="form-label">مبلغ (افغانی) *</label><input class="form-input" type="number" id="m-amount" placeholder="مبلغ"/></div>
-      <div class="form-group"><label class="form-label">نوع</label>
-        <select class="form-select" id="m-type"><option>PU خرید مواد خام</option><option>سرمایه‌گذاری دیگر</option></select></div>
-      <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>
-      <div class="form-group" style="grid-column:1/-1"><label class="form-label">توضیحات</label>
-        <textarea class="form-textarea" id="m-desc" placeholder="جزئیات سرمایه‌گذاری..."></textarea></div>
-    </div>`,'saveInvestment()');
+  showModal('ثبت سرمایه‌گذاری',`
+    <div class="form-group"><label class="form-label">مبلغ (افغانی) *</label><input class="form-input" type="number" id="m-amount" placeholder="مبلغ"/></div>
+    <div class="form-group"><label class="form-label">نوع</label>
+      <select class="form-select" id="m-type"><option>PU خرید مواد خام</option><option>سرمایه‌گذاری دیگر</option></select></div>
+    <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>
+    <div class="form-group"><label class="form-label">توضیحات</label><textarea class="form-textarea" id="m-desc" placeholder="جزئیات..."></textarea></div>`,'saveInvestment()');
+
 }
 
-function saveInvestment(){
-  const amount=Number(document.getElementById('m-amount').value);
-  if(!amount){ alert('مبلغ الزامی است!'); return; }
-  DB.investments.push({id:genId(DB.investments),amount,type:document.getElementById('m-type').value,date:document.getElementById('m-date').value,description:document.getElementById('m-desc').value,status:'active'});
-  saveDB(); closeModal(); showToast(); goPage('investments');
+async function saveInvestment(){
+const amount=Number(document.getElementById(‘m-amount’).value);
+if(!amount){alert(‘مبلغ الزامی است!’);return;}
+loading(true);
+await sbPost(‘investments’,{amount,type:document.getElementById(‘m-type’).value,date:document.getElementById(‘m-date’).value,description:document.getElementById(‘m-desc’).value,status:‘active’});
+await loadDB();loading(false);closeModal();showToast();goPage(‘investments’);
 }
 
-function completeInvestment(id){
-  const idx=DB.investments.findIndex(i=>i.id===id);
-  if(idx>=0) DB.investments[idx].status='returned';
-  saveDB(); showToast(); goPage('investments');
+async function completeInv(id){
+loading(true);await sbPatch(‘investments’,{status:‘returned’},`?id=eq.${id}`);await loadDB();loading(false);showToast();goPage(‘investments’);
 }
 
-function deleteInvestment(id){
-  if(!confirm('این سرمایه‌گذاری حذف شود؟')) return;
-  DB.investments=DB.investments.filter(i=>i.id!==id);
-  saveDB(); showToast('🗑️ حذف شد!'); goPage('investments');
-}
+// RETURNS
+function renderReturns(c){
+c.innerHTML=`
 
-// ==================== RETURNS ====================
-function renderReturns(){
-  const rows=DB.returns.map(r=>{
-    const inv=DB.investments.find(i=>i.id===r.investmentId);
-    const pct=((r.profit/r.investmentAmount)*100).toFixed(1);
-    return`<tr>
-      <td class="text-dim">${r.id}</td>
-      <td class="text-dim text-sm">${inv?.description?.substring(0,25)||'—'}...</td>
-      <td>${fmt(r.investmentAmount)}</td>
-      <td class="text-gold font-bold">${fmt(r.totalReturn)}</td>
+  <div class="flex-between mb-14">
+    <div><div style="font-size:18px;font-weight:800">برگشت سرمایه</div>
+    <div class="text-dim text-sm">کل مفاد: ${fmt(DB.returns.reduce((a,r)=>a+(+r.profit||0),0))} افغانی</div></div>
+    <button class="btn btn-primary btn-sm" onclick="showAddReturn()">+ ثبت</button>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>سرمایه اصلی</th><th>برگشت</th><th>مفاد</th><th>تاریخ</th></tr></thead>
+    <tbody>${DB.returns.map(r=>`<tr>
+      <td>${fmt(r.investment_amount)}</td>
+      <td class="text-gold font-bold">${fmt(r.total_return)}</td>
       <td class="text-green font-bold">${fmt(r.profit)}</td>
-      <td><span class="badge badge-green">${pct}٪</span></td>
-      <td class="text-dim">${r.date}</td>
-    </tr>`;
-  }).join('');
-
-  return`
-  <div class="flex-between mb-20">
-    <div><div style="font-size:20px;font-weight:800">برگشت سرمایه</div>
-    <div class="text-dim text-sm">کل مفاد: ${fmt(DB.returns.reduce((a,r)=>a+r.profit,0))} افغانی</div></div>
-    <button class="btn btn-primary" onclick="showAddReturn()">+ ثبت برگشت</button>
-  </div>
-  <div class="stats-grid" style="grid-template-columns:repeat(3,1fr)">
-    <div class="stat-card green"><div class="stat-label">💵 کل برگشت</div><div class="stat-value">${fmt(DB.returns.reduce((a,r)=>a+r.totalReturn,0))}</div><div class="stat-sub">افغانی</div></div>
-    <div class="stat-card blue"><div class="stat-label">📊 سرمایه اصلی</div><div class="stat-value">${fmt(DB.returns.reduce((a,r)=>a+r.investmentAmount,0))}</div><div class="stat-sub">افغانی</div></div>
-    <div class="stat-card gold"><div class="stat-label">📈 کل مفاد</div><div class="stat-value">${fmt(DB.returns.reduce((a,r)=>a+r.profit,0))}</div><div class="stat-sub">افغانی</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title">🔄 سوابق برگشت سرمایه</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>#</th><th>سرمایه‌گذاری</th><th>سرمایه اصلی</th><th>برگشت کل</th><th>مفاد</th><th>درصد</th><th>تاریخ</th></tr></thead>
-      <tbody>${rows||'<tr><td colspan="7" style="text-align:center;color:var(--white-dim)">هنوز برگشتی ثبت نشده</td></tr>'}</tbody>
-    </table></div>
-  </div>`;
+      <td class="text-dim">${r.date||'—'}</td>
+    </tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--white-dim)">هنوز برگشتی ثبت نشده</td></tr>'}</tbody>
+  </table></div>`;
 }
 
 function showAddReturn(){
-  const options=DB.investments.map(i=>`<option value="${i.id}">${i.description} (${fmt(i.amount)})</option>`).join('');
-  showModal('ثبت برگشت سرمایه',`
-    <div class="form-grid">
-      <div class="form-group"><label class="form-label">سرمایه‌گذاری *</label>
-        <select class="form-select" id="m-invId" onchange="calcReturnProfit()"><option value="">انتخاب کنید...</option>${options}</select></div>
-      <div class="form-group"><label class="form-label">مبلغ برگشتی کل *</label>
-        <input class="form-input" type="number" id="m-total" placeholder="مبلغ برگشتی" oninput="calcReturnProfit()"/></div>
-      <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>
-      <div class="form-group"><label class="form-label">یادداشت</label><input class="form-input" id="m-note" placeholder="اختیاری"/></div>
-    </div>
-    <div id="profitPreview" style="margin-top:12px;padding:12px;background:rgba(82,199,133,.1);border:1px solid rgba(82,199,133,.3);border-radius:8px;display:none">
-      <span class="text-dim">مفاد محاسبه‌شده: </span>
-      <span class="text-green font-bold" id="profitVal"></span>
-    </div>`,'saveReturn()');
+const opts=DB.investments.map(i=>`<option value="${i.id}">${i.description||i.type} (${fmt(i.amount)})</option>`).join(’’);
+showModal(‘ثبت برگشت سرمایه’,` <div class="form-group"><label class="form-label">سرمایه‌گذاری *</label> <select class="form-select" id="m-invId" onchange="calcRet()"><option value="">انتخاب کنید...</option>${opts}</select></div> <div class="form-group"><label class="form-label">مبلغ برگشتی کل *</label> <input class="form-input" type="number" id="m-total" placeholder="مبلغ برگشتی" oninput="calcRet()"/></div> <div id="retPreview" style="padding:10px;background:rgba(82,199,133,.1);border:1px solid rgba(82,199,133,.3);border-radius:8px;display:none;margin-bottom:12px"> <span class="text-dim">مفاد: </span><span class="text-green font-bold" id="retProfit"></span> </div> <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div> <div class="form-group"><label class="form-label">یادداشت</label><input class="form-input" id="m-note" placeholder="اختیاری"/></div>`,‘saveReturn()’);
 }
 
-function calcReturnProfit(){
-  const invId=Number(document.getElementById('m-invId')?.value);
-  const total=Number(document.getElementById('m-total')?.value);
-  const inv=DB.investments.find(i=>i.id===invId);
-  const prev=document.getElementById('profitPreview');
-  if(inv&&total&&prev){
-    const profit=total-inv.amount;
-    prev.style.display='block';
-    document.getElementById('profitVal').textContent=fmt(profit)+' افغانی';
-  }
+function calcRet(){
+const invId=Number(document.getElementById(‘m-invId’)?.value);
+const total=Number(document.getElementById(‘m-total’)?.value);
+const inv=DB.investments.find(i=>i.id===invId);
+const prev=document.getElementById(‘retPreview’);
+if(inv&&total&&prev){prev.style.display=‘block’;document.getElementById(‘retProfit’).textContent=fmt(total-inv.amount)+’ افغانی’;}
 }
 
-function saveReturn(){
-  const invId=Number(document.getElementById('m-invId').value);
-  const totalReturn=Number(document.getElementById('m-total').value);
-  if(!invId||!totalReturn){ alert('سرمایه‌گذاری و مبلغ الزامی است!'); return; }
-  const inv=DB.investments.find(i=>i.id===invId);
-  const profit=totalReturn-inv.amount;
-  DB.returns.push({id:genId(DB.returns),investmentId:invId,totalReturn,investmentAmount:inv.amount,profit,date:document.getElementById('m-date').value,note:document.getElementById('m-note').value});
-  const idx=DB.investments.findIndex(i=>i.id===invId);
-  if(idx>=0) DB.investments[idx].status='returned';
-  saveDB(); closeModal(); showToast(); goPage('returns');
+async function saveReturn(){
+const invId=Number(document.getElementById(‘m-invId’).value);
+const totalReturn=Number(document.getElementById(‘m-total’).value);
+if(!invId||!totalReturn){alert(‘الزامی است!’);return;}
+const inv=DB.investments.find(i=>i.id===invId);
+const profit=totalReturn-(+inv.amount||0);
+loading(true);
+await sbPost(‘returns’,{investment_id:invId,total_return:totalReturn,investment_amount:inv.amount,profit,date:document.getElementById(‘m-date’).value,note:document.getElementById(‘m-note’).value});
+await sbPatch(‘investments’,{status:‘returned’},`?id=eq.${invId}`);
+await loadDB();loading(false);closeModal();showToast();goPage(‘returns’);
 }
 
-// ==================== PROFIT ====================
-function renderProfit(){
-  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+s.shares,0);
-  const rows=DB.distributions.map(d=>`<tr>
-    <td class="text-dim">${d.id}</td>
-    <td class="text-green font-bold">${fmt(d.totalProfit)}</td>
-    <td>${fmt(d.totalShares)}</td>
-    <td class="text-gold">${fmt(d.profitPerShare)}</td>
-    <td class="text-dim">${d.date}</td>
-    <td><button class="btn btn-outline btn-sm" onclick="showDistDetail(${d.id})">👁️ جزئیات</button></td>
-  </tr>`).join('');
+// PROFIT
+function renderProfit(c){
+const activeShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
+c.innerHTML=`
 
-  return`
-  <div class="flex-between mb-20">
-    <div><div style="font-size:20px;font-weight:800">تقسیم مفاد</div>
-    <div class="text-dim text-sm">کل سهام فعال: ${fmt(activeShares)} سهم</div></div>
-    <button class="btn btn-primary" onclick="showDistribute()">⚡ تقسیم مفاد</button>
+  <div class="flex-between mb-14">
+    <div><div style="font-size:18px;font-weight:800">تقسیم مفاد</div>
+    <div class="text-dim text-sm">کل سهام فعال: ${fmt(activeShares)}</div></div>
+    <button class="btn btn-primary btn-sm" onclick="showDistribute()">⚡ تقسیم</button>
   </div>
-  <div class="card mb-20" style="border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.05)">
-    <div class="card-title">📐 فرمول تقسیم مفاد</div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:14px">
-      <div style="text-align:center;padding:10px 18px;background:var(--navy-light);border-radius:8px">
-        <div class="text-dim text-sm">مفاد کل</div>
-        <div class="text-gold font-bold" style="font-size:17px">÷ کل سهام</div>
-      </div>
-      <div style="display:flex;align-items:center;font-size:20px">→</div>
-      <div style="text-align:center;padding:10px 18px;background:var(--navy-light);border-radius:8px">
-        <div class="text-dim text-sm">مفاد هر سهم</div>
-        <div class="text-green font-bold" style="font-size:17px">× سهام شخص</div>
-      </div>
-      <div style="display:flex;align-items:center;font-size:20px">→</div>
-      <div style="text-align:center;padding:10px 18px;background:var(--navy-light);border-radius:8px">
-        <div class="text-dim text-sm">مفاد شخص</div>
-        <div class="text-gold font-bold" style="font-size:17px">✅ نهایی</div>
-      </div>
+  <div class="card" style="border:1px solid rgba(201,168,76,.3);background:rgba(201,168,76,.05)">
+    <div class="card-title">📐 فرمول</div>
+    <div style="font-size:13px;line-height:2;color:var(--white-dim)">
+      مفاد کل ÷ کل سهام = <span class="text-gold font-bold">مفاد هر سهم</span><br>
+      مفاد هر سهم × سهام شخص = <span class="text-green font-bold">سود شخص</span>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title">📊 سوابق تقسیم مفاد</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>#</th><th>مفاد کل</th><th>کل سهام</th><th>مفاد هر سهم</th><th>تاریخ</th><th>جزئیات</th></tr></thead>
-      <tbody>${rows||'<tr><td colspan="6" style="text-align:center;color:var(--white-dim)">هنوز تقسیمی انجام نشده</td></tr>'}</tbody>
-    </table></div>
-  </div>`;
+  <div class="table-wrap"><table>
+    <thead><tr><th>مفاد کل</th><th>کل سهام</th><th>هر سهم</th><th>تاریخ</th><th></th></tr></thead>
+    <tbody>${DB.distributions.map(d=>`<tr>
+      <td class="text-green font-bold">${fmt(d.total_profit)}</td>
+      <td>${fmt(d.total_shares)}</td>
+      <td class="text-gold">${fmt(d.profit_per_share)}</td>
+      <td class="text-dim">${d.date||'—'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="showDistDetail(${d.id})">👁️</button></td>
+    </tr>`).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--white-dim)">هنوز تقسیمی انجام نشده</td></tr>'}</tbody>
+  </table></div>`;
 }
 
 function showDistribute(){
-  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+s.shares,0);
-  const options=DB.returns.map(r=>`<option value="${r.id}">مفاد ${fmt(r.profit)} افغانی (${r.date})</option>`).join('');
-  showModal('تقسیم مفاد جدید',`
-    <div class="form-grid">
-      <div class="form-group"><label class="form-label">برگشت سرمایه *</label>
-        <select class="form-select" id="m-retId" onchange="calcDistPreview()"><option value="">انتخاب کنید...</option>${options}</select></div>
-      <div class="form-group"><label class="form-label">تاریخ تقسیم</label><input class="form-input" id="m-date" value="${today()}"/></div>
-    </div>
-    <div id="distPreview" style="margin-top:12px;padding:12px;background:rgba(82,199,133,.1);border:1px solid rgba(82,199,133,.3);border-radius:8px;display:none">
-      <div class="text-dim text-sm">مفاد هر سهم:</div>
-      <div class="text-green font-bold" style="font-size:20px" id="perShareVal"></div>
-      <div class="text-dim text-sm" style="margin-top:4px">کل سهام فعال: ${fmt(activeShares)}</div>
-    </div>`,'saveDistribution()');
+const activeShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
+const opts=DB.returns.map(r=>`<option value="${r.id}">مفاد ${fmt(r.profit)} افغانی (${r.date||'—'})</option>`).join(’’);
+showModal(‘تقسیم مفاد’,` <div class="form-group"><label class="form-label">برگشت سرمایه *</label> <select class="form-select" id="m-retId" onchange="calcDist()"><option value="">انتخاب کنید...</option>${opts}</select></div> <div id="distPrev" style="padding:10px;background:rgba(82,199,133,.1);border:1px solid rgba(82,199,133,.3);border-radius:8px;display:none;margin-bottom:12px"> <div class="text-dim text-sm">مفاد هر سهم:</div> <div class="text-green font-bold" style="font-size:18px" id="distPerShare"></div> </div> <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>`,‘saveDist()’);
 }
 
-function calcDistPreview(){
-  const retId=Number(document.getElementById('m-retId')?.value);
-  const ret=DB.returns.find(r=>r.id===retId);
-  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+s.shares,0);
-  const prev=document.getElementById('distPreview');
-  if(ret&&prev){
-    prev.style.display='block';
-    document.getElementById('perShareVal').textContent=fmt(ret.profit/activeShares)+' افغانی';
-  }
+function calcDist(){
+const retId=Number(document.getElementById(‘m-retId’)?.value);
+const ret=DB.returns.find(r=>r.id===retId);
+const activeShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
+const prev=document.getElementById(‘distPrev’);
+if(ret&&prev){prev.style.display=‘block’;document.getElementById(‘distPerShare’).textContent=fmt((+ret.profit||0)/activeShares)+’ افغانی’;}
 }
 
-function saveDistribution(){
-  const retId=Number(document.getElementById('m-retId').value);
-  const ret=DB.returns.find(r=>r.id===retId);
-  if(!retId||!ret){ alert('برگشت سرمایه را انتخاب کنید!'); return; }
-  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+s.shares,0);
-  const profitPerShare=ret.profit/activeShares;
-  DB.distributions.push({id:genId(DB.distributions),returnId:retId,totalProfit:ret.profit,totalShares:activeShares,profitPerShare,date:document.getElementById('m-date').value});
-  saveDB(); closeModal(); showToast('⚡ مفاد تقسیم شد!'); goPage('profit');
+async function saveDist(){
+const retId=Number(document.getElementById(‘m-retId’).value);
+const ret=DB.returns.find(r=>r.id===retId);
+if(!retId||!ret){alert(‘برگشت سرمایه را انتخاب کنید!’);return;}
+const activeShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
+const profitPerShare=(+ret.profit||0)/activeShares;
+loading(true);
+await sbPost(‘distributions’,{return_id:retId,total_profit:ret.profit,total_shares:activeShares,profit_per_share:profitPerShare,date:document.getElementById(‘m-date’).value});
+await loadDB();loading(false);closeModal();showToast(‘⚡ مفاد تقسیم شد!’);goPage(‘profit’);
 }
 
 function showDistDetail(id){
-  const d=DB.distributions.find(x=>x.id===id);
-  if(!d) return;
-  const rows=DB.shareholders.filter(s=>s.status==='active').map(s=>`<tr>
-    <td class="font-bold">${s.name}</td>
-    <td>${s.shares}</td>
-    <td class="text-green font-bold">${fmt(s.shares*d.profitPerShare)} افغانی</td>
+const d=DB.distributions.find(x=>x.id===id);if(!d)return;
+const rows=DB.shareholders.filter(s=>s.status===‘active’).map(s=>`<tr>
+<td class="font-bold">${s.name}</td><td>${s.shares}</td>
+<td class="text-green font-bold">${fmt((+s.shares||0)*(+d.profit_per_share||0))} افغانی</td>
+
   </tr>`).join('');
-  showModal(`جزئیات تقسیم — ${d.date}`,`
-    <div style="margin-bottom:12px;padding:12px;background:var(--navy-light);border-radius:8px;font-size:13px">
-      <div class="flex-between"><span class="text-dim">مفاد کل:</span><span class="text-green font-bold">${fmt(d.totalProfit)}</span></div>
-      <div class="flex-between" style="margin-top:6px"><span class="text-dim">مفاد هر سهم:</span><span class="text-gold font-bold">${fmt(d.profitPerShare)}</span></div>
+  showModal(`جزئیات تقسیم`,`
+    <div style="padding:10px;background:var(--navy-light);border-radius:8px;margin-bottom:12px;font-size:13px">
+      <div style="display:flex;justify-content:space-between"><span class="text-dim">مفاد کل:</span><span class="text-green font-bold">${fmt(d.total_profit)}</span></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px"><span class="text-dim">مفاد هر سهم:</span><span class="text-gold font-bold">${fmt(d.profit_per_share)}</span></div>
     </div>
     <div class="table-wrap"><table>
-      <thead><tr><th>سهم‌دار</th><th>سهام</th><th>سود دریافتی</th></tr></thead>
+      <thead><tr><th>سهم‌دار</th><th>سهام</th><th>سود</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`,null);
 }
 
-// ==================== REPORTS ====================
-function renderReports(){
-  const totalShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+s.shares,0);
-  const totalProfit=DB.returns.reduce((a,r)=>a+r.profit,0);
-  const shRows=DB.shareholders.map(s=>{
-    const pct=totalShares?((s.shares/totalShares)*100).toFixed(1):0;
-    const myProfit=DB.distributions.reduce((a,d)=>a+s.shares*d.profitPerShare,0);
-    return`<tr>
-      <td class="font-bold">${s.name}</td>
-      <td class="text-gold font-bold">${s.shares}</td>
-      <td><span class="badge badge-blue">${pct}٪</span></td>
-      <td>${fmt(s.totalPaid)}</td>
-      <td class="text-green font-bold">${fmt(myProfit)}</td>
-      <td><span class="badge ${s.status==='active'?'badge-green':'badge-red'}">${s.status==='active'?'فعال':'غیرفعال'}</span></td>
-    </tr>`;
-  }).join('');
+// REPORTS
+function renderReports(c){
+const totalShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
+const totalProfit=DB.returns.reduce((a,r)=>a+(+r.profit||0),0);
+c.innerHTML=`
 
-  const invRows=DB.investments.map(inv=>{
-    const ret=DB.returns.find(r=>r.investmentId===inv.id);
-    return`<tr>
-      <td>${inv.description}</td>
-      <td class="text-gold">${fmt(inv.amount)}</td>
-      <td>${ret?fmt(ret.totalReturn):'—'}</td>
-      <td class="${ret?'text-green font-bold':'text-dim'}">${ret?fmt(ret.profit):'—'}</td>
-      <td>${ret?`<span class="badge badge-green">${((ret.profit/ret.investmentAmount)*100).toFixed(1)}٪</span>`:'—'}</td>
-      <td><span class="badge ${inv.status==='returned'?'badge-green':'badge-gold'}">${inv.status==='returned'?'تکمیل':'در جریان'}</span></td>
-    </tr>`;
-  }).join('');
-
-  return`
-  <div style="font-size:20px;font-weight:800;margin-bottom:20px">گزارشات</div>
+  <div style="font-size:18px;font-weight:800;margin-bottom:14px">گزارشات</div>
   <div class="stats-grid">
-    <div class="stat-card blue"><div class="stat-label">👥 کل سهم‌داران</div><div class="stat-value">${DB.shareholders.length}</div><div class="stat-sub">${DB.shareholders.filter(s=>s.status==='active').length} فعال</div></div>
+    <div class="stat-card blue"><div class="stat-label">👥 سهم‌داران</div><div class="stat-value">${DB.shareholders.length}</div><div class="stat-sub">${DB.shareholders.filter(s=>s.status==='active').length} فعال</div></div>
     <div class="stat-card gold"><div class="stat-label">📊 کل سهام</div><div class="stat-value">${fmt(totalShares)}</div></div>
-    <div class="stat-card green"><div class="stat-label">💰 کل سرمایه</div><div class="stat-value">${fmt(DB.shareholders.reduce((a,s)=>a+s.totalPaid,0))}</div><div class="stat-sub">افغانی</div></div>
-    <div class="stat-card green"><div class="stat-label">📈 کل مفاد</div><div class="stat-value">${fmt(totalProfit)}</div><div class="stat-sub">افغانی</div></div>
-  </div>
-  <div class="card mb-20">
-    <div class="card-title">👥 گزارش کامل سهم‌داران</div>
-    <div class="table-wrap"><table>
-      <thead><tr><th>نام</th><th>سهام</th><th>٪ سهم</th><th>پرداخت کل</th><th>سود دریافتی</th><th>وضعیت</th></tr></thead>
-      <tbody>${shRows}</tbody>
-    </table></div>
+    <div class="stat-card green"><div class="stat-label">💰 کل سرمایه</div><div class="stat-value">${fmt(DB.shareholders.reduce((a,s)=>a+(+s.total_paid||0),0))}</div></div>
+    <div class="stat-card green"><div class="stat-label">📈 کل مفاد</div><div class="stat-value">${fmt(totalProfit)}</div></div>
   </div>
   <div class="card">
-    <div class="card-title">🏭 گزارش سرمایه‌گذاری‌ها</div>
+    <div class="card-title">👥 گزارش سهم‌داران</div>
     <div class="table-wrap"><table>
-      <thead><tr><th>توضیح</th><th>سرمایه</th><th>برگشت</th><th>مفاد</th><th>درصد</th><th>وضعیت</th></tr></thead>
-      <tbody>${invRows}</tbody>
+      <thead><tr><th>نام</th><th>سهام</th><th>٪</th><th>پرداخت</th><th>سود</th></tr></thead>
+      <tbody>${DB.shareholders.map(s=>{
+        const pct=totalShares?((+s.shares||0)/totalShares*100).toFixed(1):0;
+        const myProfit=DB.distributions.reduce((a,d)=>a+(+s.shares||0)*(+d.profit_per_share||0),0);
+        return`<tr>
+          <td class="font-bold">${s.name}</td>
+          <td class="text-gold font-bold">${s.shares}</td>
+          <td><span class="badge badge-blue">${pct}٪</span></td>
+          <td>${fmt(s.total_paid)}</td>
+          <td class="text-green font-bold">${fmt(myProfit)}</td>
+        </tr>`;
+      }).join('')}</tbody>
     </table></div>
   </div>`;
 }
 
-// ==================== MODAL ====================
-function showModal(title, body, saveAction, saveLabel='💾 ذخیره', saveCallback=null){
-  const overlay=document.createElement('div');
-  overlay.className='modal-overlay';
-  overlay.id='modalOverlay';
-  overlay.onclick=e=>{ if(e.target===overlay) closeModal(); };
-  overlay.innerHTML=`
-    <div class="modal">
-      <div class="modal-title">${title}</div>
-      ${body}
-      <div class="modal-actions">
-        ${saveAction?`<button class="btn btn-primary" onclick="${saveAction}">${saveLabel}</button>`:''}
-        ${saveCallback?`<button class="btn btn-primary" onclick="window._modalCb()">${saveLabel}</button>`:''}
-        <button class="btn btn-outline" onclick="closeModal()">انصراف</button>
-      </div>
-    </div>`;
+// MODAL
+function showModal(title,body,saveAction,cancelLabel){
+const overlay=document.createElement(‘div’);
+overlay.className=‘modal-overlay’;overlay.id=‘modalOverlay’;
+overlay.onclick=e=>{if(e.target===overlay)closeModal();};
+overlay.innerHTML=`<div class="modal"> <div class="modal-title">${title}</div> ${body} <div class="modal-actions"> ${saveAction?`<button class="btn btn-primary" onclick="${saveAction}">💾 ذخیره</button>`:’’}
+<button class="btn btn-outline" onclick="closeModal()">${cancelLabel||‘بستن’}</button>
+</div>
+
+  </div>`;
   document.body.appendChild(overlay);
-  if(saveCallback) window._modalCb=saveCallback;
 }
-function closeModal(){
-  const m=document.getElementById('modalOverlay');
-  if(m) m.remove();
-}
-
-// ==================== SETTINGS ====================
-// تغییر رمز عبور — از طریق داشبورد
-function changePassword(userId, newPass){
-  const idx=DB.users.findIndex(u=>u.id===userId);
-  if(idx>=0){ DB.users[idx].password=newPass; saveDB(); showToast('🔐 رمز عبور تغییر کرد!'); }
-}
-
-// Start
-document.getElementById('loginUser').focus();
+function closeModal(){const m=document.getElementById('modalOverlay');if(m)m.remove();}
 </script>
 </body>
 </html>
