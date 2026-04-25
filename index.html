@@ -157,7 +157,7 @@ option{background:var(--navy-mid)}
 
 <script>
 const SB_URL='https://cichvpyaijiyckmwwemg.supabase.co';
-const SB_KEY='sb_publishable_-KUgfcA4kFdjbWHHWSEFBw_klmDk20L';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNpY2h2cHlhaWppeWNrbXd3ZW1nIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxMDA3MzcsImV4cCI6MjA5MjY3NjczN30.Yew5p662R9OaFm1T8S2B0z1GAqdEtxprUtwBrM5mHNA';
 
 async function sbGet(t,p=''){
   try{const r=await fetch(`${SB_URL}/rest/v1/${t}${p}`,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});return r.ok?r.json():[];}catch{return[];}
