@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
@@ -107,7 +106,6 @@ option{background:var(--navy-mid)}
 <div class="toast" id="toast"></div>
 
 <!-- LOGIN -->
-
 <div id="loginPage">
 <div class="login-page">
   <div class="login-card">
@@ -132,7 +130,6 @@ option{background:var(--navy-mid)}
 </div>
 
 <!-- APP -->
-
 <div id="appPage" style="display:none">
   <div class="app">
     <div class="topbar">
@@ -454,25 +451,23 @@ function showAddInvestment(){
       <select class="form-select" id="m-type"><option>PU خرید مواد خام</option><option>سرمایه‌گذاری دیگر</option></select></div>
     <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>
     <div class="form-group"><label class="form-label">توضیحات</label><textarea class="form-textarea" id="m-desc" placeholder="جزئیات..."></textarea></div>`,'saveInvestment()');
-
 }
 
 async function saveInvestment(){
-const amount=Number(document.getElementById(‘m-amount’).value);
-if(!amount){alert(‘مبلغ الزامی است!’);return;}
-loading(true);
-await sbPost(‘investments’,{amount,type:document.getElementById(‘m-type’).value,date:document.getElementById(‘m-date’).value,description:document.getElementById(‘m-desc’).value,status:‘active’});
-await loadDB();loading(false);closeModal();showToast();goPage(‘investments’);
+  const amount=Number(document.getElementById('m-amount').value);
+  if(!amount){alert('مبلغ الزامی است!');return;}
+  loading(true);
+  await sbPost('investments',{amount,type:document.getElementById('m-type').value,date:document.getElementById('m-date').value,description:document.getElementById('m-desc').value,status:'active'});
+  await loadDB();loading(false);closeModal();showToast();goPage('investments');
 }
 
 async function completeInv(id){
-loading(true);await sbPatch(‘investments’,{status:‘returned’},`?id=eq.${id}`);await loadDB();loading(false);showToast();goPage(‘investments’);
+  loading(true);await sbPatch('investments',{status:'returned'},`?id=eq.${id}`);await loadDB();loading(false);showToast();goPage('investments');
 }
 
 // RETURNS
 function renderReturns(c){
-c.innerHTML=`
-
+  c.innerHTML=`
   <div class="flex-between mb-14">
     <div><div style="font-size:18px;font-weight:800">برگشت سرمایه</div>
     <div class="text-dim text-sm">کل مفاد: ${fmt(DB.returns.reduce((a,r)=>a+(+r.profit||0),0))} افغانی</div></div>
@@ -490,35 +485,43 @@ c.innerHTML=`
 }
 
 function showAddReturn(){
-const opts=DB.investments.map(i=>`<option value="${i.id}">${i.description||i.type} (${fmt(i.amount)})</option>`).join(’’);
-showModal(‘ثبت برگشت سرمایه’,` <div class="form-group"><label class="form-label">سرمایه‌گذاری *</label> <select class="form-select" id="m-invId" onchange="calcRet()"><option value="">انتخاب کنید...</option>${opts}</select></div> <div class="form-group"><label class="form-label">مبلغ برگشتی کل *</label> <input class="form-input" type="number" id="m-total" placeholder="مبلغ برگشتی" oninput="calcRet()"/></div> <div id="retPreview" style="padding:10px;background:rgba(82,199,133,.1);border:1px solid rgba(82,199,133,.3);border-radius:8px;display:none;margin-bottom:12px"> <span class="text-dim">مفاد: </span><span class="text-green font-bold" id="retProfit"></span> </div> <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div> <div class="form-group"><label class="form-label">یادداشت</label><input class="form-input" id="m-note" placeholder="اختیاری"/></div>`,‘saveReturn()’);
+  const opts=DB.investments.map(i=>`<option value="${i.id}">${i.description||i.type} (${fmt(i.amount)})</option>`).join('');
+  showModal('ثبت برگشت سرمایه',`
+    <div class="form-group"><label class="form-label">سرمایه‌گذاری *</label>
+      <select class="form-select" id="m-invId" onchange="calcRet()"><option value="">انتخاب کنید...</option>${opts}</select></div>
+    <div class="form-group"><label class="form-label">مبلغ برگشتی کل *</label>
+      <input class="form-input" type="number" id="m-total" placeholder="مبلغ برگشتی" oninput="calcRet()"/></div>
+    <div id="retPreview" style="padding:10px;background:rgba(82,199,133,.1);border:1px solid rgba(82,199,133,.3);border-radius:8px;display:none;margin-bottom:12px">
+      <span class="text-dim">مفاد: </span><span class="text-green font-bold" id="retProfit"></span>
+    </div>
+    <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>
+    <div class="form-group"><label class="form-label">یادداشت</label><input class="form-input" id="m-note" placeholder="اختیاری"/></div>`,'saveReturn()');
 }
 
 function calcRet(){
-const invId=Number(document.getElementById(‘m-invId’)?.value);
-const total=Number(document.getElementById(‘m-total’)?.value);
-const inv=DB.investments.find(i=>i.id===invId);
-const prev=document.getElementById(‘retPreview’);
-if(inv&&total&&prev){prev.style.display=‘block’;document.getElementById(‘retProfit’).textContent=fmt(total-inv.amount)+’ افغانی’;}
+  const invId=Number(document.getElementById('m-invId')?.value);
+  const total=Number(document.getElementById('m-total')?.value);
+  const inv=DB.investments.find(i=>i.id===invId);
+  const prev=document.getElementById('retPreview');
+  if(inv&&total&&prev){prev.style.display='block';document.getElementById('retProfit').textContent=fmt(total-inv.amount)+' افغانی';}
 }
 
 async function saveReturn(){
-const invId=Number(document.getElementById(‘m-invId’).value);
-const totalReturn=Number(document.getElementById(‘m-total’).value);
-if(!invId||!totalReturn){alert(‘الزامی است!’);return;}
-const inv=DB.investments.find(i=>i.id===invId);
-const profit=totalReturn-(+inv.amount||0);
-loading(true);
-await sbPost(‘returns’,{investment_id:invId,total_return:totalReturn,investment_amount:inv.amount,profit,date:document.getElementById(‘m-date’).value,note:document.getElementById(‘m-note’).value});
-await sbPatch(‘investments’,{status:‘returned’},`?id=eq.${invId}`);
-await loadDB();loading(false);closeModal();showToast();goPage(‘returns’);
+  const invId=Number(document.getElementById('m-invId').value);
+  const totalReturn=Number(document.getElementById('m-total').value);
+  if(!invId||!totalReturn){alert('الزامی است!');return;}
+  const inv=DB.investments.find(i=>i.id===invId);
+  const profit=totalReturn-(+inv.amount||0);
+  loading(true);
+  await sbPost('returns',{investment_id:invId,total_return:totalReturn,investment_amount:inv.amount,profit,date:document.getElementById('m-date').value,note:document.getElementById('m-note').value});
+  await sbPatch('investments',{status:'returned'},`?id=eq.${invId}`);
+  await loadDB();loading(false);closeModal();showToast();goPage('returns');
 }
 
 // PROFIT
 function renderProfit(c){
-const activeShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
-c.innerHTML=`
-
+  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+(+s.shares||0),0);
+  c.innerHTML=`
   <div class="flex-between mb-14">
     <div><div style="font-size:18px;font-weight:800">تقسیم مفاد</div>
     <div class="text-dim text-sm">کل سهام فعال: ${fmt(activeShares)}</div></div>
@@ -544,36 +547,42 @@ c.innerHTML=`
 }
 
 function showDistribute(){
-const activeShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
-const opts=DB.returns.map(r=>`<option value="${r.id}">مفاد ${fmt(r.profit)} افغانی (${r.date||'—'})</option>`).join(’’);
-showModal(‘تقسیم مفاد’,` <div class="form-group"><label class="form-label">برگشت سرمایه *</label> <select class="form-select" id="m-retId" onchange="calcDist()"><option value="">انتخاب کنید...</option>${opts}</select></div> <div id="distPrev" style="padding:10px;background:rgba(82,199,133,.1);border:1px solid rgba(82,199,133,.3);border-radius:8px;display:none;margin-bottom:12px"> <div class="text-dim text-sm">مفاد هر سهم:</div> <div class="text-green font-bold" style="font-size:18px" id="distPerShare"></div> </div> <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>`,‘saveDist()’);
+  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+(+s.shares||0),0);
+  const opts=DB.returns.map(r=>`<option value="${r.id}">مفاد ${fmt(r.profit)} افغانی (${r.date||'—'})</option>`).join('');
+  showModal('تقسیم مفاد',`
+    <div class="form-group"><label class="form-label">برگشت سرمایه *</label>
+      <select class="form-select" id="m-retId" onchange="calcDist()"><option value="">انتخاب کنید...</option>${opts}</select></div>
+    <div id="distPrev" style="padding:10px;background:rgba(82,199,133,.1);border:1px solid rgba(82,199,133,.3);border-radius:8px;display:none;margin-bottom:12px">
+      <div class="text-dim text-sm">مفاد هر سهم:</div>
+      <div class="text-green font-bold" style="font-size:18px" id="distPerShare"></div>
+    </div>
+    <div class="form-group"><label class="form-label">تاریخ</label><input class="form-input" id="m-date" value="${today()}"/></div>`,'saveDist()');
 }
 
 function calcDist(){
-const retId=Number(document.getElementById(‘m-retId’)?.value);
-const ret=DB.returns.find(r=>r.id===retId);
-const activeShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
-const prev=document.getElementById(‘distPrev’);
-if(ret&&prev){prev.style.display=‘block’;document.getElementById(‘distPerShare’).textContent=fmt((+ret.profit||0)/activeShares)+’ افغانی’;}
+  const retId=Number(document.getElementById('m-retId')?.value);
+  const ret=DB.returns.find(r=>r.id===retId);
+  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+(+s.shares||0),0);
+  const prev=document.getElementById('distPrev');
+  if(ret&&prev){prev.style.display='block';document.getElementById('distPerShare').textContent=fmt((+ret.profit||0)/activeShares)+' افغانی';}
 }
 
 async function saveDist(){
-const retId=Number(document.getElementById(‘m-retId’).value);
-const ret=DB.returns.find(r=>r.id===retId);
-if(!retId||!ret){alert(‘برگشت سرمایه را انتخاب کنید!’);return;}
-const activeShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
-const profitPerShare=(+ret.profit||0)/activeShares;
-loading(true);
-await sbPost(‘distributions’,{return_id:retId,total_profit:ret.profit,total_shares:activeShares,profit_per_share:profitPerShare,date:document.getElementById(‘m-date’).value});
-await loadDB();loading(false);closeModal();showToast(‘⚡ مفاد تقسیم شد!’);goPage(‘profit’);
+  const retId=Number(document.getElementById('m-retId').value);
+  const ret=DB.returns.find(r=>r.id===retId);
+  if(!retId||!ret){alert('برگشت سرمایه را انتخاب کنید!');return;}
+  const activeShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+(+s.shares||0),0);
+  const profitPerShare=(+ret.profit||0)/activeShares;
+  loading(true);
+  await sbPost('distributions',{return_id:retId,total_profit:ret.profit,total_shares:activeShares,profit_per_share:profitPerShare,date:document.getElementById('m-date').value});
+  await loadDB();loading(false);closeModal();showToast('⚡ مفاد تقسیم شد!');goPage('profit');
 }
 
 function showDistDetail(id){
-const d=DB.distributions.find(x=>x.id===id);if(!d)return;
-const rows=DB.shareholders.filter(s=>s.status===‘active’).map(s=>`<tr>
-<td class="font-bold">${s.name}</td><td>${s.shares}</td>
-<td class="text-green font-bold">${fmt((+s.shares||0)*(+d.profit_per_share||0))} افغانی</td>
-
+  const d=DB.distributions.find(x=>x.id===id);if(!d)return;
+  const rows=DB.shareholders.filter(s=>s.status==='active').map(s=>`<tr>
+    <td class="font-bold">${s.name}</td><td>${s.shares}</td>
+    <td class="text-green font-bold">${fmt((+s.shares||0)*(+d.profit_per_share||0))} افغانی</td>
   </tr>`).join('');
   showModal(`جزئیات تقسیم`,`
     <div style="padding:10px;background:var(--navy-light);border-radius:8px;margin-bottom:12px;font-size:13px">
@@ -588,10 +597,9 @@ const rows=DB.shareholders.filter(s=>s.status===‘active’).map(s=>`<tr>
 
 // REPORTS
 function renderReports(c){
-const totalShares=DB.shareholders.filter(s=>s.status===‘active’).reduce((a,s)=>a+(+s.shares||0),0);
-const totalProfit=DB.returns.reduce((a,r)=>a+(+r.profit||0),0);
-c.innerHTML=`
-
+  const totalShares=DB.shareholders.filter(s=>s.status==='active').reduce((a,s)=>a+(+s.shares||0),0);
+  const totalProfit=DB.returns.reduce((a,r)=>a+(+r.profit||0),0);
+  c.innerHTML=`
   <div style="font-size:18px;font-weight:800;margin-bottom:14px">گزارشات</div>
   <div class="stats-grid">
     <div class="stat-card blue"><div class="stat-label">👥 سهم‌داران</div><div class="stat-value">${DB.shareholders.length}</div><div class="stat-sub">${DB.shareholders.filter(s=>s.status==='active').length} فعال</div></div>
@@ -620,13 +628,16 @@ c.innerHTML=`
 
 // MODAL
 function showModal(title,body,saveAction,cancelLabel){
-const overlay=document.createElement(‘div’);
-overlay.className=‘modal-overlay’;overlay.id=‘modalOverlay’;
-overlay.onclick=e=>{if(e.target===overlay)closeModal();};
-overlay.innerHTML=`<div class="modal"> <div class="modal-title">${title}</div> ${body} <div class="modal-actions"> ${saveAction?`<button class="btn btn-primary" onclick="${saveAction}">💾 ذخیره</button>`:’’}
-<button class="btn btn-outline" onclick="closeModal()">${cancelLabel||‘بستن’}</button>
-</div>
-
+  const overlay=document.createElement('div');
+  overlay.className='modal-overlay';overlay.id='modalOverlay';
+  overlay.onclick=e=>{if(e.target===overlay)closeModal();};
+  overlay.innerHTML=`<div class="modal">
+    <div class="modal-title">${title}</div>
+    ${body}
+    <div class="modal-actions">
+      ${saveAction?`<button class="btn btn-primary" onclick="${saveAction}">💾 ذخیره</button>`:''}
+      <button class="btn btn-outline" onclick="closeModal()">${cancelLabel||'بستن'}</button>
+    </div>
   </div>`;
   document.body.appendChild(overlay);
 }
